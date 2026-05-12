@@ -109,19 +109,19 @@ const Welcome = () => {
       {/* Lato Destro - Apple-like Floating Form */}
       <div className="flex-1 flex items-end md:items-center justify-center p-0 md:p-4 sm:p-12 relative z-10">
 
-        <motion.div variants={containerVariants} initial="hidden" animate="visible" className="w-full max-w-[540px] relative z-10 bg-[#03091B]/40 backdrop-blur-[40px] px-6 py-8 md:p-14 rounded-t-[3rem] md:rounded-[3.5rem] shadow-[0_-10px_40px_rgba(0,0,0,0.5)] md:shadow-[0_40px_100px_-10px_rgba(3,9,27,0.8)] border-t border-white/20 md:border-l md:border-r md:border-b md:border-white/5 mt-32 md:mt-0 group/glass">
+        <motion.div variants={containerVariants} initial="hidden" animate="visible" className="w-full max-w-[540px] relative z-10 bg-[#03091B]/40 backdrop-blur-[40px] px-6 py-8 md:p-14 rounded-t-[3rem] md:rounded-[3.5rem] shadow-[0_-10px_40px_rgba(0,0,0,0.5)] md:shadow-[0_40px_100px_-10px_rgba(3,9,27,0.8)] border-t border-white/20 md:border-l md:border-r md:border-b md:border-white/5 mt-48 md:mt-0 group/glass">
 
           <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-transparent rounded-t-[3rem] md:rounded-[3.5rem] pointer-events-none opacity-50 z-0"></div>
 
           {/* MOBILE LOGO - Character walking on the glass banner */}
-          <div className="md:hidden absolute bottom-full left-0 w-full flex justify-center z-30 pointer-events-none">
+          <div className="md:hidden absolute bottom-full inset-x-0 flex justify-center z-30 pointer-events-none">
             <motion.div 
               initial={{ x: -100, opacity: 0, rotate: -10 }}
               animate={{ x: 0, opacity: 1, rotate: 0 }}
               transition={{ type: "spring", stiffness: 100, damping: 12, delay: 0.4 }}
-              className="translate-y-[2px]"
+              className="translate-y-[8px]"
             >
-              <img src="/images/logo-character-photoroom.png" alt="Lemons Logo" className="h-[6.5rem] object-contain drop-shadow-[0_15px_15px_rgba(0,0,0,0.6)]" />
+              <img src="/images/logo-character-photoroom.png" alt="Lemons Logo" className="h-[11rem] w-auto object-contain drop-shadow-[0_15px_15px_rgba(0,0,0,0.6)]" />
             </motion.div>
           </div>
 
