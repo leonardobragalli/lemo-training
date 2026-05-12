@@ -102,50 +102,92 @@ const Home = () => {
               
               <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-transparent pointer-events-none opacity-50 z-0"></div>
 
-              {/* Clean, Brand-Aligned Minimal Progress Ring */}
+              {/* Premium 3D Brand-Aligned Progress Ring */}
               <div className="relative w-64 h-64 shrink-0 flex items-center justify-center z-10">
                 
-                {/* Flat, clean track (Lemons Black with low opacity) */}
-                <svg className="absolute inset-0 w-full h-full transform -rotate-90">
-                  <circle 
-                    cx="128" cy="128" r="110" 
-                    fill="none" 
-                    stroke="rgba(255,255,255,0.08)" 
-                    strokeWidth="16" 
-                  />
-                  
-                  {/* Progress Ring using Lemons Brand Gradient */}
-                  <defs>
-                    <linearGradient id="lemonsGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                      <stop offset="0%" stopColor="#8756FA" /> {/* Lemons Purple */}
-                      <stop offset="100%" stopColor="#FF8731" /> {/* Lemons Orange */}
-                    </linearGradient>
-                  </defs>
-                  
-                  <circle 
-                    cx="128" cy="128" r="110" 
-                    fill="none" 
-                    stroke="url(#lemonsGradient)" 
-                    strokeWidth="16" 
-                    strokeLinecap="round" 
-                    strokeDasharray="691" 
-                    strokeDashoffset={691 - (691 * progressPercentage) / 100} 
-                    className="transition-all duration-[1.5s] ease-in-out drop-shadow-sm" 
-                  />
-                </svg>
+                {/* Soft ambient glow behind the ring */}
+                <div className="absolute inset-4 rounded-full bg-gradient-to-tr from-[#8756FA]/20 to-[#FF8731]/20 blur-[20px] pointer-events-none"></div>
 
-                {/* Minimal Center Content */}
-                <div className="absolute inset-0 flex flex-col items-center justify-center">
-                  <motion.span 
-                    initial={{ scale: 0, opacity: 0 }} 
-                    animate={{ scale: 1, opacity: 1 }} 
-                    transition={{ delay: 0.2, type: "spring", stiffness: 120 }} 
-                    className="text-6xl font-black font-serif text-white tracking-normal flex items-baseline"
-                  >
-                    {progressPercentage}
-                    <span className="text-3xl text-[#FF8731] ml-1 font-sans tracking-normal">%</span>
-                  </motion.span>
-                </div>
+                <motion.div 
+                  animate={{ rotateY: [0, 5, -5, 0], rotateX: [0, 5, -5, 0] }} 
+                  transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+                  className="relative w-full h-full flex items-center justify-center drop-shadow-[0_15px_25px_rgba(3,9,27,0.5)]"
+                >
+                  <svg className="absolute inset-0 w-full h-full transform -rotate-90 overflow-visible">
+                    <defs>
+                      <linearGradient id="lemonsGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stopColor="#8756FA" /> {/* Lemons Purple */}
+                        <stop offset="50%" stopColor="#D97199" /> {/* Blended transition */}
+                        <stop offset="100%" stopColor="#FF8731" /> {/* Lemons Orange */}
+                      </linearGradient>
+                      
+                      {/* Subtle 3D Bevel Filter for the progress line */}
+                      <filter id="soft3D" x="-20%" y="-20%" width="140%" height="140%">
+                        <feDropShadow dx="0" dy="8" stdDeviation="6" floodColor="#FF8731" floodOpacity="0.4" result="glow" />
+                        <feDropShadow dx="0" dy="4" stdDeviation="4" floodColor="#03091B" floodOpacity="0.3" result="shadow" />
+                        <feMerge>
+                          <feMergeNode in="glow" />
+                          <feMergeNode in="shadow" />
+                          <feMergeNode in="SourceGraphic" />
+                        </feMerge>
+                      </filter>
+                    </defs>
+
+                    {/* Track Background (Glassy & Embossed) */}
+                    <circle 
+                      cx="128" cy="128" r="110" 
+                      fill="rgba(255,255,255,0.02)" 
+                      stroke="rgba(255,255,255,0.05)" 
+                      strokeWidth="18" 
+                    />
+                    {/* Inner shadow simulation for track */}
+                    <circle 
+                      cx="128" cy="128" r="110" 
+                      fill="none" 
+                      stroke="rgba(0,0,0,0.3)" 
+                      strokeWidth="18" 
+                      className="mix-blend-overlay"
+                    />
+
+                    {/* 3D Progress Ring */}
+                    <circle 
+                      cx="128" cy="128" r="110" 
+                      fill="none" 
+                      stroke="url(#lemonsGradient)" 
+                      strokeWidth="18" 
+                      strokeLinecap="round" 
+                      strokeDasharray="691" 
+                      strokeDashoffset={691 - (691 * progressPercentage) / 100} 
+                      className="transition-all duration-[2s] ease-out" 
+                      filter="url(#soft3D)"
+                    />
+                    
+                    {/* Specular Highlight on the progress ring to make it pop like glass/plastic */}
+                    <circle 
+                      cx="128" cy="128" r="110" 
+                      fill="none" 
+                      stroke="rgba(255,255,255,0.4)" 
+                      strokeWidth="4" 
+                      strokeLinecap="round" 
+                      strokeDasharray="691" 
+                      strokeDashoffset={691 - (691 * progressPercentage) / 100} 
+                      className="transition-all duration-[2s] ease-out blur-[1px] mix-blend-overlay" 
+                    />
+                  </svg>
+
+                  {/* Center Content with Glass Plate */}
+                  <div className="absolute inset-[25px] rounded-full bg-white/5 backdrop-blur-sm border border-white/10 shadow-[inset_0_4px_20px_rgba(255,255,255,0.05),0_10px_20px_rgba(0,0,0,0.2)] flex flex-col items-center justify-center z-10">
+                    <motion.span 
+                      initial={{ scale: 0, opacity: 0 }} 
+                      animate={{ scale: 1, opacity: 1 }} 
+                      transition={{ delay: 0.2, type: "spring", stiffness: 120 }} 
+                      className="text-6xl font-black font-serif text-white tracking-normal flex items-baseline drop-shadow-md"
+                    >
+                      {progressPercentage}
+                      <span className="text-3xl text-white ml-1 font-sans tracking-normal opacity-90">%</span>
+                    </motion.span>
+                  </div>
+                </motion.div>
               </div>
               
               <div className="flex-1 text-center md:text-left relative z-10">
