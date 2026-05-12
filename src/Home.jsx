@@ -102,26 +102,40 @@ const Home = () => {
               
               <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-transparent pointer-events-none opacity-50 z-0"></div>
 
-              {/* Futuristic Progress Ring */}
+              {/* Futuristic Progress Ring - 3D Effect */}
               <div className="relative w-64 h-64 shrink-0 flex items-center justify-center perspective-[1000px] z-10">
                 <motion.div 
                   animate={{ rotateY: [0, 10, -10, 0], rotateX: [0, 5, -5, 0] }} 
                   transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-                  className="relative w-full h-full"
+                  className="relative w-full h-full drop-shadow-2xl"
                 >
-                  {/* Background Ring */}
+                  {/* Deep Outer Bevel Shadow */}
                   <svg className="absolute inset-0 w-full h-full transform -rotate-90">
-                    <circle cx="128" cy="128" r="95" fill="none" stroke="currentColor" className="text-white/10" strokeWidth="12" />
+                    <circle cx="128" cy="128" r="95" fill="none" stroke="#000000" strokeWidth="20" className="opacity-40" />
+                  </svg>
+
+                  {/* Background Track (Glassy with inner shadow) */}
+                  <svg className="absolute inset-0 w-full h-full transform -rotate-90">
+                    <circle cx="128" cy="128" r="95" fill="none" stroke="currentColor" className="text-white/10" strokeWidth="16" />
+                    <circle cx="128" cy="128" r="95" fill="none" stroke="#03091B" strokeWidth="4" className="opacity-60 mix-blend-overlay" />
                   </svg>
                   
-                  {/* Progress Ring with Glow */}
+                  {/* Progress Ring with 3D Tube Effect & Glow */}
                   <svg className="absolute inset-0 w-full h-full transform -rotate-90 drop-shadow-[0_0_20px_rgba(255,135,49,1)]">
+                    {/* Main thick colorful stroke */}
                     <circle cx="128" cy="128" r="95" fill="none" stroke="url(#progressGradient)" strokeWidth="16" strokeLinecap="round" strokeDasharray="597" strokeDashoffset={597 - (597 * progressPercentage) / 100} className="transition-all duration-[2s] ease-out" />
+                    {/* Inner highlight (top specular reflection) */}
+                    <circle cx="128" cy="128" r="95" fill="none" stroke="url(#specularGradient)" strokeWidth="4" strokeLinecap="round" strokeDasharray="597" strokeDashoffset={597 - (597 * progressPercentage) / 100} className="transition-all duration-[2s] ease-out mix-blend-overlay opacity-80" />
+                    
                     <defs>
                       <linearGradient id="progressGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" stopColor="#FF8731" />
+                        <stop offset="0%" stopColor="#8756FA" />
                         <stop offset="50%" stopColor="#FF6B00" />
                         <stop offset="100%" stopColor="#FF9E54" />
+                      </linearGradient>
+                      <linearGradient id="specularGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" stopColor="#ffffff" stopOpacity="0.8" />
+                        <stop offset="100%" stopColor="#ffffff" stopOpacity="0" />
                       </linearGradient>
                     </defs>
                   </svg>
@@ -166,10 +180,10 @@ const Home = () => {
                   <motion.button 
                     whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}
                     onClick={downloadCertificate} 
-                    className="w-full md:w-auto px-10 py-6 bg-gradient-to-r from-[#FF8731] to-[#FF9E54] text-white rounded-[2.5rem] font-black text-xl flex items-center justify-center gap-4 transition-all shadow-[0_15px_40px_-10px_rgba(255,135,49,0.8)] hover:shadow-[0_20px_60px_-10px_rgba(255,135,49,1)] relative overflow-hidden group border-2 border-white/40 ring-4 ring-[#FF8731]/30 hover:ring-[#FF8731]/60"
+                    className="w-full md:w-auto px-10 py-6 bg-gradient-to-r from-[#FF8731] to-[#FF9E54] text-white rounded-[2.5rem] font-black text-xl flex items-center justify-center gap-4 transition-all shadow-[0_15px_30px_rgba(255,135,49,0.5),inset_0_2px_10px_rgba(255,255,255,0.4)] hover:shadow-[0_20px_40px_rgba(255,135,49,0.8),inset_0_2px_10px_rgba(255,255,255,0.6)] relative overflow-hidden group border border-[#FF8731]"
                   >
-                    <div className="absolute inset-0 bg-white/30 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700 ease-in-out skew-x-12"></div>
-                    <Award className="w-7 h-7 relative z-10 drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]" /> 
+                    <div className="absolute inset-0 bg-white/30 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700 ease-in-out skew-x-12 z-0"></div>
+                    <Award className="w-7 h-7 relative z-10 drop-shadow-md" /> 
                     <span className="relative z-10 drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] tracking-wide">Ottieni Certificato</span>
                   </motion.button>
                 )}

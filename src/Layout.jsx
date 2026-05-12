@@ -106,7 +106,7 @@ const Layout = () => {
 
       {/* Bottom Nav Mobile - Floating Glassmorphism */}
       <div className="md:hidden fixed bottom-6 left-4 right-4 z-50">
-        <div className="backdrop-blur-[40px] bg-[#03091B]/60 border border-white/20 flex justify-around items-center p-2 shadow-[0_30px_60px_rgba(0,0,0,0.8),inset_0_2px_10px_rgba(255,255,255,0.1)] rounded-[2.5rem]">
+        <div className="backdrop-blur-[40px] bg-[#03091B]/40 border border-white/20 flex justify-around items-center p-2 shadow-[0_30px_60px_rgba(0,0,0,0.8),inset_0_2px_10px_rgba(255,255,255,0.1)] rounded-[2.5rem]">
           {navItems.map((item) => (
             <NavLink
               key={item.label}
@@ -114,15 +114,14 @@ const Layout = () => {
               onClick={handleNavClick}
               className={({ isActive }) => 
                 `flex flex-col items-center justify-center w-[4.5rem] h-[4.5rem] rounded-full transition-all duration-500 relative group overflow-hidden ${
-                  isActive ? 'text-white bg-gradient-to-r from-[#8756FA] to-[#FF8731] -translate-y-3 shadow-[0_15px_30px_-10px_rgba(255,135,49,0.8)] border border-white/30 scale-110 z-10' : 
+                  isActive ? 'text-white bg-gradient-to-br from-[#8756FA] to-[#FF8731] shadow-[0_10px_20px_rgba(255,135,49,0.5),inset_0_2px_4px_rgba(255,255,255,0.3)] z-10' : 
                   'text-slate-400 hover:text-white hover:bg-white/10 border border-transparent'
                 }`
               }
             >
               {({ isActive }) => (
                 <>
-                  {isActive && <div className="absolute inset-0 bg-white/20 scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-500 ease-out rounded-full z-0"></div>}
-                  <item.icon className={`w-6 h-6 mb-1 relative z-10 transition-transform duration-300 ${isActive ? 'drop-shadow-md scale-110' : 'group-hover:scale-110'}`} />
+                  <item.icon className={`w-6 h-6 mb-1 relative z-10 transition-transform duration-300 ${isActive ? 'drop-shadow-md scale-105' : 'group-hover:scale-110'}`} />
                   <span className="text-[9px] font-black leading-none uppercase tracking-widest relative z-10 drop-shadow-sm">{item.label}</span>
                 </>
               )}
