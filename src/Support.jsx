@@ -140,50 +140,52 @@ const Support = () => {
 
           <div className="flex flex-col gap-6">
             {/* Tech Support */}
-            <div className="bg-gradient-to-br from-[#03091B]/95 to-[#131A33]/90 dark:from-[#03091B]/80 dark:to-[#03091B]/60 backdrop-blur-3xl rounded-[2.5rem] p-8 text-white relative overflow-hidden shadow-[0_20px_40px_-10px_rgba(0,0,0,0.4)] border border-white/10 group">
+            <div className="bg-gradient-to-br from-[#03091B]/95 to-[#131A33]/90 dark:from-[#03091B]/80 dark:to-[#03091B]/60 backdrop-blur-3xl rounded-[2.5rem] p-6 md:p-8 text-white relative overflow-hidden shadow-[0_20px_40px_-10px_rgba(0,0,0,0.4)] border border-white/10 group">
               <div className="absolute top-[-50%] right-[-20%] w-[300px] h-[300px] bg-[#FF8731] rounded-full blur-[80px] opacity-20 pointer-events-none"></div>
               <div className="absolute inset-0 opacity-[0.05] pointer-events-none mix-blend-overlay bg-[url('https://grainy-gradients.vercel.app/noise.svg')]"></div>
-              <div className="relative z-10 flex flex-row items-center gap-6">
-                <div className="w-16 h-16 bg-gradient-to-br from-[#FF8731]/20 to-[#FF8731]/5 rounded-[1.5rem] flex items-center justify-center shrink-0 border border-white/10 shadow-xl group-hover:scale-110 group-hover:-rotate-6 transition-transform duration-700">
-                  <Phone className="w-8 h-8 text-[#FF8731] drop-shadow-md" />
+              <div className="relative z-10 flex flex-row items-center gap-4 md:gap-6">
+                <div className="w-14 h-14 md:w-16 md:h-16 bg-gradient-to-br from-[#FF8731]/20 to-[#FF8731]/5 rounded-[1.2rem] flex items-center justify-center shrink-0 border border-white/10 shadow-xl group-hover:scale-110 group-hover:-rotate-6 transition-transform duration-700">
+                  <Phone className="w-7 h-7 md:w-8 md:h-8 text-[#FF8731] drop-shadow-md" />
                 </div>
                 <div className="min-w-0">
-                  <p className="text-white/50 font-bold text-[10px] md:text-xs mb-1 tracking-[0.2em] uppercase flex items-center gap-1.5">
+                  <p className="text-white/50 font-bold text-[10px] md:text-xs mb-0.5 tracking-[0.2em] uppercase flex items-center gap-1.5">
                     <Sparkles className="w-3 h-3 text-[#FF8731] shrink-0" /> Supporto Tecnico
                   </p>
-                  <h3 className="text-xl md:text-2xl font-black font-serif mb-1 tracking-tight truncate">Alessandro Romagnosi</h3>
-                  <a href="tel:+393395658074" className="inline-block text-lg font-black tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-white to-white/70 hover:from-[#FF8731] hover:to-[#FF9E54] transition-all drop-shadow-md">+39 339 565 8074</a>
+                  <h3 className="text-lg md:text-2xl font-black font-serif mb-0.5 tracking-tight truncate">Alessandro Romagnosi</h3>
+                  <p className="text-xs text-slate-400 mb-1 leading-tight">Problemi hardware, sistema o accensione.</p>
+                  <a href="tel:+393395658074" className="inline-block text-base md:text-lg font-black tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-white to-white/70 hover:from-[#FF8731] hover:to-[#FF9E54] transition-all drop-shadow-md">+39 339 565 8074</a>
                 </div>
               </div>
             </div>
 
             {/* Customer Care */}
-            <div className="bg-gradient-to-br from-[#03091B]/95 to-[#131A33]/90 dark:from-[#03091B]/80 dark:to-[#03091B]/60 backdrop-blur-3xl rounded-[2.5rem] p-8 text-white relative overflow-hidden shadow-[0_20px_40px_-10px_rgba(0,0,0,0.4)] border border-white/10 group">
+            <div className="bg-gradient-to-br from-[#03091B]/95 to-[#131A33]/90 dark:from-[#03091B]/80 dark:to-[#03091B]/60 backdrop-blur-3xl rounded-[2.5rem] p-6 md:p-8 text-white relative overflow-hidden shadow-[0_20px_40px_-10px_rgba(0,0,0,0.4)] border border-white/10 group">
               <div className="absolute top-[-50%] right-[-20%] w-[300px] h-[300px] bg-[#8756FA] rounded-full blur-[80px] opacity-20 pointer-events-none"></div>
               <div className="absolute inset-0 opacity-[0.05] pointer-events-none mix-blend-overlay bg-[url('https://grainy-gradients.vercel.app/noise.svg')]"></div>
-              <div className="relative z-10 flex flex-row items-center gap-6">
-                <div className="w-16 h-16 bg-gradient-to-br from-[#8756FA]/20 to-[#8756FA]/5 rounded-[1.5rem] flex items-center justify-center shrink-0 border border-white/10 shadow-xl group-hover:scale-110 group-hover:-rotate-6 transition-transform duration-700">
-                  <MessageSquareHeart className="w-8 h-8 text-[#8756FA] drop-shadow-md" />
+              <div className="relative z-10 flex flex-row items-center gap-4 md:gap-6">
+                <div className="w-14 h-14 md:w-16 md:h-16 bg-gradient-to-br from-[#8756FA]/20 to-[#8756FA]/5 rounded-[1.2rem] flex items-center justify-center shrink-0 border border-white/10 shadow-xl group-hover:scale-110 group-hover:-rotate-6 transition-transform duration-700">
+                  <Phone className="w-7 h-7 md:w-8 md:h-8 text-[#8756FA] drop-shadow-md" />
                 </div>
                 <div className="min-w-0">
-                  <p className="text-white/50 font-bold text-[10px] md:text-xs mb-1 tracking-[0.2em] uppercase flex items-center gap-1.5">
+                  <p className="text-white/50 font-bold text-[10px] md:text-xs mb-0.5 tracking-[0.2em] uppercase flex items-center gap-1.5">
                     <Sparkles className="w-3 h-3 text-[#8756FA] shrink-0" /> Assistenza Operativa
                   </p>
-                  <h3 className="text-xl md:text-2xl font-black font-serif mb-1 tracking-tight truncate">Customer Care</h3>
-                  <a href="tel:+393395658074" className="inline-block text-lg font-black tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-white to-white/70 hover:from-[#8756FA] hover:to-[#9C73FA] transition-all drop-shadow-md">+39 339 565 8074</a>
+                  <h3 className="text-lg md:text-2xl font-black font-serif mb-0.5 tracking-tight truncate">Customer Care</h3>
+                  <p className="text-xs text-slate-400 mb-1 leading-tight">Dubbi sull'utilizzo, info generali, app.</p>
+                  <a href="tel:+393395658074" className="inline-block text-base md:text-lg font-black tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-white to-white/70 hover:from-[#8756FA] hover:to-[#9C73FA] transition-all drop-shadow-md">+39 339 565 8074</a>
                 </div>
               </div>
             </div>
           </div>
 
-          <div className="bg-white/40 dark:bg-[#03091B]/40 backdrop-blur-3xl border border-white/50 dark:border-white/10 rounded-[3rem] p-10 md:p-12 relative overflow-hidden shadow-[0_20px_40px_-10px_rgba(0,0,0,0.1)] mt-8">
+          <div className="bg-white/40 dark:bg-[#03091B]/40 backdrop-blur-3xl border border-white/50 dark:border-white/10 rounded-[3rem] p-8 md:p-12 relative overflow-hidden shadow-[0_20px_40px_-10px_rgba(0,0,0,0.1)] mt-8">
             <div className="absolute inset-0 opacity-[0.03] mix-blend-overlay pointer-events-none bg-[url('https://grainy-gradients.vercel.app/noise.svg')] z-0"></div>
             <div className="absolute top-0 right-0 w-64 h-64 bg-[#8756FA] rounded-full blur-[120px] opacity-20 pointer-events-none"></div>
             
-            <h3 className="text-3xl font-black font-serif text-[#03091B] dark:text-white mb-3 flex items-center gap-4 relative z-10 tracking-tight">
-              <Send className="w-8 h-8 text-[#8756FA]" /> Ticket Immediato
+            <h3 className="text-2xl md:text-3xl font-black font-serif text-[#03091B] dark:text-white mb-2 flex items-center gap-3 md:gap-4 relative z-10 tracking-tight">
+              <Send className="w-7 h-7 md:w-8 md:h-8 text-[#8756FA]" /> Ticket Immediato
             </h3>
-            <p className="text-slate-500 dark:text-slate-400 font-medium text-lg mb-10 relative z-10 leading-relaxed">Invia una segnalazione per ricevere assistenza tecnica o operativa prioritaria.</p>
+            <p className="text-slate-500 dark:text-slate-400 font-medium text-base md:text-lg mb-8 relative z-10 leading-relaxed">Invia una segnalazione per ricevere assistenza tecnica o operativa prioritaria.</p>
             
             <AnimatePresence mode="wait">
               {ticketSent ? (
@@ -193,28 +195,28 @@ const Support = () => {
                   <p className="text-slate-600 dark:text-slate-300 text-xl font-medium">Il team ti assisterà a breve.</p>
                 </motion.div>
               ) : (
-                <motion.form initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onSubmit={handleTicketSubmit} className="space-y-6 relative z-10">
-                  <div className="space-y-2">
-                    <label className="text-[11px] font-black text-[#8756FA] uppercase ml-2 tracking-[0.2em]">Tipo Assistenza</label>
+                <motion.form initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onSubmit={handleTicketSubmit} className="space-y-5 relative z-10">
+                  <div className="space-y-1.5">
+                    <label className="text-[10px] md:text-[11px] font-black text-[#8756FA] uppercase ml-2 tracking-[0.2em]">Tipo Assistenza</label>
                     <div className="relative">
                       <select
                         value={ticketType} onChange={(e) => setTicketType(e.target.value)}
-                        className="block w-full px-6 py-5 bg-white/60 dark:bg-black/20 border border-white/50 dark:border-white/10 focus:bg-white dark:focus:bg-[#03091B]/80 rounded-[2rem] text-[#03091B] dark:text-white focus:ring-0 focus:border-[#8756FA] transition-all shadow-inner outline-none font-bold text-lg appearance-none cursor-pointer"
+                        className="block w-full pl-5 pr-10 py-4 md:py-5 bg-white/60 dark:bg-black/20 border border-white/50 dark:border-white/10 focus:bg-white dark:focus:bg-[#03091B]/80 rounded-[1.5rem] md:rounded-[2rem] text-[#03091B] dark:text-white focus:ring-0 focus:border-[#8756FA] transition-all shadow-inner outline-none font-bold text-sm md:text-lg appearance-none cursor-pointer truncate"
                       >
-                        <option value="Tecnico" className="text-black">Supporto Tecnico / Hardware</option>
-                        <option value="Operativo" className="text-black">Assistenza Operativa / Formazione</option>
+                        <option value="Tecnico" className="text-black">Guasto Hardware / Sistema</option>
+                        <option value="Operativo" className="text-black">Aiuto App / Formazione</option>
                       </select>
-                      <ChevronDown className="absolute right-6 top-1/2 -translate-y-1/2 w-6 h-6 text-[#8756FA] pointer-events-none" />
+                      <ChevronDown className="absolute right-4 md:right-6 top-1/2 -translate-y-1/2 w-5 h-5 text-[#8756FA] pointer-events-none" />
                     </div>
                   </div>
                   
-                  <div className="space-y-2">
-                    <label className="text-[11px] font-black text-[#8756FA] uppercase ml-2 tracking-[0.2em]">Oggetto Richiesta</label>
+                  <div className="space-y-1.5">
+                    <label className="text-[10px] md:text-[11px] font-black text-[#8756FA] uppercase ml-2 tracking-[0.2em]">Oggetto Richiesta</label>
                     <input 
                       type="text" required
                       value={ticketSubject} onChange={(e) => setTicketSubject(e.target.value)}
-                      className="block w-full px-6 py-5 bg-white/60 dark:bg-black/20 border border-white/50 dark:border-white/10 focus:bg-white dark:focus:bg-[#03091B]/80 rounded-[2rem] text-[#03091B] dark:text-white focus:ring-0 focus:border-[#8756FA] transition-all shadow-inner outline-none font-bold text-lg placeholder-slate-400 dark:placeholder-slate-600"
-                      placeholder="Es. Problema di accensione..."
+                      className="block w-full px-5 md:px-6 py-4 md:py-5 bg-white/60 dark:bg-black/20 border border-white/50 dark:border-white/10 focus:bg-white dark:focus:bg-[#03091B]/80 rounded-[1.5rem] md:rounded-[2rem] text-[#03091B] dark:text-white focus:ring-0 focus:border-[#8756FA] transition-all shadow-inner outline-none font-bold text-sm md:text-lg placeholder-slate-400 dark:placeholder-slate-600 truncate"
+                      placeholder="Es. Visore bloccato..."
                     />
                   </div>
                   <div className="space-y-2">
