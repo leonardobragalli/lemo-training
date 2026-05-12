@@ -102,31 +102,22 @@ const Home = () => {
               
               <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-transparent pointer-events-none opacity-50 z-0"></div>
 
-              {/* Futuristic Progress Ring - 3D Effect */}
-              <div className="relative w-64 h-64 shrink-0 flex items-center justify-center perspective-[1000px] z-10">
+              {/* Futuristic Progress Ring - Clean 3D Floating Effect */}
+              <div className="relative w-64 h-64 shrink-0 flex items-center justify-center z-10">
                 <motion.div 
                   animate={{ rotateY: [0, 10, -10, 0], rotateX: [0, 5, -5, 0] }} 
                   transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-                  className="relative w-full h-full drop-shadow-2xl"
+                  className="relative w-full h-full drop-shadow-[0_20px_25px_rgba(0,0,0,0.6)]"
                 >
-                  {/* Deep Outer Bevel Shadow */}
+                  {/* Background Track (Glassy thick ring) */}
                   <svg className="absolute inset-0 w-full h-full transform -rotate-90">
-                    <circle cx="128" cy="128" r="95" fill="none" stroke="#000000" strokeWidth="20" className="opacity-40" />
-                  </svg>
-
-                  {/* Background Track (Glassy with inner shadow) */}
-                  <svg className="absolute inset-0 w-full h-full transform -rotate-90">
-                    <circle cx="128" cy="128" r="95" fill="none" stroke="currentColor" className="text-white/10" strokeWidth="16" />
-                    <circle cx="128" cy="128" r="95" fill="none" stroke="#03091B" strokeWidth="4" className="opacity-60 mix-blend-overlay" />
+                    <circle cx="128" cy="128" r="100" fill="none" stroke="currentColor" className="text-white/10" strokeWidth="24" />
+                    {/* Inner bevel for track */}
+                    <circle cx="128" cy="128" r="100" fill="none" stroke="#000000" strokeWidth="24" className="opacity-40 mix-blend-overlay" />
                   </svg>
                   
-                  {/* Progress Ring with 3D Tube Effect & Glow */}
-                  <svg className="absolute inset-0 w-full h-full transform -rotate-90 drop-shadow-[0_0_20px_rgba(255,135,49,1)]">
-                    {/* Main thick colorful stroke */}
-                    <circle cx="128" cy="128" r="95" fill="none" stroke="url(#progressGradient)" strokeWidth="16" strokeLinecap="round" strokeDasharray="597" strokeDashoffset={597 - (597 * progressPercentage) / 100} className="transition-all duration-[2s] ease-out" />
-                    {/* Inner highlight (top specular reflection) */}
-                    <circle cx="128" cy="128" r="95" fill="none" stroke="url(#specularGradient)" strokeWidth="4" strokeLinecap="round" strokeDasharray="597" strokeDashoffset={597 - (597 * progressPercentage) / 100} className="transition-all duration-[2s] ease-out mix-blend-overlay opacity-80" />
-                    
+                  {/* Progress Ring with 3D Torus Effect */}
+                  <svg className="absolute inset-0 w-full h-full transform -rotate-90 drop-shadow-[0_10px_15px_rgba(255,135,49,0.8)]">
                     <defs>
                       <linearGradient id="progressGradient" x1="0%" y1="0%" x2="100%" y2="100%">
                         <stop offset="0%" stopColor="#8756FA" />
@@ -138,6 +129,9 @@ const Home = () => {
                         <stop offset="100%" stopColor="#ffffff" stopOpacity="0" />
                       </linearGradient>
                     </defs>
+                    <circle cx="128" cy="128" r="100" fill="none" stroke="url(#progressGradient)" strokeWidth="24" strokeLinecap="round" strokeDasharray="628" strokeDashoffset={628 - (628 * progressPercentage) / 100} className="transition-all duration-[2s] ease-out" />
+                    {/* Volume highlight stroke */}
+                    <circle cx="128" cy="128" r="100" fill="none" stroke="url(#specularGradient)" strokeWidth="8" strokeLinecap="round" strokeDasharray="628" strokeDashoffset={628 - (628 * progressPercentage) / 100} className="transition-all duration-[2s] ease-out mix-blend-overlay opacity-80" />
                   </svg>
 
                   {/* Center Content */}
@@ -168,9 +162,8 @@ const Home = () => {
                   <motion.button 
                     whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}
                     onClick={() => handleNav(`/modules?mode=${mode}`)} 
-                    className="w-full md:w-auto px-10 py-6 bg-gradient-to-r from-[#8756FA] to-[#FF8731] text-white rounded-[2.5rem] font-black text-xl flex items-center justify-center gap-4 transition-all shadow-[0_15px_40px_-10px_rgba(135,86,250,0.8)] hover:shadow-[0_20px_60px_-10px_rgba(255,135,49,1)] relative overflow-hidden group border border-white/20"
+                    className="w-full md:w-auto px-10 py-6 bg-gradient-to-r from-[#8756FA] to-[#FF8731] text-white rounded-[2.5rem] font-black text-xl flex items-center justify-center gap-4 transition-all shadow-[0_15px_40px_-10px_rgba(135,86,250,0.8),inset_0_2px_4px_rgba(255,255,255,0.3)] hover:shadow-[0_20px_60px_-10px_rgba(255,135,49,1),inset_0_2px_4px_rgba(255,255,255,0.5)] border border-white/20"
                   >
-                    <div className="absolute inset-0 bg-white/30 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700 ease-in-out skew-x-12"></div>
                     <span className="relative z-10 drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]">Vai ai Moduli</span>
                     <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center relative z-10 transition-colors duration-300 border border-white/30 shadow-inner">
                       <ArrowRight className="w-5 h-5" />
@@ -180,9 +173,8 @@ const Home = () => {
                   <motion.button 
                     whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}
                     onClick={downloadCertificate} 
-                    className="w-full md:w-auto px-10 py-6 bg-gradient-to-r from-[#FF8731] to-[#FF9E54] text-white rounded-[2.5rem] font-black text-xl flex items-center justify-center gap-4 transition-all shadow-[0_15px_30px_rgba(255,135,49,0.5),inset_0_2px_10px_rgba(255,255,255,0.4)] hover:shadow-[0_20px_40px_rgba(255,135,49,0.8),inset_0_2px_10px_rgba(255,255,255,0.6)] relative overflow-hidden group border border-[#FF8731]"
+                    className="w-full md:w-auto px-10 py-6 bg-gradient-to-r from-[#FF8731] to-[#FF9E54] text-white rounded-[2.5rem] font-black text-xl flex items-center justify-center gap-4 transition-all shadow-[0_15px_30px_rgba(255,135,49,0.5),inset_0_2px_10px_rgba(255,255,255,0.4)] hover:shadow-[0_20px_40px_rgba(255,135,49,0.8),inset_0_2px_10px_rgba(255,255,255,0.6)] border border-[#FF8731]/50"
                   >
-                    <div className="absolute inset-0 bg-white/30 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700 ease-in-out skew-x-12 z-0"></div>
                     <Award className="w-7 h-7 relative z-10 drop-shadow-md" /> 
                     <span className="relative z-10 drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] tracking-wide">Ottieni Certificato</span>
                   </motion.button>
