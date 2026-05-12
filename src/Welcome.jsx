@@ -76,7 +76,7 @@ const Welcome = () => {
   const itemVariants = { hidden: { y: 30, opacity: 0 }, visible: { y: 0, opacity: 1, transition: { type: "spring", stiffness: 100, damping: 20 } } };
 
   return (
-    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="min-h-screen flex flex-col md:flex-row font-sans overflow-y-auto md:overflow-hidden relative bg-[#03091B]">
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="min-h-[100dvh] flex flex-col md:flex-row font-sans overflow-y-auto md:overflow-hidden relative bg-[#03091B]">
       
       {/* Background Layer Fixed for Mobile/Safari */}
       <div className="fixed inset-0 bg-cover bg-center z-0 bg-[url('/images/bg-clouds.png')]"></div>
@@ -107,15 +107,15 @@ const Welcome = () => {
       </div>
 
       {/* Lato Destro - Apple-like Floating Form */}
-      <div className="flex-1 flex items-start md:items-center justify-center p-4 pt-8 md:pt-4 sm:p-12 relative z-10">
+      <div className="flex-1 flex items-start md:items-center justify-center p-4 pt-4 md:pt-4 sm:p-12 relative z-10">
 
-        <motion.div variants={containerVariants} initial="hidden" animate="visible" className="w-full max-w-[540px] relative z-10 bg-[#03091B]/40 backdrop-blur-[40px] p-8 md:p-14 rounded-[3.5rem] shadow-[0_40px_100px_-10px_rgba(3,9,27,0.8)] border-t border-l border-white/20 border-r border-b border-white/5 mb-8 md:my-0 group/glass">
+        <motion.div variants={containerVariants} initial="hidden" animate="visible" className="w-full max-w-[540px] relative z-10 bg-[#03091B]/40 backdrop-blur-[40px] px-6 py-6 md:p-14 rounded-[3.5rem] shadow-[0_40px_100px_-10px_rgba(3,9,27,0.8)] border-t border-l border-white/20 border-r border-b border-white/5 mb-8 md:my-0 group/glass">
 
           <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-transparent rounded-[3.5rem] pointer-events-none opacity-50 z-0"></div>
 
           {/* MOBILE LOGO */}
-          <div className="md:hidden flex justify-center mb-8 relative z-10">
-            <img src="/images/logo-character-photoroom.png" alt="Lemons Logo" className="h-40 object-contain drop-shadow-2xl" />
+          <div className="md:hidden flex justify-center mb-2 relative z-10">
+            <img src="/images/logo-character-photoroom.png" alt="Lemons Logo" className="h-32 object-contain drop-shadow-2xl" />
           </div>
 
           {/* Security Protocol Badge - Moved here for better visibility on all devices */}
