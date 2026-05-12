@@ -116,34 +116,17 @@ const Home = () => {
                         <stop offset="100%" stopColor="#FF8731" /> {/* Lemons Orange */}
                       </linearGradient>
                       
-                      {/* Filter for the raised 3D progress bar (drop shadow + inner bevel highlight) */}
+                      {/* Filter for the raised 3D progress bar (clean drop shadow without inner artifacts) */}
                       <filter id="raised3D" x="-20%" y="-20%" width="140%" height="140%">
                         {/* Drop shadow behind the tube */}
-                        <feDropShadow dx="0" dy="6" stdDeviation="4" floodColor="#000000" floodOpacity="0.4" result="dropShadow" />
+                        <feDropShadow dx="0" dy="6" stdDeviation="5" floodColor="#000000" floodOpacity="0.5" result="dropShadow" />
+                        <feDropShadow dx="0" dy="2" stdDeviation="2" floodColor="#000000" floodOpacity="0.3" result="dropShadow2" />
                         
-                        {/* Create inner highlight for the matte 3D volume */}
-                        <feComponentTransfer in="SourceAlpha" result="alpha1">
-                          <feFuncA type="linear" slope="1"/>
-                        </feComponentTransfer>
-                        <feOffset dx="0" dy="-3" in="alpha1" result="offsetAlpha1"/>
-                        <feComposite in2="SourceAlpha" in="offsetAlpha1" operator="out" result="innerHighlightAlpha"/>
-                        <feFlood floodColor="#ffffff" floodOpacity="0.4" result="highlightColor"/>
-                        <feComposite in2="innerHighlightAlpha" in="highlightColor" operator="in" result="innerHighlight"/>
-                        <feGaussianBlur in="innerHighlight" stdDeviation="1.5" result="smoothHighlight"/>
-                        
-                        {/* Create inner shadow for the bottom edge */}
-                        <feOffset dx="0" dy="3" in="alpha1" result="offsetAlpha2"/>
-                        <feComposite in2="SourceAlpha" in="offsetAlpha2" operator="out" result="innerShadowAlpha"/>
-                        <feFlood floodColor="#000000" floodOpacity="0.2" result="shadowColor"/>
-                        <feComposite in2="innerShadowAlpha" in="shadowColor" operator="in" result="innerShadow"/>
-                        <feGaussianBlur in="innerShadow" stdDeviation="1.5" result="smoothShadow"/>
-
-                        {/* Merge everything */}
+                        {/* Merge shadow with graphic */}
                         <feMerge>
                           <feMergeNode in="dropShadow" />
+                          <feMergeNode in="dropShadow2" />
                           <feMergeNode in="SourceGraphic" />
-                          <feMergeNode in="smoothHighlight" />
-                          <feMergeNode in="smoothShadow" />
                         </feMerge>
                       </filter>
                       
@@ -187,10 +170,11 @@ const Home = () => {
                       initial={{ scale: 0, opacity: 0 }} 
                       animate={{ scale: 1, opacity: 1 }} 
                       transition={{ delay: 0.2, type: "spring", stiffness: 120 }} 
-                      className="text-6xl font-black font-serif text-white tracking-normal flex items-baseline drop-shadow-[0_10px_15px_rgba(0,0,0,0.8)]"
+                      className="text-6xl font-black font-serif text-white tracking-normal flex items-baseline"
+                      style={{ textShadow: '0 8px 16px rgba(0,0,0,0.9), 0 2px 4px rgba(0,0,0,0.6)' }}
                     >
                       {progressPercentage}
-                      <span className="text-3xl text-white ml-1 font-sans tracking-normal opacity-90 drop-shadow-[0_5px_8px_rgba(0,0,0,0.8)]">%</span>
+                      <span className="text-3xl text-white ml-1 font-sans tracking-normal opacity-90">%</span>
                     </motion.span>
                   </div>
                 </motion.div>
