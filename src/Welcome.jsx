@@ -107,22 +107,15 @@ const Welcome = () => {
       </div>
 
       {/* Lato Destro - Apple-like Floating Form */}
-      <div className="flex-1 flex items-start md:items-center justify-center p-4 pt-4 md:pt-4 sm:p-12 relative z-10">
+      <div className="flex-1 flex items-center justify-center p-4 sm:p-12 relative z-10">
 
-        <motion.div variants={containerVariants} initial="hidden" animate="visible" className="w-full max-w-[540px] relative z-10 bg-transparent px-6 py-6 md:p-14 rounded-[3.5rem] mb-8 md:my-0 group/glass">
+        <motion.div variants={containerVariants} initial="hidden" animate="visible" className="w-full max-w-[540px] relative z-10 bg-transparent p-8 md:p-14 rounded-[3.5rem] my-8 md:my-0 group/glass">
 
           <div className="absolute inset-0 bg-transparent rounded-[3.5rem] pointer-events-none z-0"></div>
 
           {/* MOBILE LOGO */}
           <div className="md:hidden flex justify-center mb-8 relative z-10">
-            <motion.img 
-              initial={{ scale: 0, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ type: "spring", stiffness: 100, damping: 15 }}
-              src="/images/logo-character-photoroom.png" 
-              alt="Lemons Logo" 
-              className="h-32 object-contain drop-shadow-2xl" 
-            />
+            <img src="/images/logo-character-photoroom.png" alt="Lemons Logo" className="h-40 object-contain drop-shadow-2xl" />
           </div>
 
           {/* Security Protocol Badge - Moved here for better visibility on all devices */}
