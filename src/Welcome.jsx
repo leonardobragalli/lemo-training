@@ -129,7 +129,7 @@ const Welcome = () => {
             </div>
           </motion.div>
 
-          <motion.div variants={itemVariants} className="mb-12 text-center relative z-10">
+          <motion.div variants={itemVariants} className="mb-6 md:mb-8 text-center relative z-10">
             <h2 
               className="text-5xl md:text-[4rem] font-black font-serif text-[#FF8731] mb-4 tracking-tighter"
               style={{ textShadow: '0 0 40px rgba(255, 135, 49, 0.8), 0 4px 10px rgba(0,0,0,0.8), 0 1px 1px rgba(255,255,255,0.4)' }}
@@ -173,7 +173,7 @@ const Welcome = () => {
               </div>
             </motion.div>
 
-            <motion.div variants={itemVariants} className="space-y-4 pt-6">
+            <motion.div variants={itemVariants} className="space-y-2">
               <label className="text-[13px] font-bold text-white uppercase ml-2 tracking-widest drop-shadow-md block text-left">Profilo Paziente</label>
               <div className="grid grid-cols-2 gap-5">
                 <label className={`relative overflow-hidden flex flex-col items-center justify-center pb-4 aspect-square border rounded-full cursor-pointer transition-all duration-500 group ${patientType === 'pediatria' ? 'border-[#8756FA] ring-2 ring-[#8756FA] shadow-[0_0_30px_rgba(135,86,250,0.5)] scale-[1.03]' : 'border-white/10 hover:border-white/30 hover:bg-white/5'}`}>
