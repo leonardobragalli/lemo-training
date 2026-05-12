@@ -114,14 +114,16 @@ const Welcome = () => {
           <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-transparent rounded-t-[3rem] md:rounded-[3.5rem] pointer-events-none opacity-50 z-0"></div>
 
           {/* MOBILE LOGO - Character walking on the glass banner */}
-          <motion.div 
-            initial={{ x: -80, y: -20, opacity: 0, rotate: -15 }}
-            animate={{ x: 0, y: 0, opacity: 1, rotate: 0 }}
-            transition={{ type: "spring", stiffness: 120, damping: 14, delay: 0.4 }}
-            className="md:hidden absolute -top-[6.5rem] left-6 z-30 pointer-events-none"
-          >
-            <img src="/images/logo-character-photoroom.png" alt="Lemons Logo" className="h-[7rem] object-contain drop-shadow-[0_15px_15px_rgba(0,0,0,0.6)]" />
-          </motion.div>
+          <div className="md:hidden absolute bottom-full left-0 w-full flex justify-center z-30 pointer-events-none">
+            <motion.div 
+              initial={{ x: -100, opacity: 0, rotate: -10 }}
+              animate={{ x: 0, opacity: 1, rotate: 0 }}
+              transition={{ type: "spring", stiffness: 100, damping: 12, delay: 0.4 }}
+              className="translate-y-[2px]"
+            >
+              <img src="/images/logo-character-photoroom.png" alt="Lemons Logo" className="h-[6.5rem] object-contain drop-shadow-[0_15px_15px_rgba(0,0,0,0.6)]" />
+            </motion.div>
+          </div>
 
           {/* Security Protocol Badge - Moved here for better visibility on all devices */}
           <motion.div variants={itemVariants} className="mb-10 flex items-center justify-center gap-4 bg-white/10 backdrop-blur-3xl p-4 rounded-3xl border border-white/10 shadow-lg relative z-10 mx-auto w-fit">
