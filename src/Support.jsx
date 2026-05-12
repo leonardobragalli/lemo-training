@@ -74,6 +74,9 @@ const Support = () => {
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="px-6 pt-12 pb-6 md:px-10 md:pt-16 lg:px-16 lg:pt-20 max-w-7xl mx-auto mb-20 md:mb-0 relative z-10 min-h-screen">
       
+      {/* Mobile Custom Background */}
+      <div className="fixed inset-0 bg-cover bg-center z-[-30] bg-[url('/images/bg-mobile-support.png')] md:hidden opacity-30 dark:opacity-20 mix-blend-luminosity"></div>
+
       {/* Immersive Background Elements - Performance Optimized */}
       <div className="fixed top-[-20%] right-[-10%] w-[50vw] h-[50vw] bg-gradient-to-tr from-[#FF8731] to-transparent rounded-full blur-[120px] opacity-20 pointer-events-none -z-20"></div>
       <div className="fixed bottom-[-10%] left-[-10%] w-[40vw] h-[40vw] bg-gradient-to-tr from-[#8756FA] to-transparent rounded-full blur-[100px] opacity-15 pointer-events-none -z-20"></div>
