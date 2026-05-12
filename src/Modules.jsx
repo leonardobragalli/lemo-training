@@ -125,14 +125,14 @@ const Modules = () => {
           <span className="text-sm font-bold tracking-widest uppercase bg-clip-text text-transparent bg-gradient-to-r from-[#8756FA] to-[#FF8731]">Training Center</span>
         </motion.div>
         
-        <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1, duration: 0.8 }} className="text-4xl md:text-6xl lg:text-[4.5rem] font-black font-serif text-[#03091B] dark:text-white tracking-tighter mb-2 leading-[1.1] pb-2 pr-10 overflow-visible flex flex-wrap items-baseline gap-x-4">
+        <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1, duration: 0.8 }} className="text-4xl md:text-6xl lg:text-[4.5rem] font-black font-serif text-[#03091B] dark:text-white tracking-tighter mb-1 leading-[1.1] pr-10 overflow-visible flex flex-wrap items-baseline gap-x-4">
           <span>Libreria</span>
           <span className="relative inline-block overflow-visible">
             <span className="relative z-10 text-transparent bg-clip-text bg-gradient-to-r from-[#8756FA] to-[#9C73FA] drop-shadow-sm pr-4">Moduli</span>
           </span>
         </motion.h1>
         
-        <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2, duration: 0.8 }} className="text-slate-600 dark:text-slate-400 font-medium text-lg md:text-2xl max-w-2xl leading-relaxed">
+        <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2, duration: 0.8 }} className="text-slate-700 dark:text-slate-400 font-medium text-lg md:text-2xl max-w-2xl leading-relaxed">
           {mode === 'full' ? "Accesso libero a tutti i contenuti formativi." : "Completa le lezioni in sequenza per abilitare la certificazione."}
         </motion.p>
       </div>
@@ -163,29 +163,34 @@ const Modules = () => {
               
               {/* Header (Clickable for toggle) */}
               <div 
-                className={`p-6 md:p-12 flex flex-col md:flex-row md:items-center gap-6 md:gap-8 relative z-10 ${unlocked ? 'cursor-pointer' : 'cursor-not-allowed'}`}
+                className={`p-6 md:p-10 flex flex-col gap-5 relative z-10 ${unlocked ? 'cursor-pointer' : 'cursor-not-allowed'}`}
                 onClick={() => unlocked && setExpandedId(isExpanded ? null : lesson.id)}
               >
-                <div className="flex items-center gap-6 md:gap-8 flex-1">
-                  <div className={`w-20 h-20 md:w-28 md:h-28 rounded-[2rem] md:rounded-[2.5rem] flex items-center justify-center shrink-0 transition-all duration-700 shadow-xl border border-white/50 dark:border-white/10 ${
+                {/* Top Row: Icon + Badges */}
+                <div className="flex items-center gap-4 md:gap-5">
+                  <div className={`w-14 h-14 md:w-16 md:h-16 rounded-[1rem] md:rounded-[1.2rem] flex items-center justify-center shrink-0 transition-all duration-700 shadow-md border border-white/50 dark:border-white/10 ${
                     isCompleted ? 'bg-gradient-to-br from-[#10B981] to-[#059669] text-white shadow-[#10B981]/30' : unlocked ? 'bg-gradient-to-br from-white to-slate-50 dark:from-[#03091B] dark:to-slate-900 text-[#8756FA] group-hover:scale-105 group-hover:-rotate-3' : 'bg-slate-100/50 dark:bg-slate-800/50 text-slate-400'
                   }`}>
-                    {isCompleted ? <CheckCircle className="w-10 h-10 md:w-14 md:h-14" /> : unlocked ? <Play className="w-10 h-10 md:w-14 md:h-14 ml-1 fill-current" /> : <Lock className="w-10 h-10 md:w-12 md:h-12" />}
+                    {isCompleted ? <CheckCircle className="w-7 h-7 md:w-8 md:h-8" /> : unlocked ? <Play className="w-7 h-7 md:w-8 md:h-8 ml-1 fill-current" /> : <Lock className="w-7 h-7 md:w-8 md:h-8" />}
                   </div>
                   
-                  <div className="flex-1 min-w-0 py-2">
-                    <div className="flex flex-wrap items-center gap-3 mb-3">
-                      <span className="inline-flex items-center justify-center px-3 py-1 rounded-full bg-black/5 dark:bg-white/5 text-[10px] font-black text-[#8756FA] uppercase tracking-widest">Modulo {index + 1}</span>
-                      {isCompleted && <span className="inline-flex items-center justify-center px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-[10px] font-black uppercase tracking-widest border border-emerald-500/20 shadow-inner">Completato</span>}
-                      <span className="text-xs font-bold text-slate-500 dark:text-slate-400 flex items-center gap-1.5"><Clock className="w-3.5 h-3.5"/> {lesson.duration} min</span>
-                    </div>
-                    <h3 className="text-2xl md:text-5xl font-black font-serif text-[#03091B] dark:text-white group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-[#03091B] group-hover:to-[#8756FA] dark:group-hover:from-white dark:group-hover:to-[#9C73FA] transition-all duration-500 mb-3 leading-tight drop-shadow-sm break-words">{lesson.title}</h3>
-                    <p className="text-base md:text-xl text-slate-600 dark:text-slate-300 font-medium leading-relaxed max-w-4xl break-words">{lesson.description}</p>
+                  <div className="flex flex-wrap items-center gap-2 md:gap-3 flex-1">
+                    <span className="inline-flex items-center justify-center px-3 py-1.5 rounded-full bg-black/5 dark:bg-white/5 text-[10px] md:text-xs font-black text-[#8756FA] uppercase tracking-widest">Modulo {index + 1}</span>
+                    {isCompleted && <span className="inline-flex items-center justify-center px-3 py-1.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-[10px] md:text-xs font-black uppercase tracking-widest border border-emerald-500/20 shadow-inner">Completato</span>}
+                    <span className="text-xs md:text-sm font-bold text-slate-500 dark:text-slate-400 flex items-center gap-1.5"><Clock className="w-3.5 h-3.5 md:w-4 md:h-4"/> {lesson.duration} min</span>
                   </div>
                 </div>
-                
-                <div className={`w-14 h-14 md:w-16 md:h-16 rounded-full flex items-center justify-center shrink-0 transition-all duration-500 self-end md:self-center ${unlocked ? 'bg-white/50 dark:bg-black/20 backdrop-blur-md group-hover:bg-[#8756FA] text-[#8756FA] group-hover:text-white group-hover:scale-110 shadow-lg group-hover:shadow-2xl group-hover:shadow-[#8756FA]/40 border border-white/50 dark:border-white/10' : 'hidden'}`}>
-                  {isExpanded ? <ChevronUp className="w-6 h-6 md:w-8 md:h-8" /> : <ChevronDown className="w-6 h-6 md:w-8 md:h-8" />}
+
+                {/* Bottom Row: Text + Arrow */}
+                <div className="flex items-center justify-between gap-4 md:gap-8">
+                  <div className="flex-1 min-w-0">
+                    <h3 className="text-2xl md:text-4xl font-black font-serif text-[#03091B] dark:text-white group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-[#03091B] group-hover:to-[#8756FA] dark:group-hover:from-white dark:group-hover:to-[#9C73FA] transition-all duration-500 mb-2 leading-tight drop-shadow-sm break-words">{lesson.title}</h3>
+                    <p className="text-sm md:text-lg text-slate-600 dark:text-slate-300 font-medium leading-relaxed max-w-4xl break-words pr-2">{lesson.description}</p>
+                  </div>
+                  
+                  <div className={`w-12 h-12 md:w-14 md:h-14 rounded-full flex items-center justify-center shrink-0 transition-all duration-500 ${unlocked ? 'bg-white/50 dark:bg-black/20 backdrop-blur-md group-hover:bg-[#8756FA] text-[#8756FA] group-hover:text-white group-hover:scale-110 shadow-lg group-hover:shadow-xl group-hover:shadow-[#8756FA]/40 border border-white/50 dark:border-white/10' : 'hidden'}`}>
+                    {isExpanded ? <ChevronUp className="w-6 h-6" /> : <ChevronDown className="w-6 h-6" />}
+                  </div>
                 </div>
               </div>
 
