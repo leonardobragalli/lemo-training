@@ -62,7 +62,7 @@ const Home = () => {
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="px-4 pt-8 pb-6 md:px-8 md:pt-12 lg:px-12 lg:pt-16 min-h-screen transition-colors duration-500 relative bg-[#03091B]">
       
       {/* Background Layer Fixed for Mobile/Safari */}
-      <div className="fixed inset-0 bg-cover bg-center z-0 bg-[url('/images/bg-mobile.png')] md:bg-[url('/images/bg-pc.png')]"></div>
+      <div className="fixed inset-0 bg-cover bg-center z-0 bg-[url('/images/bg-mobile-nature.png')] md:bg-[url('/images/bg-pc.png')]"></div>
 
       {/* Immersive 3D-like Background Elements */}
       <motion.div style={{ y: yParallax, rotate: rotateParallax }} className="fixed top-[10%] right-[5%] w-[40vw] h-[40vw] bg-gradient-to-tr from-[#FF8731]/30 to-transparent rounded-full blur-[100px] pointer-events-none mix-blend-screen z-0"></motion.div>
@@ -181,8 +181,8 @@ const Home = () => {
                     />
                   </svg>
 
-                  {/* Minimal Center Content (No Glass Plate) */}
-                  <div className="absolute inset-0 flex flex-col items-center justify-center z-10">
+                  {/* Center Content with Glass Plate (Matching Hero Panel) */}
+                  <div className="absolute inset-[20px] rounded-full bg-[#03091B]/5 backdrop-blur-[40px] border-t border-l border-white/20 border-r border-b border-white/5 shadow-[0_40px_100px_-10px_rgba(3,9,27,0.8)] flex flex-col items-center justify-center z-10">
                     <motion.span 
                       initial={{ scale: 0, opacity: 0 }} 
                       animate={{ scale: 1, opacity: 1 }} 
