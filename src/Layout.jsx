@@ -106,7 +106,7 @@ const Layout = () => {
 
       {/* Bottom Nav Mobile - Floating Glassmorphism */}
       <div className="md:hidden fixed bottom-6 left-4 right-4 z-50">
-        <div className="backdrop-blur-[40px] bg-[#03091B]/40 border border-white/20 flex justify-around items-center p-2 shadow-[0_30px_60px_rgba(0,0,0,0.8),inset_0_2px_10px_rgba(255,255,255,0.1)] rounded-[2.5rem]">
+        <div className={`backdrop-blur-[40px] border flex justify-around items-center p-2 rounded-[2.5rem] transition-colors duration-500 ${isDarkMode ? 'bg-[#03091B]/60 border-white/20 shadow-[0_30px_60px_rgba(0,0,0,0.8),inset_0_2px_10px_rgba(255,255,255,0.1)]' : 'bg-white/70 border-black/10 shadow-[0_20px_40px_rgba(0,0,0,0.1),inset_0_2px_10px_rgba(255,255,255,0.4)]'}`}>
           {navItems.map((item) => (
             <NavLink
               key={item.label}
@@ -115,7 +115,7 @@ const Layout = () => {
               className={({ isActive }) => 
                 `flex flex-col items-center justify-center w-[4.5rem] h-[4.5rem] rounded-full transition-all duration-500 relative group overflow-hidden ${
                   isActive ? 'text-white bg-gradient-to-br from-[#8756FA] to-[#FF8731] shadow-[0_10px_20px_rgba(255,135,49,0.5),inset_0_2px_4px_rgba(255,255,255,0.3)] z-10' : 
-                  'text-slate-400 hover:text-white hover:bg-white/10 border border-transparent'
+                  (isDarkMode ? 'text-slate-300 hover:text-white hover:bg-white/10 border border-transparent' : 'text-slate-600 font-bold hover:text-black hover:bg-black/5 border border-transparent')
                 }`
               }
             >

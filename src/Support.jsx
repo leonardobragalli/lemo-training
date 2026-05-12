@@ -6,6 +6,7 @@ import { audio } from './utils/audio';
 const Support = () => {
   const [openFaq, setOpenFaq] = useState(null);
   const [ticketSubject, setTicketSubject] = useState('');
+  const [ticketType, setTicketType] = useState('Tecnico');
   const [ticketMessage, setTicketMessage] = useState('');
   const [ticketSent, setTicketSent] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -22,7 +23,8 @@ const Support = () => {
     const savedUser = JSON.parse(localStorage.getItem('lemo_user')) || {};
     
     const payload = {
-      subject: `Ticket Supporto: ${ticketSubject}`,
+      subject: `[${ticketType}] Ticket Supporto: ${ticketSubject}`,
+      ticketType: ticketType,
       message: ticketMessage,
       user_name: savedUser.name || 'Sconosciuto',
       hospital: savedUser.hospital || 'Non specificato',
@@ -77,8 +79,8 @@ const Support = () => {
       <div className="fixed bottom-[-10%] left-[-10%] w-[40vw] h-[40vw] bg-gradient-to-tr from-[#8756FA] to-transparent rounded-full blur-[100px] opacity-15 pointer-events-none -z-20"></div>
 
       {/* Hero Header */}
-      <div className="mb-20 text-center relative z-10">
-        <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1, duration: 0.8 }} className="text-5xl md:text-6xl lg:text-[5.5rem] font-black font-serif text-[#03091B] dark:text-white tracking-tighter mb-6 drop-shadow-sm leading-[1.1] pb-2 pr-10 overflow-visible">
+      <div className="mb-10 text-center relative z-10">
+        <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1, duration: 0.8 }} className="text-5xl md:text-6xl lg:text-[5.5rem] font-black font-serif text-[#03091B] dark:text-white tracking-tighter mb-3 drop-shadow-sm leading-[1.1] pb-2 pr-10 overflow-visible">
           Supporto <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FF8731] to-[#FF9E54] overflow-visible pr-4">Operativo</span>
         </motion.h1>
         <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2, duration: 0.8 }} className="text-slate-500 dark:text-slate-400 font-medium text-xl md:text-2xl max-w-2xl mx-auto leading-relaxed">
@@ -86,11 +88,11 @@ const Support = () => {
         </motion.p>
       </div>
 
-      <motion.div variants={container} initial="hidden" animate="show" className="grid grid-cols-1 lg:grid-cols-2 gap-12 relative z-10">
+      <motion.div variants={container} initial="hidden" animate="show" className="grid grid-cols-1 lg:grid-cols-2 gap-8 relative z-10">
         
         {/* Accordion FAQ (Glassmorphism Extreme) */}
-        <motion.div variants={item} className="space-y-8 relative">
-          <h2 className="text-3xl md:text-4xl font-black font-serif text-[#03091B] dark:text-white mb-8 flex items-center gap-4 drop-shadow-sm">
+        <motion.div variants={item} className="space-y-6 relative">
+          <h2 className="text-3xl md:text-4xl font-black font-serif text-[#03091B] dark:text-white mb-5 flex items-center gap-4 drop-shadow-sm">
             <HelpCircle className="w-8 h-8 md:w-10 md:h-10 text-[#8756FA]" />
             Domande Frequenti
           </h2>
@@ -127,46 +129,82 @@ const Support = () => {
         </motion.div>
 
         {/* Contatti Diretti & Form */}
-        <motion.div variants={item} className="space-y-10">
-          <h2 className="text-3xl md:text-4xl font-black font-serif text-[#03091B] dark:text-white mb-8 flex items-center gap-4 drop-shadow-sm">
+        <motion.div variants={item} className="space-y-8">
+          <h2 className="text-3xl md:text-4xl font-black font-serif text-[#03091B] dark:text-white mb-5 flex items-center gap-4 drop-shadow-sm">
             <div className="w-4 h-10 md:h-12 bg-gradient-to-b from-[#FF8731] to-[#FF9E54] rounded-full shadow-[0_0_20px_rgba(255,135,49,0.6)]"></div>
             Assistenza Diretta
           </h2>
 
-          <div className="bg-gradient-to-br from-[#03091B]/95 to-[#131A33]/90 dark:from-[#03091B]/80 dark:to-[#03091B]/60 backdrop-blur-3xl rounded-[3rem] p-10 md:p-12 text-white relative overflow-hidden shadow-[0_40px_80px_-20px_rgba(0,0,0,0.4)] border border-white/10 group">
-            <div className="absolute inset-0 opacity-[0.05] pointer-events-none mix-blend-overlay bg-[url('https://grainy-gradients.vercel.app/noise.svg')]"></div>
-            <div className="absolute top-[-30%] right-[-20%] w-[400px] h-[400px] bg-[#FF8731] rounded-full blur-[100px] opacity-20 pointer-events-none"></div>
-            
-            <div className="relative z-10 flex flex-row items-center md:items-start gap-5 md:gap-8">
-              <div className="w-16 h-16 md:w-24 md:h-24 bg-gradient-to-br from-[#FF8731]/20 to-[#FF8731]/5 rounded-[1.5rem] md:rounded-[2rem] flex items-center justify-center shrink-0 border border-white/10 shadow-xl group-hover:scale-110 group-hover:-rotate-6 transition-transform duration-700">
-                <Phone className="w-8 h-8 md:w-12 md:h-12 text-[#FF8731] drop-shadow-md" />
+          <div className="flex flex-col gap-6">
+            {/* Tech Support */}
+            <div className="bg-gradient-to-br from-[#03091B]/95 to-[#131A33]/90 dark:from-[#03091B]/80 dark:to-[#03091B]/60 backdrop-blur-3xl rounded-[2.5rem] p-8 text-white relative overflow-hidden shadow-[0_20px_40px_-10px_rgba(0,0,0,0.4)] border border-white/10 group">
+              <div className="absolute top-[-50%] right-[-20%] w-[300px] h-[300px] bg-[#FF8731] rounded-full blur-[80px] opacity-20 pointer-events-none"></div>
+              <div className="absolute inset-0 opacity-[0.05] pointer-events-none mix-blend-overlay bg-[url('https://grainy-gradients.vercel.app/noise.svg')]"></div>
+              <div className="relative z-10 flex flex-row items-center gap-6">
+                <div className="w-16 h-16 bg-gradient-to-br from-[#FF8731]/20 to-[#FF8731]/5 rounded-[1.5rem] flex items-center justify-center shrink-0 border border-white/10 shadow-xl group-hover:scale-110 group-hover:-rotate-6 transition-transform duration-700">
+                  <Phone className="w-8 h-8 text-[#FF8731] drop-shadow-md" />
+                </div>
+                <div className="min-w-0">
+                  <p className="text-white/50 font-bold text-[10px] md:text-xs mb-1 tracking-[0.2em] uppercase flex items-center gap-1.5">
+                    <Sparkles className="w-3 h-3 text-[#FF8731] shrink-0" /> Supporto Tecnico
+                  </p>
+                  <h3 className="text-xl md:text-2xl font-black font-serif mb-1 tracking-tight truncate">Alessandro Romagnosi</h3>
+                  <a href="tel:+393395658074" className="inline-block text-lg font-black tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-white to-white/70 hover:from-[#FF8731] hover:to-[#FF9E54] transition-all drop-shadow-md">+39 339 565 8074</a>
+                </div>
               </div>
-              <div className="min-w-0">
-                <h3 className="text-xl sm:text-2xl md:text-4xl font-black font-serif mb-1 md:mb-3 tracking-tight leading-tight truncate">Alessandro Romagnosi</h3>
-                <p className="text-white/50 font-bold text-[10px] md:text-sm mb-2 md:mb-6 tracking-[0.2em] uppercase flex items-center gap-1.5"><Sparkles className="w-3 h-3 md:w-4 md:h-4 text-[#8756FA] shrink-0" /> <span className="truncate">Technical Support Lead</span></p>
-                <a href="tel:+393395658074" className="inline-block text-lg sm:text-xl md:text-4xl font-black tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-white to-white/70 hover:from-[#FF8731] hover:to-[#FF9E54] transition-all drop-shadow-md whitespace-nowrap">+39 339 565 8074</a>
+            </div>
+
+            {/* Customer Care */}
+            <div className="bg-gradient-to-br from-[#03091B]/95 to-[#131A33]/90 dark:from-[#03091B]/80 dark:to-[#03091B]/60 backdrop-blur-3xl rounded-[2.5rem] p-8 text-white relative overflow-hidden shadow-[0_20px_40px_-10px_rgba(0,0,0,0.4)] border border-white/10 group">
+              <div className="absolute top-[-50%] right-[-20%] w-[300px] h-[300px] bg-[#8756FA] rounded-full blur-[80px] opacity-20 pointer-events-none"></div>
+              <div className="absolute inset-0 opacity-[0.05] pointer-events-none mix-blend-overlay bg-[url('https://grainy-gradients.vercel.app/noise.svg')]"></div>
+              <div className="relative z-10 flex flex-row items-center gap-6">
+                <div className="w-16 h-16 bg-gradient-to-br from-[#8756FA]/20 to-[#8756FA]/5 rounded-[1.5rem] flex items-center justify-center shrink-0 border border-white/10 shadow-xl group-hover:scale-110 group-hover:-rotate-6 transition-transform duration-700">
+                  <MessageSquareHeart className="w-8 h-8 text-[#8756FA] drop-shadow-md" />
+                </div>
+                <div className="min-w-0">
+                  <p className="text-white/50 font-bold text-[10px] md:text-xs mb-1 tracking-[0.2em] uppercase flex items-center gap-1.5">
+                    <Sparkles className="w-3 h-3 text-[#8756FA] shrink-0" /> Assistenza Operativa
+                  </p>
+                  <h3 className="text-xl md:text-2xl font-black font-serif mb-1 tracking-tight truncate">Customer Care</h3>
+                  <a href="tel:+393395658074" className="inline-block text-lg font-black tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-white to-white/70 hover:from-[#8756FA] hover:to-[#9C73FA] transition-all drop-shadow-md">+39 339 565 8074</a>
+                </div>
               </div>
             </div>
           </div>
 
-          <div className="bg-white/40 dark:bg-[#03091B]/40 backdrop-blur-3xl border border-white/50 dark:border-white/10 rounded-[3rem] p-10 md:p-12 relative overflow-hidden shadow-[0_20px_40px_-10px_rgba(0,0,0,0.1)]">
+          <div className="bg-white/40 dark:bg-[#03091B]/40 backdrop-blur-3xl border border-white/50 dark:border-white/10 rounded-[3rem] p-10 md:p-12 relative overflow-hidden shadow-[0_20px_40px_-10px_rgba(0,0,0,0.1)] mt-8">
             <div className="absolute inset-0 opacity-[0.03] mix-blend-overlay pointer-events-none bg-[url('https://grainy-gradients.vercel.app/noise.svg')] z-0"></div>
             <div className="absolute top-0 right-0 w-64 h-64 bg-[#8756FA] rounded-full blur-[120px] opacity-20 pointer-events-none"></div>
             
             <h3 className="text-3xl font-black font-serif text-[#03091B] dark:text-white mb-3 flex items-center gap-4 relative z-10 tracking-tight">
               <Send className="w-8 h-8 text-[#8756FA]" /> Ticket Immediato
             </h3>
-            <p className="text-slate-500 dark:text-slate-400 font-medium text-lg mb-10 relative z-10 leading-relaxed">Invia una segnalazione per ricevere assistenza tecnica prioritaria sul dispositivo.</p>
+            <p className="text-slate-500 dark:text-slate-400 font-medium text-lg mb-10 relative z-10 leading-relaxed">Invia una segnalazione per ricevere assistenza tecnica o operativa prioritaria.</p>
             
             <AnimatePresence mode="wait">
               {ticketSent ? (
                 <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }} className="bg-gradient-to-b from-[#8756FA]/10 to-[#8756FA]/5 border border-[#8756FA]/30 p-10 rounded-[2.5rem] flex flex-col items-center justify-center text-center py-16 relative z-10 shadow-inner">
                   <CheckCircle className="w-20 h-20 text-[#8756FA] mb-6 drop-shadow-lg" />
                   <h4 className="font-black font-serif text-3xl text-[#03091B] dark:text-white mb-3">Ticket Inviato!</h4>
-                  <p className="text-slate-600 dark:text-slate-300 text-xl font-medium">Il team tecnico ti assisterà a breve.</p>
+                  <p className="text-slate-600 dark:text-slate-300 text-xl font-medium">Il team ti assisterà a breve.</p>
                 </motion.div>
               ) : (
                 <motion.form initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onSubmit={handleTicketSubmit} className="space-y-6 relative z-10">
+                  <div className="space-y-2">
+                    <label className="text-[11px] font-black text-[#8756FA] uppercase ml-2 tracking-[0.2em]">Tipo Assistenza</label>
+                    <div className="relative">
+                      <select
+                        value={ticketType} onChange={(e) => setTicketType(e.target.value)}
+                        className="block w-full px-6 py-5 bg-white/60 dark:bg-black/20 border border-white/50 dark:border-white/10 focus:bg-white dark:focus:bg-[#03091B]/80 rounded-[2rem] text-[#03091B] dark:text-white focus:ring-0 focus:border-[#8756FA] transition-all shadow-inner outline-none font-bold text-lg appearance-none cursor-pointer"
+                      >
+                        <option value="Tecnico" className="text-black">Supporto Tecnico / Hardware</option>
+                        <option value="Operativo" className="text-black">Assistenza Operativa / Formazione</option>
+                      </select>
+                      <ChevronDown className="absolute right-6 top-1/2 -translate-y-1/2 w-6 h-6 text-[#8756FA] pointer-events-none" />
+                    </div>
+                  </div>
+                  
                   <div className="space-y-2">
                     <label className="text-[11px] font-black text-[#8756FA] uppercase ml-2 tracking-[0.2em]">Oggetto Richiesta</label>
                     <input 
