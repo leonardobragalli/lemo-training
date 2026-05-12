@@ -107,16 +107,21 @@ const Welcome = () => {
       </div>
 
       {/* Lato Destro - Apple-like Floating Form */}
-      <div className="flex-1 flex items-start md:items-center justify-center p-4 pt-4 md:pt-4 sm:p-12 relative z-10">
+      <div className="flex-1 flex items-end md:items-center justify-center p-0 md:p-4 sm:p-12 relative z-10">
 
-        <motion.div variants={containerVariants} initial="hidden" animate="visible" className="w-full max-w-[540px] relative z-10 bg-[#03091B]/40 backdrop-blur-[40px] px-6 py-6 md:p-14 rounded-[3.5rem] shadow-[0_40px_100px_-10px_rgba(3,9,27,0.8)] border-t border-l border-white/20 border-r border-b border-white/5 mb-8 md:my-0 group/glass">
+        <motion.div variants={containerVariants} initial="hidden" animate="visible" className="w-full max-w-[540px] relative z-10 bg-[#03091B]/40 backdrop-blur-[40px] px-6 py-8 md:p-14 rounded-t-[3rem] md:rounded-[3.5rem] shadow-[0_-10px_40px_rgba(0,0,0,0.5)] md:shadow-[0_40px_100px_-10px_rgba(3,9,27,0.8)] border-t border-white/20 md:border-l md:border-r md:border-b md:border-white/5 mt-32 md:mt-0 group/glass">
 
-          <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-transparent rounded-[3.5rem] pointer-events-none opacity-50 z-0"></div>
+          <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-transparent rounded-t-[3rem] md:rounded-[3.5rem] pointer-events-none opacity-50 z-0"></div>
 
-          {/* MOBILE LOGO */}
-          <div className="md:hidden flex justify-center mb-2 relative z-10">
-            <img src="/images/logo-character-photoroom.png" alt="Lemons Logo" className="h-32 object-contain drop-shadow-2xl" />
-          </div>
+          {/* MOBILE LOGO - Character walking on the glass banner */}
+          <motion.div 
+            initial={{ x: -80, y: -20, opacity: 0, rotate: -15 }}
+            animate={{ x: 0, y: 0, opacity: 1, rotate: 0 }}
+            transition={{ type: "spring", stiffness: 120, damping: 14, delay: 0.4 }}
+            className="md:hidden absolute -top-[6.5rem] left-6 z-30 pointer-events-none"
+          >
+            <img src="/images/logo-character-photoroom.png" alt="Lemons Logo" className="h-[7rem] object-contain drop-shadow-[0_15px_15px_rgba(0,0,0,0.6)]" />
+          </motion.div>
 
           {/* Security Protocol Badge - Moved here for better visibility on all devices */}
           <motion.div variants={itemVariants} className="mb-10 flex items-center justify-center gap-4 bg-white/10 backdrop-blur-3xl p-4 rounded-3xl border border-white/10 shadow-lg relative z-10 mx-auto w-fit">
