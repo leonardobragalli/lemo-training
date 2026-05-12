@@ -143,17 +143,31 @@ const Support = () => {
             <div className="bg-gradient-to-br from-[#03091B]/95 to-[#131A33]/90 dark:from-[#03091B]/80 dark:to-[#03091B]/60 backdrop-blur-3xl rounded-[2.5rem] p-6 md:p-8 text-white relative overflow-hidden shadow-[0_20px_40px_-10px_rgba(0,0,0,0.4)] border border-white/10 group">
               <div className="absolute top-[-50%] right-[-20%] w-[300px] h-[300px] bg-[#FF8731] rounded-full blur-[80px] opacity-20 pointer-events-none"></div>
               <div className="absolute inset-0 opacity-[0.05] pointer-events-none mix-blend-overlay bg-[url('https://grainy-gradients.vercel.app/noise.svg')]"></div>
-              <div className="relative z-10 flex flex-row items-center gap-4 md:gap-6">
-                <div className="w-14 h-14 md:w-16 md:h-16 bg-gradient-to-br from-[#FF8731]/20 to-[#FF8731]/5 rounded-[1.2rem] flex items-center justify-center shrink-0 border border-white/10 shadow-xl group-hover:scale-110 group-hover:-rotate-6 transition-transform duration-700">
-                  <Phone className="w-7 h-7 md:w-8 md:h-8 text-[#FF8731] drop-shadow-md" />
+              
+              <div className="relative z-10">
+                <div className="flex flex-row items-center gap-4 md:gap-6 mb-5">
+                  <div className="w-14 h-14 md:w-16 md:h-16 bg-gradient-to-br from-[#FF8731]/20 to-[#FF8731]/5 rounded-[1.2rem] flex items-center justify-center shrink-0 border border-white/10 shadow-xl group-hover:scale-110 group-hover:-rotate-6 transition-transform duration-700">
+                    <Phone className="w-7 h-7 md:w-8 md:h-8 text-[#FF8731] drop-shadow-md" />
+                  </div>
+                  <div className="min-w-0">
+                    <p className="text-white/50 font-bold text-[10px] md:text-xs mb-0.5 tracking-[0.2em] uppercase flex items-center gap-1.5">
+                      <Sparkles className="w-3 h-3 text-[#FF8731] shrink-0" /> Supporto Tecnico
+                    </p>
+                    <p className="text-xs md:text-sm text-slate-300 leading-tight">Problemi hardware, sistema o accensione.</p>
+                  </div>
                 </div>
-                <div className="min-w-0">
-                  <p className="text-white/50 font-bold text-[10px] md:text-xs mb-0.5 tracking-[0.2em] uppercase flex items-center gap-1.5">
-                    <Sparkles className="w-3 h-3 text-[#FF8731] shrink-0" /> Supporto Tecnico
-                  </p>
-                  <h3 className="text-lg md:text-2xl font-black font-serif mb-0.5 tracking-tight truncate">Alessandro Romagnosi</h3>
-                  <p className="text-xs text-slate-400 mb-1 leading-tight">Problemi hardware, sistema o accensione.</p>
-                  <a href="tel:+393395658074" className="inline-block text-base md:text-lg font-black tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-white to-white/70 hover:from-[#FF8731] hover:to-[#FF9E54] transition-all drop-shadow-md">+39 339 565 8074</a>
+
+                <div className="space-y-4 pl-[3.5rem] md:pl-[4.5rem]">
+                  <div className="relative">
+                    <div className="absolute left-[-1.5rem] top-2 w-1.5 h-1.5 rounded-full bg-[#FF8731]"></div>
+                    <h3 className="text-base md:text-xl font-black font-serif tracking-tight truncate text-white">Niccolò Cesareo Santoro</h3>
+                    <a href="tel:+393888281986" className="inline-block text-sm md:text-base font-black tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-white to-white/70 hover:from-[#FF8731] hover:to-[#FF9E54] transition-all drop-shadow-md">+39 388 828 1986</a>
+                  </div>
+                  <div className="relative">
+                    <div className="absolute left-[-1.5rem] top-2 w-1.5 h-1.5 rounded-full bg-[#FF8731]"></div>
+                    <h3 className="text-base md:text-xl font-black font-serif tracking-tight truncate text-white">Leonardo Bragalli</h3>
+                    <a href="tel:+393487589509" className="inline-block text-sm md:text-base font-black tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-white to-white/70 hover:from-[#FF8731] hover:to-[#FF9E54] transition-all drop-shadow-md">+39 348 758 9509</a>
+                  </div>
                 </div>
               </div>
             </div>
@@ -162,17 +176,31 @@ const Support = () => {
             <div className="bg-gradient-to-br from-[#03091B]/95 to-[#131A33]/90 dark:from-[#03091B]/80 dark:to-[#03091B]/60 backdrop-blur-3xl rounded-[2.5rem] p-6 md:p-8 text-white relative overflow-hidden shadow-[0_20px_40px_-10px_rgba(0,0,0,0.4)] border border-white/10 group">
               <div className="absolute top-[-50%] right-[-20%] w-[300px] h-[300px] bg-[#8756FA] rounded-full blur-[80px] opacity-20 pointer-events-none"></div>
               <div className="absolute inset-0 opacity-[0.05] pointer-events-none mix-blend-overlay bg-[url('https://grainy-gradients.vercel.app/noise.svg')]"></div>
-              <div className="relative z-10 flex flex-row items-center gap-4 md:gap-6">
-                <div className="w-14 h-14 md:w-16 md:h-16 bg-gradient-to-br from-[#8756FA]/20 to-[#8756FA]/5 rounded-[1.2rem] flex items-center justify-center shrink-0 border border-white/10 shadow-xl group-hover:scale-110 group-hover:-rotate-6 transition-transform duration-700">
-                  <Phone className="w-7 h-7 md:w-8 md:h-8 text-[#8756FA] drop-shadow-md" />
+              
+              <div className="relative z-10">
+                <div className="flex flex-row items-center gap-4 md:gap-6 mb-5">
+                  <div className="w-14 h-14 md:w-16 md:h-16 bg-gradient-to-br from-[#8756FA]/20 to-[#8756FA]/5 rounded-[1.2rem] flex items-center justify-center shrink-0 border border-white/10 shadow-xl group-hover:scale-110 group-hover:-rotate-6 transition-transform duration-700">
+                    <Phone className="w-7 h-7 md:w-8 md:h-8 text-[#8756FA] drop-shadow-md" />
+                  </div>
+                  <div className="min-w-0">
+                    <p className="text-white/50 font-bold text-[10px] md:text-xs mb-0.5 tracking-[0.2em] uppercase flex items-center gap-1.5">
+                      <Sparkles className="w-3 h-3 text-[#8756FA] shrink-0" /> Assistenza Operativa
+                    </p>
+                    <p className="text-xs md:text-sm text-slate-300 leading-tight">Dubbi sull'utilizzo, info generali, app.</p>
+                  </div>
                 </div>
-                <div className="min-w-0">
-                  <p className="text-white/50 font-bold text-[10px] md:text-xs mb-0.5 tracking-[0.2em] uppercase flex items-center gap-1.5">
-                    <Sparkles className="w-3 h-3 text-[#8756FA] shrink-0" /> Assistenza Operativa
-                  </p>
-                  <h3 className="text-lg md:text-2xl font-black font-serif mb-0.5 tracking-tight truncate">Customer Care</h3>
-                  <p className="text-xs text-slate-400 mb-1 leading-tight">Dubbi sull'utilizzo, info generali, app.</p>
-                  <a href="tel:+393395658074" className="inline-block text-base md:text-lg font-black tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-white to-white/70 hover:from-[#8756FA] hover:to-[#9C73FA] transition-all drop-shadow-md">+39 339 565 8074</a>
+
+                <div className="space-y-4 pl-[3.5rem] md:pl-[4.5rem]">
+                  <div className="relative">
+                    <div className="absolute left-[-1.5rem] top-2 w-1.5 h-1.5 rounded-full bg-[#8756FA]"></div>
+                    <h3 className="text-base md:text-xl font-black font-serif tracking-tight truncate text-white">Emma Di Gangi</h3>
+                    <a href="tel:+393391725182" className="inline-block text-sm md:text-base font-black tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-white to-white/70 hover:from-[#8756FA] hover:to-[#9C73FA] transition-all drop-shadow-md">+39 339 172 5182</a>
+                  </div>
+                  <div className="relative">
+                    <div className="absolute left-[-1.5rem] top-2 w-1.5 h-1.5 rounded-full bg-[#8756FA]"></div>
+                    <h3 className="text-base md:text-xl font-black font-serif tracking-tight truncate text-white">Alessandro Romagnosi</h3>
+                    <a href="tel:+393395658074" className="inline-block text-sm md:text-base font-black tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-white to-white/70 hover:from-[#8756FA] hover:to-[#9C73FA] transition-all drop-shadow-md">+39 339 565 8074</a>
+                  </div>
                 </div>
               </div>
             </div>
