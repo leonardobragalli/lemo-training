@@ -107,9 +107,9 @@ const Welcome = () => {
       </div>
 
       {/* Lato Destro - Apple-like Floating Form */}
-      <div className="flex-1 flex items-center justify-center p-4 sm:p-12 relative z-10">
+      <div className="flex-1 flex items-start md:items-center justify-center p-4 pt-8 md:pt-4 sm:p-12 relative z-10">
 
-        <motion.div variants={containerVariants} initial="hidden" animate="visible" className="w-full max-w-[540px] relative z-10 bg-[#03091B]/40 backdrop-blur-[40px] p-8 md:p-14 rounded-[3.5rem] shadow-[0_40px_100px_-10px_rgba(3,9,27,0.8)] border-t border-l border-white/20 border-r border-b border-white/5 my-8 md:my-0 group/glass">
+        <motion.div variants={containerVariants} initial="hidden" animate="visible" className="w-full max-w-[540px] relative z-10 bg-[#03091B]/40 backdrop-blur-[40px] p-8 md:p-14 rounded-[3.5rem] shadow-[0_40px_100px_-10px_rgba(3,9,27,0.8)] border-t border-l border-white/20 border-r border-b border-white/5 mb-8 md:my-0 group/glass">
 
           <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-transparent rounded-[3.5rem] pointer-events-none opacity-50 z-0"></div>
 
@@ -176,18 +176,18 @@ const Welcome = () => {
             <motion.div variants={itemVariants} className="space-y-4 pt-6">
               <label className="text-[13px] font-bold text-white uppercase ml-2 tracking-widest drop-shadow-md block text-left">Profilo Paziente</label>
               <div className="grid grid-cols-2 gap-5">
-                <label className={`relative overflow-hidden flex flex-col items-center justify-end p-5 h-36 border rounded-[2.5rem] cursor-pointer transition-all duration-500 group ${patientType === 'pediatria' ? 'border-[#8756FA] ring-2 ring-[#8756FA] shadow-[0_0_30px_rgba(135,86,250,0.5)] scale-[1.03]' : 'border-white/10 hover:border-white/30 hover:bg-white/5'}`}>
+                <label className={`relative overflow-hidden flex flex-col items-center justify-center pb-4 aspect-square border rounded-full cursor-pointer transition-all duration-500 group ${patientType === 'pediatria' ? 'border-[#8756FA] ring-2 ring-[#8756FA] shadow-[0_0_30px_rgba(135,86,250,0.5)] scale-[1.03]' : 'border-white/10 hover:border-white/30 hover:bg-white/5'}`}>
                   <input type="radio" name="patientType" value="pediatria" className="hidden" onChange={(e) => setPatientType(e.target.value)} />
                   <img src="/images/profilo-pediatria.png" alt="Profilo Pediatria" className={`absolute inset-0 w-full h-full object-cover transition-all duration-500 ${patientType === 'pediatria' ? 'opacity-100 scale-105' : 'opacity-40 grayscale group-hover:opacity-60 group-hover:grayscale-0'}`} />
                   <div className={`absolute inset-0 transition-colors duration-500 ${patientType === 'pediatria' ? 'bg-gradient-to-t from-[#03091B] via-[#8756FA]/60 to-transparent' : 'bg-gradient-to-t from-[#03091B] via-black/50 to-transparent group-hover:from-[#03091B]/90'}`}></div>
-                  <span className={`relative z-10 font-black text-xl tracking-tight transition-colors ${patientType === 'pediatria' ? 'text-white drop-shadow-[0_2px_10px_rgba(0,0,0,1)]' : 'text-slate-300 drop-shadow-md group-hover:text-white'}`}>Pediatria</span>
+                  <span className={`relative z-10 font-black text-xl tracking-tight transition-colors mt-auto ${patientType === 'pediatria' ? 'text-white drop-shadow-[0_2px_10px_rgba(0,0,0,1)]' : 'text-slate-300 drop-shadow-md group-hover:text-white'}`}>Pediatria</span>
                 </label>
                 
-                <label className={`relative overflow-hidden flex flex-col items-center justify-end p-5 h-36 border rounded-[2.5rem] cursor-pointer transition-all duration-500 group ${patientType === 'adulti' ? 'border-[#FF8731] ring-2 ring-[#FF8731] shadow-[0_0_30px_rgba(255,135,49,0.5)] scale-[1.03]' : 'border-white/10 hover:border-white/30 hover:bg-white/5'}`}>
+                <label className={`relative overflow-hidden flex flex-col items-center justify-center pb-4 aspect-square border rounded-full cursor-pointer transition-all duration-500 group ${patientType === 'adulti' ? 'border-[#FF8731] ring-2 ring-[#FF8731] shadow-[0_0_30px_rgba(255,135,49,0.5)] scale-[1.03]' : 'border-white/10 hover:border-white/30 hover:bg-white/5'}`}>
                   <input type="radio" name="patientType" value="adulti" className="hidden" onChange={(e) => setPatientType(e.target.value)} />
                   <img src="/images/profilo-adulti.png" alt="Profilo Adulti" className={`absolute inset-0 w-full h-full object-cover transition-all duration-500 ${patientType === 'adulti' ? 'opacity-100 scale-105' : 'opacity-40 grayscale group-hover:opacity-60 group-hover:grayscale-0'}`} />
                   <div className={`absolute inset-0 transition-colors duration-500 ${patientType === 'adulti' ? 'bg-gradient-to-t from-[#03091B] via-[#FF8731]/60 to-transparent' : 'bg-gradient-to-t from-[#03091B] via-black/50 to-transparent group-hover:from-[#03091B]/90'}`}></div>
-                  <span className={`relative z-10 font-black text-xl tracking-tight transition-colors ${patientType === 'adulti' ? 'text-white drop-shadow-[0_2px_10px_rgba(0,0,0,1)]' : 'text-slate-300 drop-shadow-md group-hover:text-white'}`}>Adulti</span>
+                  <span className={`relative z-10 font-black text-xl tracking-tight transition-colors mt-auto ${patientType === 'adulti' ? 'text-white drop-shadow-[0_2px_10px_rgba(0,0,0,1)]' : 'text-slate-300 drop-shadow-md group-hover:text-white'}`}>Adulti</span>
                 </label>
               </div>
             </motion.div>
@@ -197,7 +197,7 @@ const Welcome = () => {
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.97 }}
               type="submit" 
-              className="w-full py-6 mt-10 bg-gradient-to-r from-[#8756FA] to-[#FF8731] text-white font-black rounded-[2.5rem] shadow-[0_15px_40px_-10px_rgba(135,86,250,0.8)] hover:shadow-[0_20px_60px_-10px_rgba(255,135,49,1)] transition-all flex items-center justify-center overflow-hidden relative group border border-white/20"
+              className="w-full py-6 mt-10 bg-gradient-to-r from-[#8756FA] to-[#FF8731] text-white font-black rounded-[2.5rem] shadow-[0_15px_40px_-10px_rgba(135,86,250,0.8)] hover:shadow-[0_20px_60px_-10px_rgba(255,135,49,1)] transition-all flex items-center justify-center overflow-hidden relative group"
             >
               <div className="absolute inset-0 bg-white/30 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700 ease-in-out skew-x-12"></div>
               <span className="relative z-10 flex items-center gap-3 text-2xl tracking-wide drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]">Accedi al Training <ArrowRight className="w-7 h-7" /></span>
