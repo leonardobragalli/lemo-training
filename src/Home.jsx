@@ -112,7 +112,7 @@ const Home = () => {
                   <svg className="absolute inset-0 w-full h-full transform -rotate-90 overflow-visible">
                     <defs>
                       <linearGradient id="lemonsGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" stopColor="#8756FA" /> {/* Lemons Purple */}
+                        <stop offset="0%" stopColor="#FF9E54" /> {/* Lemons Light Orange */}
                         <stop offset="100%" stopColor="#FF8731" /> {/* Lemons Orange */}
                       </linearGradient>
                       
@@ -187,10 +187,10 @@ const Home = () => {
                       initial={{ scale: 0, opacity: 0 }} 
                       animate={{ scale: 1, opacity: 1 }} 
                       transition={{ delay: 0.2, type: "spring", stiffness: 120 }} 
-                      className="text-6xl font-black font-serif text-white tracking-normal flex items-baseline drop-shadow-md"
+                      className="text-6xl font-black font-serif text-white tracking-normal flex items-baseline drop-shadow-[0_10px_15px_rgba(0,0,0,0.8)]"
                     >
                       {progressPercentage}
-                      <span className="text-3xl text-white ml-1 font-sans tracking-normal opacity-90">%</span>
+                      <span className="text-3xl text-white ml-1 font-sans tracking-normal opacity-90 drop-shadow-[0_5px_8px_rgba(0,0,0,0.8)]">%</span>
                     </motion.span>
                   </div>
                 </motion.div>
