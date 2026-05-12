@@ -82,11 +82,20 @@ const Support = () => {
       <div className="fixed bottom-[-10%] left-[-10%] w-[40vw] h-[40vw] bg-gradient-to-tr from-[#8756FA] to-transparent rounded-full blur-[100px] opacity-15 pointer-events-none -z-20"></div>
 
       {/* Hero Header */}
-      <div className="mb-10 text-center relative z-10">
-        <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1, duration: 0.8 }} className="text-5xl md:text-6xl lg:text-[5.5rem] font-black font-serif text-[#03091B] dark:text-white tracking-tighter mb-3 drop-shadow-sm leading-[1.1] pb-2 pr-10 overflow-visible">
-          Supporto <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FF8731] to-[#FF9E54] overflow-visible pr-4">Operativo</span>
+      <div className="mb-20 relative z-10">
+        <motion.div initial={{ scale: 0, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ type: "spring", stiffness: 200, damping: 20 }} className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 dark:bg-white/5 backdrop-blur-md border border-white/20 mb-6 shadow-xl shadow-black/5">
+          <Sparkles className="w-4 h-4 text-[#8756FA]" />
+          <span className="text-sm font-bold tracking-widest uppercase bg-clip-text text-transparent bg-gradient-to-r from-[#8756FA] to-[#FF8731]">Lemons Hub</span>
+        </motion.div>
+        
+        <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1, duration: 0.8 }} className="text-4xl md:text-6xl lg:text-[4.5rem] font-black font-serif text-[#03091B] dark:text-white tracking-tighter mb-1 leading-[1.1] pr-10 overflow-visible flex flex-wrap items-baseline gap-x-4">
+          <span>Supporto</span>
+          <span className="relative inline-block overflow-visible">
+            <span className="relative z-10 text-transparent bg-clip-text bg-gradient-to-r from-[#FF8731] to-[#FF9E54] drop-shadow-sm pr-4">Operativo</span>
+          </span>
         </motion.h1>
-        <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2, duration: 0.8 }} className="text-slate-500 dark:text-slate-400 font-medium text-xl md:text-2xl max-w-2xl mx-auto leading-relaxed">
+        
+        <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2, duration: 0.8 }} className="text-slate-700 dark:text-slate-400 font-medium text-lg md:text-2xl max-w-2xl leading-relaxed">
           Assistenza immediata e risoluzione problemi per il personale medico.
         </motion.p>
       </div>
