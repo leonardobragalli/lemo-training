@@ -102,80 +102,112 @@ const Home = () => {
               
               <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-transparent pointer-events-none opacity-50 z-0"></div>
 
-              {/* Futuristic Progress Ring - Clean 3D Floating Effect */}
+              {/* Ultra-realistic Skeuomorphic 3D Progress Ring */}
               <div className="relative w-64 h-64 shrink-0 flex items-center justify-center z-10">
-                {/* Ambient pulsating backlight */}
-                <motion.div 
-                  animate={{ scale: [1, 1.15, 1], opacity: [0.3, 0.6, 0.3] }}
-                  transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-                  className="absolute inset-2 rounded-full bg-gradient-to-tr from-[#8756FA] to-[#FF8731] blur-[30px] opacity-40 mix-blend-screen"
-                />
-
-                <motion.div 
-                  animate={{ rotateY: [0, 8, -8, 0], rotateX: [0, 8, -8, 0] }} 
-                  transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-                  className="relative w-full h-full flex items-center justify-center drop-shadow-[0_20px_30px_rgba(0,0,0,0.5)]"
-                >
-                  <svg className="absolute inset-0 w-full h-full transform -rotate-90 overflow-visible">
-                    <defs>
-                      <linearGradient id="progressGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" stopColor="#8756FA" />
-                        <stop offset="50%" stopColor="#FF6B00" />
-                        <stop offset="100%" stopColor="#FF9E54" />
-                      </linearGradient>
-                      <filter id="softGlow" x="-30%" y="-30%" width="160%" height="160%">
-                        <feGaussianBlur stdDeviation="8" result="blur" />
-                        <feComposite in="SourceGraphic" in2="blur" operator="over" />
-                      </filter>
-                    </defs>
-
-                    {/* Outer Glass Track */}
-                    <circle cx="128" cy="128" r="110" fill="none" stroke="rgba(255,255,255,0.05)" strokeWidth="18" />
-                    <circle cx="128" cy="128" r="110" fill="none" stroke="rgba(0,0,0,0.4)" strokeWidth="18" className="mix-blend-overlay" />
+                
+                {/* Outer housing (Raised bevel) */}
+                <div className="absolute inset-0 rounded-full bg-gradient-to-b from-[#1c2438] to-[#0a0f1d] shadow-[0_20px_40px_rgba(0,0,0,0.7),inset_0_2px_1px_rgba(255,255,255,0.15)] border border-black/80 p-[18px]">
+                  
+                  {/* The Engraved Track (Deep inner shadow) */}
+                  <div className="w-full h-full rounded-full bg-[#050914] shadow-[inset_0_15px_25px_rgba(0,0,0,0.9),inset_0_4px_8px_rgba(0,0,0,0.8),0_1px_1px_rgba(255,255,255,0.05)] relative flex items-center justify-center">
                     
-                    {/* Glowing Aura (Behind the main stroke) */}
-                    <circle 
-                      cx="128" cy="128" r="110" 
-                      fill="none" 
-                      stroke="url(#progressGradient)" 
-                      strokeWidth="24" 
-                      strokeLinecap="round" 
-                      strokeDasharray="691" 
-                      strokeDashoffset={691 - (691 * progressPercentage) / 100} 
-                      className="transition-all duration-[2s] ease-out opacity-80" 
-                      filter="url(#softGlow)"
-                    />
-                    
-                    {/* Intense Core Stroke (Crisp and bright) */}
-                    <circle 
-                      cx="128" cy="128" r="110" 
-                      fill="none" 
-                      stroke="white" 
-                      strokeWidth="8" 
-                      strokeLinecap="round" 
-                      strokeDasharray="691" 
-                      strokeDashoffset={691 - (691 * progressPercentage) / 100} 
-                      className="transition-all duration-[2s] ease-out drop-shadow-[0_0_15px_rgba(255,255,255,0.9)]" 
-                    />
-                  </svg>
+                    {/* SVG for the 3D Progress Bar */}
+                    <svg className="absolute inset-0 w-full h-full transform -rotate-90 overflow-visible" viewBox="0 0 256 256">
+                      <defs>
+                        <linearGradient id="brandGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                          <stop offset="0%" stopColor="#8756FA" />
+                          <stop offset="50%" stopColor="#FF6B00" />
+                          <stop offset="100%" stopColor="#FF9E54" />
+                        </linearGradient>
+                        
+                        {/* 3D Tube Lighting Gradients */}
+                        <linearGradient id="tubeHighlight" x1="0%" y1="0%" x2="0%" y2="100%">
+                          <stop offset="0%" stopColor="#ffffff" stopOpacity="0.8" />
+                          <stop offset="40%" stopColor="#ffffff" stopOpacity="0" />
+                        </linearGradient>
+                        <linearGradient id="tubeShadow" x1="0%" y1="0%" x2="0%" y2="100%">
+                          <stop offset="60%" stopColor="#000000" stopOpacity="0" />
+                          <stop offset="100%" stopColor="#000000" stopOpacity="0.9" />
+                        </linearGradient>
+                      </defs>
 
-                  {/* Center Glass Orb */}
-                  <div className="absolute inset-[24px] rounded-full bg-gradient-to-br from-white/20 to-white/0 backdrop-blur-[15px] border border-white/30 shadow-[inset_0_4px_20px_rgba(255,255,255,0.4),0_10px_30px_rgba(0,0,0,0.5)] flex flex-col items-center justify-center overflow-hidden">
-                    {/* Inner highlight for orb */}
-                    <div className="absolute top-0 left-[15%] right-[15%] h-[35%] bg-white/30 rounded-b-full blur-md pointer-events-none"></div>
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#8756FA]/10 to-transparent pointer-events-none mix-blend-overlay"></div>
+                      {/* 1. Drop shadow of the progress bar onto the track */}
+                      <circle 
+                        cx="128" cy="128" r="100" 
+                        fill="none" 
+                        stroke="rgba(0,0,0,0.8)" 
+                        strokeWidth="24" 
+                        strokeLinecap="round" 
+                        strokeDasharray="628" 
+                        strokeDashoffset={628 - (628 * progressPercentage) / 100} 
+                        className="transition-all duration-[2s] ease-out blur-[6px] translate-y-3 translate-x-1" 
+                      />
 
-                    <motion.span 
-                      initial={{ scale: 0, opacity: 0 }} 
-                      animate={{ scale: 1, opacity: 1 }} 
-                      transition={{ delay: 0.3, type: "spring", stiffness: 100 }} 
-                      className="text-6xl font-black font-serif text-white tracking-normal flex items-baseline relative z-10 drop-shadow-[0_4px_8px_rgba(0,0,0,0.6)]"
-                    >
-                      {progressPercentage}
-                      <span className="text-3xl bg-clip-text text-transparent bg-gradient-to-b from-[#FF9E54] to-[#FF6B00] ml-1 font-sans tracking-normal">%</span>
-                    </motion.span>
+                      {/* 2. Main Color Base */}
+                      <circle 
+                        cx="128" cy="128" r="100" 
+                        fill="none" 
+                        stroke="url(#brandGrad)" 
+                        strokeWidth="24" 
+                        strokeLinecap="round" 
+                        strokeDasharray="628" 
+                        strokeDashoffset={628 - (628 * progressPercentage) / 100} 
+                        className="transition-all duration-[2s] ease-out" 
+                      />
+
+                      {/* 3. Top Edge Highlight (Inner Curve) */}
+                      <circle 
+                        cx="128" cy="128" r="100" 
+                        fill="none" 
+                        stroke="url(#tubeHighlight)" 
+                        strokeWidth="24" 
+                        strokeLinecap="round" 
+                        strokeDasharray="628" 
+                        strokeDashoffset={628 - (628 * progressPercentage) / 100} 
+                        className="transition-all duration-[2s] ease-out mix-blend-overlay" 
+                      />
+
+                      {/* 4. Bottom Edge Shadow (Outer Curve) */}
+                      <circle 
+                        cx="128" cy="128" r="100" 
+                        fill="none" 
+                        stroke="url(#tubeShadow)" 
+                        strokeWidth="24" 
+                        strokeLinecap="round" 
+                        strokeDasharray="628" 
+                        strokeDashoffset={628 - (628 * progressPercentage) / 100} 
+                        className="transition-all duration-[2s] ease-out mix-blend-multiply" 
+                      />
+
+                      {/* 5. Center specular reflection (Glossy plastic effect) */}
+                      <circle 
+                        cx="128" cy="128" r="100" 
+                        fill="none" 
+                        stroke="rgba(255,255,255,0.5)" 
+                        strokeWidth="4" 
+                        strokeLinecap="round" 
+                        strokeDasharray="628" 
+                        strokeDashoffset={628 - (628 * progressPercentage) / 100} 
+                        className="transition-all duration-[2s] ease-out blur-[1px]" 
+                      />
+                    </svg>
+
+                    {/* Center Raised Plate */}
+                    <div className="absolute w-[60%] h-[60%] rounded-full bg-gradient-to-b from-[#1f2940] to-[#0e1424] shadow-[0_15px_30px_rgba(0,0,0,0.9),inset_0_2px_1px_rgba(255,255,255,0.15)] border border-black/80 flex flex-col items-center justify-center z-10">
+                      <motion.span 
+                        initial={{ scale: 0, opacity: 0 }} 
+                        animate={{ scale: 1, opacity: 1 }} 
+                        transition={{ delay: 0.3, type: "spring", stiffness: 100 }} 
+                        className="text-5xl font-black font-sans text-white tracking-tighter flex items-baseline drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]"
+                      >
+                        {progressPercentage}
+                        <span className="text-2xl text-slate-400 ml-1 font-sans tracking-normal">%</span>
+                      </motion.span>
+                      <span className="text-[10px] uppercase tracking-[3px] text-slate-500 font-bold mt-1 drop-shadow-md">Complete</span>
+                    </div>
+
                   </div>
-                </motion.div>
+                </div>
               </div>
               
               <div className="flex-1 text-center md:text-left relative z-10">
