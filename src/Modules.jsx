@@ -125,14 +125,14 @@ const Modules = () => {
           <span className="text-sm font-bold tracking-widest uppercase bg-clip-text text-transparent bg-gradient-to-r from-[#8756FA] to-[#FF8731]">Training Center</span>
         </motion.div>
         
-        <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1, duration: 0.8 }} className="text-4xl md:text-6xl lg:text-[4.5rem] font-black font-serif text-[#03091B] dark:text-white tracking-tighter mb-6 leading-[1.1] pb-2 pr-10 overflow-visible flex flex-wrap items-baseline gap-x-4">
+        <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1, duration: 0.8 }} className="text-4xl md:text-6xl lg:text-[4.5rem] font-black font-serif text-[#03091B] dark:text-white tracking-tighter mb-2 leading-[1.1] pb-2 pr-10 overflow-visible flex flex-wrap items-baseline gap-x-4">
           <span>Libreria</span>
           <span className="relative inline-block overflow-visible">
             <span className="relative z-10 text-transparent bg-clip-text bg-gradient-to-r from-[#8756FA] to-[#9C73FA] drop-shadow-sm pr-4">Moduli</span>
           </span>
         </motion.h1>
         
-        <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2, duration: 0.8 }} className="text-slate-500 dark:text-slate-400 font-medium text-lg md:text-2xl max-w-2xl leading-relaxed">
+        <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2, duration: 0.8 }} className="text-slate-600 dark:text-slate-400 font-medium text-lg md:text-2xl max-w-2xl leading-relaxed">
           {mode === 'full' ? "Accesso libero a tutti i contenuti formativi." : "Completa le lezioni in sequenza per abilitare la certificazione."}
         </motion.p>
       </div>
