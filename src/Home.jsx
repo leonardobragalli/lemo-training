@@ -102,12 +102,8 @@ const Home = () => {
               
               <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-transparent pointer-events-none opacity-50 z-0"></div>
 
-              {/* Premium 3D Brand-Aligned Progress Ring */}
+              {/* Solid Matte 3D Skeuomorphic Progress Ring */}
               <div className="relative w-64 h-64 shrink-0 flex items-center justify-center z-10">
-                
-                {/* Soft ambient glow behind the ring */}
-                <div className="absolute inset-4 rounded-full bg-gradient-to-tr from-[#8756FA]/20 to-[#FF8731]/20 blur-[20px] pointer-events-none"></div>
-
                 <motion.div 
                   animate={{ rotateY: [0, 5, -5, 0], rotateX: [0, 5, -5, 0] }} 
                   transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
@@ -117,39 +113,61 @@ const Home = () => {
                     <defs>
                       <linearGradient id="lemonsGradient" x1="0%" y1="0%" x2="100%" y2="100%">
                         <stop offset="0%" stopColor="#8756FA" /> {/* Lemons Purple */}
-                        <stop offset="50%" stopColor="#D97199" /> {/* Blended transition */}
                         <stop offset="100%" stopColor="#FF8731" /> {/* Lemons Orange */}
                       </linearGradient>
                       
-                      {/* Subtle 3D Bevel Filter for the progress line */}
-                      <filter id="soft3D" x="-20%" y="-20%" width="140%" height="140%">
-                        <feDropShadow dx="0" dy="8" stdDeviation="6" floodColor="#FF8731" floodOpacity="0.4" result="glow" />
-                        <feDropShadow dx="0" dy="4" stdDeviation="4" floodColor="#03091B" floodOpacity="0.3" result="shadow" />
+                      {/* Filter for the raised 3D progress bar (drop shadow + inner bevel highlight) */}
+                      <filter id="raised3D" x="-20%" y="-20%" width="140%" height="140%">
+                        {/* Drop shadow behind the tube */}
+                        <feDropShadow dx="0" dy="6" stdDeviation="4" floodColor="#000000" floodOpacity="0.4" result="dropShadow" />
+                        
+                        {/* Create inner highlight for the matte 3D volume */}
+                        <feComponentTransfer in="SourceAlpha" result="alpha1">
+                          <feFuncA type="linear" slope="1"/>
+                        </feComponentTransfer>
+                        <feOffset dx="0" dy="-3" in="alpha1" result="offsetAlpha1"/>
+                        <feComposite in2="SourceAlpha" in="offsetAlpha1" operator="out" result="innerHighlightAlpha"/>
+                        <feFlood floodColor="#ffffff" floodOpacity="0.4" result="highlightColor"/>
+                        <feComposite in2="innerHighlightAlpha" in="highlightColor" operator="in" result="innerHighlight"/>
+                        <feGaussianBlur in="innerHighlight" stdDeviation="1.5" result="smoothHighlight"/>
+                        
+                        {/* Create inner shadow for the bottom edge */}
+                        <feOffset dx="0" dy="3" in="alpha1" result="offsetAlpha2"/>
+                        <feComposite in2="SourceAlpha" in="offsetAlpha2" operator="out" result="innerShadowAlpha"/>
+                        <feFlood floodColor="#000000" floodOpacity="0.2" result="shadowColor"/>
+                        <feComposite in2="innerShadowAlpha" in="shadowColor" operator="in" result="innerShadow"/>
+                        <feGaussianBlur in="innerShadow" stdDeviation="1.5" result="smoothShadow"/>
+
+                        {/* Merge everything */}
                         <feMerge>
-                          <feMergeNode in="glow" />
-                          <feMergeNode in="shadow" />
+                          <feMergeNode in="dropShadow" />
                           <feMergeNode in="SourceGraphic" />
+                          <feMergeNode in="smoothHighlight" />
+                          <feMergeNode in="smoothShadow" />
                         </feMerge>
+                      </filter>
+                      
+                      {/* Filter for the recessed track (inner shadow) */}
+                      <filter id="recessedTrack" x="-20%" y="-20%" width="140%" height="140%">
+                        <feOffset dx="0" dy="4"/>
+                        <feGaussianBlur stdDeviation="3" result="offset-blur"/>
+                        <feComposite operator="out" in="SourceGraphic" in2="offset-blur" result="inverse"/>
+                        <feFlood floodColor="black" floodOpacity="0.6" result="color"/>
+                        <feComposite operator="in" in="color" in2="inverse" result="shadow"/>
+                        <feComposite operator="over" in="shadow" in2="SourceGraphic"/>
                       </filter>
                     </defs>
 
-                    {/* Track Background (Glassy & Embossed) */}
-                    <circle 
-                      cx="128" cy="128" r="110" 
-                      fill="rgba(255,255,255,0.02)" 
-                      stroke="rgba(255,255,255,0.05)" 
-                      strokeWidth="18" 
-                    />
-                    {/* Inner shadow simulation for track */}
+                    {/* Recessed Track */}
                     <circle 
                       cx="128" cy="128" r="110" 
                       fill="none" 
-                      stroke="rgba(0,0,0,0.3)" 
+                      stroke="#0d1428" 
                       strokeWidth="18" 
-                      className="mix-blend-overlay"
+                      filter="url(#recessedTrack)"
                     />
 
-                    {/* 3D Progress Ring */}
+                    {/* Raised 3D Progress Ring */}
                     <circle 
                       cx="128" cy="128" r="110" 
                       fill="none" 
@@ -159,24 +177,12 @@ const Home = () => {
                       strokeDasharray="691" 
                       strokeDashoffset={691 - (691 * progressPercentage) / 100} 
                       className="transition-all duration-[2s] ease-out" 
-                      filter="url(#soft3D)"
-                    />
-                    
-                    {/* Specular Highlight on the progress ring to make it pop like glass/plastic */}
-                    <circle 
-                      cx="128" cy="128" r="110" 
-                      fill="none" 
-                      stroke="rgba(255,255,255,0.4)" 
-                      strokeWidth="4" 
-                      strokeLinecap="round" 
-                      strokeDasharray="691" 
-                      strokeDashoffset={691 - (691 * progressPercentage) / 100} 
-                      className="transition-all duration-[2s] ease-out blur-[1px] mix-blend-overlay" 
+                      filter="url(#raised3D)"
                     />
                   </svg>
 
-                  {/* Center Content with Glass Plate */}
-                  <div className="absolute inset-[25px] rounded-full bg-transparent backdrop-blur-[2px] border border-white/5 shadow-[inset_0_4px_20px_rgba(255,255,255,0.02),0_10px_20px_rgba(0,0,0,0.1)] flex flex-col items-center justify-center z-10">
+                  {/* Minimal Center Content (No Glass Plate) */}
+                  <div className="absolute inset-0 flex flex-col items-center justify-center z-10">
                     <motion.span 
                       initial={{ scale: 0, opacity: 0 }} 
                       animate={{ scale: 1, opacity: 1 }} 
