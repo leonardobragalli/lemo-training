@@ -1,0 +1,93 @@
+@import "@fontsource/open-runde/400.css";
+@import "@fontsource/open-runde/500.css";
+@import "@fontsource/open-runde/600.css";
+@import "@fontsource/open-runde/700.css";
+@import "@fontsource/kalam/400.css";
+@import "@fontsource/kalam/700.css";
+@import "tailwindcss";
+
+@font-face {
+  font-family: 'Recoleta Alt';
+  src: url('/fonts/RecoletaAlt-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'Recoleta Alt';
+  src: url('/fonts/RecoletaAlt-Medium.ttf') format('truetype');
+  font-weight: 500;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'Recoleta Alt';
+  src: url('/fonts/RecoletaAlt-SemiBold.ttf') format('truetype');
+  font-weight: 600;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'Recoleta Alt';
+  src: url('/fonts/RecoletaAlt-Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'Recoleta Alt';
+  src: url('/fonts/RecoletaAlt-Black.ttf') format('truetype');
+  font-weight: 900;
+  font-style: normal;
+}
+
+@variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --color-lemo-orange: #FF8731;
+  --color-lemo-purple: #8756FA;
+  --color-lemo-black: #03091B; 
+  --color-lemo-light: #FFF5EE; 
+  
+  --font-sans: 'Open Runde', sans-serif;
+  --font-serif: 'Recoleta Alt', serif;
+  --font-hand: 'Kalam', cursive;
+}
+
+body {
+  background-color: #03091B; /* Sempre scuro per evitare flash bianchi */
+  color: #FFF5EE;
+  font-family: 'Open Runde', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  min-height: 100vh;
+  margin: 0;
+}
+
+/* Force hardware acceleration and smooth rendering for titles on Windows */
+h1, h2, h3, h4, h5, h6, .font-serif {
+  -webkit-font-smoothing: antialiased !important;
+  -moz-osx-font-smoothing: grayscale !important;
+  text-rendering: optimizeLegibility !important;
+  transform: translateZ(0); /* Force GPU rendering */
+  text-shadow: 0 0 1px rgba(0,0,0,0.01); /* Hack to smooth edges on Chrome/Windows */
+}
+
+body.dark {
+  background-color: #03091B; 
+  color: #FFF5EE;
+}
+
+/* Hide scrollbar for all elements but keep functionality */
+* {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+::-webkit-scrollbar {
+  display: none; /* Chrome, Safari and Opera */
+}
+
+@supports (padding-bottom: env(safe-area-inset-bottom)) {
+  .pb-safe {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}

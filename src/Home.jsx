@@ -1,0 +1,302 @@
+import { useState, useEffect } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import { Play, Award, ArrowRight, Zap, Target, Sparkles } from 'lucide-react';
+import { motion, useScroll, useTransform } from 'framer-motion';
+import html2pdf from 'html2pdf.js';
+
+import { audio } from './utils/audio';
+
+const Home = () => {
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const [user, setUser] = useState(null);
+  const [completedCount, setCompletedCount] = useState(0);
+  const mode = searchParams.get('mode') || 'guided';
+  
+  const totalLessons = 4;
+
+  const { scrollYProgress } = useScroll();
+  const yParallax = useTransform(scrollYProgress, [0, 1], [0, -100]);
+  const rotateParallax = useTransform(scrollYProgress, [0, 1], [0, 20]);
+
+  // Generate certificate data once per mount using useState initializer for purity
+  const [certificateCode] = useState(() => `LMR-${new Date().getFullYear()}-${Math.floor(Math.random() * 9000) + 1000}`);
+  const [certificateDate] = useState(() => new Date().toLocaleDateString('it-IT'));
+
+  useEffect(() => {
+    const savedUser = JSON.parse(localStorage.getItem('lemo_user'));
+    if (!savedUser && mode !== 'full') {
+      navigate('/');
+    } else if (savedUser) {
+      setUser(savedUser);
+      const savedProgress = JSON.parse(localStorage.getItem(`lemo_progress_${savedUser?.name}`)) || [];
+      setCompletedCount(savedProgress.length);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [navigate, mode]);
+
+  const progressPercentage = Math.round((completedCount / totalLessons) * 100);
+  const hasFinishedAll = completedCount === totalLessons;
+
+  const downloadCertificate = () => {
+    audio.playSuccess();
+    const element = document.getElementById('certificate-template');
+    element.style.display = 'block';
+    html2pdf().set({
+      margin: 0, filename: `Certificato_Lemons_${user?.lastName || 'Utente'}.pdf`,
+      image: { type: 'jpeg', quality: 1 },
+      html2canvas: { scale: 2, useCORS: true, logging: false },
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' }
+    }).from(element).save().then(() => element.style.display = 'none');
+  };
+
+  const handleNav = (path) => {
+    audio.playClick();
+    navigate(path);
+  };
+
+  const container = { hidden: { opacity: 0 }, show: { opacity: 1, transition: { staggerChildren: 0.15, delayChildren: 0.2 } } };
+  const item = { hidden: { opacity: 0, y: 40, scale: 0.95 }, show: { opacity: 1, y: 0, scale: 1, transition: { type: "spring", stiffness: 100, damping: 20 } } };
+
+  return (
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="px-4 pt-8 pb-6 md:px-8 md:pt-12 lg:px-12 lg:pt-16 min-h-screen transition-colors duration-500 relative bg-[#03091B]">
+      
+      {/* Background Layer Fixed for Mobile/Safari */}
+      <div className="fixed inset-0 bg-cover bg-center z-0 bg-[url('/images/bg-mobile.png')] md:bg-[url('/images/bg-pc.png')]"></div>
+
+      {/* Immersive 3D-like Background Elements */}
+      <motion.div style={{ y: yParallax, rotate: rotateParallax }} className="fixed top-[10%] right-[5%] w-[40vw] h-[40vw] bg-gradient-to-tr from-[#FF8731]/30 to-transparent rounded-full blur-[100px] pointer-events-none mix-blend-screen z-0"></motion.div>
+      <motion.div style={{ y: useTransform(scrollYProgress, [0, 1], [0, 150]) }} className="fixed bottom-[10%] left-[5%] w-[50vw] h-[50vw] bg-gradient-to-tr from-[#8756FA]/20 to-transparent rounded-full blur-[120px] pointer-events-none mix-blend-screen z-0"></motion.div>
+
+      <div className="max-w-7xl mx-auto relative z-10 mb-20 md:mb-0">
+        {/* Hero Header */}
+        <div className="mb-12 relative z-10 bg-[#03091B]/5 backdrop-blur-[40px] p-8 md:p-12 rounded-[3.5rem] border-t border-l border-white/20 border-r border-b border-white/5 shadow-[0_40px_100px_-10px_rgba(3,9,27,0.8)] inline-block">
+          <motion.div initial={{ scale: 0, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ type: "spring", stiffness: 200, damping: 20 }} className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 mb-4 shadow-xl shadow-black/5">
+            <Sparkles className="w-4 h-4 text-[#FF8731]" />
+            <span className="text-sm font-bold tracking-widest uppercase text-white drop-shadow-md">Lemons Hub</span>
+          </motion.div>
+          
+          <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1, duration: 0.8 }} className="text-5xl md:text-6xl lg:text-[4.5rem] font-black font-serif text-white tracking-tighter mb-4 leading-[1.1] pb-2 pr-10 overflow-visible flex flex-wrap items-baseline gap-x-4 drop-shadow-sm">
+            <span>Ciao,</span>
+            <span className="relative inline-block overflow-visible">
+              <span className="relative z-10 text-[#A379F9]" style={{ textShadow: '0 0 40px rgba(135, 86, 250, 0.8), 0 4px 10px rgba(0,0,0,0.8), 0 1px 1px rgba(255,255,255,0.4)' }}>{user?.firstName || 'Ospite'}</span>
+            </span>
+          </motion.h1>
+          
+          <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2, duration: 0.8 }} className="text-slate-200 font-medium text-lg md:text-xl max-w-2xl leading-relaxed drop-shadow-md">
+            Benvenuto nel tuo ambiente di simulazione. Qui troverai tutto il necessario per prepararti.
+          </motion.p>
+        </div>
+
+        <motion.div variants={container} initial="hidden" animate="show" className="grid grid-cols-1 lg:grid-cols-12 gap-8 relative z-10">
+          
+          {/* Main Progress Dashboard - Epic Glassmorphism */}
+          <motion.div 
+            variants={item} 
+            className="lg:col-span-8 group relative"
+          >
+            {/* Animated border glow */}
+            <div className="absolute -inset-[2px] bg-gradient-to-r from-[#FF8731] via-[#8756FA] to-[#FF8731] rounded-[3.7rem] opacity-20 group-hover:opacity-100 blur-xl transition-all duration-700 animate-gradient-xy"></div>
+            
+            <div className="relative h-full bg-[#03091B]/5 backdrop-blur-[40px] rounded-[3.5rem] p-10 md:p-14 overflow-hidden shadow-[0_40px_100px_-10px_rgba(3,9,27,0.8)] border-t border-l border-white/20 border-r border-b border-white/5 flex flex-col md:flex-row items-center gap-12 group/glass">
+              
+              <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-transparent pointer-events-none opacity-50 z-0"></div>
+
+              {/* Futuristic Progress Ring */}
+              <div className="relative w-64 h-64 shrink-0 flex items-center justify-center perspective-[1000px] z-10">
+                <motion.div 
+                  animate={{ rotateY: [0, 10, -10, 0], rotateX: [0, 5, -5, 0] }} 
+                  transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+                  className="relative w-full h-full"
+                >
+                  {/* Background Ring */}
+                  <svg className="absolute inset-0 w-full h-full transform -rotate-90">
+                    <circle cx="128" cy="128" r="95" fill="none" stroke="currentColor" className="text-white/10" strokeWidth="12" />
+                  </svg>
+                  
+                  {/* Progress Ring with Glow */}
+                  <svg className="absolute inset-0 w-full h-full transform -rotate-90 drop-shadow-[0_0_20px_rgba(255,135,49,1)]">
+                    <circle cx="128" cy="128" r="95" fill="none" stroke="url(#progressGradient)" strokeWidth="16" strokeLinecap="round" strokeDasharray="597" strokeDashoffset={597 - (597 * progressPercentage) / 100} className="transition-all duration-[2s] ease-out" />
+                    <defs>
+                      <linearGradient id="progressGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stopColor="#FF8731" />
+                        <stop offset="50%" stopColor="#FF6B00" />
+                        <stop offset="100%" stopColor="#FF9E54" />
+                      </linearGradient>
+                    </defs>
+                  </svg>
+
+                  {/* Center Content */}
+                  <div className="absolute inset-0 flex flex-col items-center justify-center">
+                    <motion.span initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 0.8, type: "spring" }} className="text-6xl font-black font-serif text-white tracking-normal flex items-baseline drop-shadow-md">
+                      {progressPercentage}
+                      <span className="text-3xl text-[#FF8731] ml-2 font-sans tracking-normal">%</span>
+                    </motion.span>
+                  </div>
+                </motion.div>
+              </div>
+              
+              <div className="flex-1 text-center md:text-left relative z-10">
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-sm font-bold text-white mb-4 border border-white/10 backdrop-blur-md shadow-inner">
+                  <Target className="w-4 h-4 text-[#FF8731]" />
+                  {completedCount} di {totalLessons} Moduli Completati
+                </div>
+                <h2 className="text-4xl md:text-5xl font-black font-serif text-white mb-6 leading-tight drop-shadow-sm">
+                  {hasFinishedAll ? "Status: Operativo" : "Prosegui il Training"}
+                </h2>
+                <p className="text-slate-300 text-lg mb-8 leading-relaxed font-medium">
+                  {hasFinishedAll 
+                    ? "Eccellente. Hai acquisito tutte le competenze necessarie. Il tuo profilo è ora abilitato all'uso dell'ecosistema."
+                    : "Manca poco. Completa le sessioni rimanenti per sbloccare la tua certificazione ufficiale e l'accesso completo."}
+                </p>
+                
+                {!hasFinishedAll ? (
+                  <motion.button 
+                    whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}
+                    onClick={() => handleNav(`/modules?mode=${mode}`)} 
+                    className="w-full md:w-auto px-10 py-6 bg-gradient-to-r from-[#8756FA] to-[#FF8731] text-white rounded-[2.5rem] font-black text-xl flex items-center justify-center gap-4 transition-all shadow-[0_15px_40px_-10px_rgba(135,86,250,0.8)] hover:shadow-[0_20px_60px_-10px_rgba(255,135,49,1)] relative overflow-hidden group border border-white/20"
+                  >
+                    <div className="absolute inset-0 bg-white/30 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700 ease-in-out skew-x-12"></div>
+                    <span className="relative z-10 drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]">Vai ai Moduli</span>
+                    <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center relative z-10 transition-colors duration-300 border border-white/30 shadow-inner">
+                      <ArrowRight className="w-5 h-5" />
+                    </div>
+                  </motion.button>
+                ) : (
+                  <motion.button 
+                    whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}
+                    onClick={downloadCertificate} 
+                    className="w-full md:w-auto px-10 py-6 bg-gradient-to-r from-[#FF8731] to-[#FF9E54] text-white rounded-[2.5rem] font-black text-xl flex items-center justify-center gap-4 transition-all shadow-[0_15px_40px_-10px_rgba(255,135,49,0.8)] hover:shadow-[0_20px_60px_-10px_rgba(255,135,49,1)] relative overflow-hidden group border-2 border-white/40 ring-4 ring-[#FF8731]/30 hover:ring-[#FF8731]/60"
+                  >
+                    <div className="absolute inset-0 bg-white/30 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700 ease-in-out skew-x-12"></div>
+                    <Award className="w-7 h-7 relative z-10 drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]" /> 
+                    <span className="relative z-10 drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] tracking-wide">Ottieni Certificato</span>
+                  </motion.button>
+                )}
+              </div>
+            </div>
+          </motion.div>
+
+          {/* Action Cards Grid */}
+          <motion.div variants={container} className="lg:col-span-4 flex flex-col gap-6">
+            
+            {/* Card 1 */}
+            <motion.div 
+              variants={item}
+              whileHover={{ y: -5, scale: 1.02 }}
+              onClick={() => handleNav(`/modules?mode=${mode}`)} 
+              className="flex-1 bg-gradient-to-br from-[#8756FA] to-[#6A35E8] rounded-[2.5rem] p-8 md:p-10 cursor-pointer relative overflow-hidden group shadow-[0_20px_40px_-10px_rgba(135,86,250,0.6)] hover:shadow-[0_30px_60px_-10px_rgba(135,86,250,0.8)] border-t border-l border-white/30 border-r border-b border-white/10"
+            >
+              <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.1] mix-blend-overlay"></div>
+              <div className="absolute -right-10 -top-10 w-40 h-40 bg-white/20 rounded-full blur-[40px] group-hover:scale-150 transition-transform duration-700"></div>
+              
+              <div className="w-16 h-16 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center mb-6 border border-white/30 text-white shadow-inner group-hover:rotate-12 transition-transform duration-500">
+                <Play className="w-8 h-8 fill-current drop-shadow-md" />
+              </div>
+              <h3 className="text-3xl font-black font-serif text-white mb-2 relative z-10 tracking-tight drop-shadow-sm">Esplora i<br/>Contenuti</h3>
+              <div className="absolute bottom-8 right-8 w-12 h-12 rounded-full bg-white/10 flex items-center justify-center backdrop-blur-md border border-white/20 group-hover:bg-white group-hover:text-[#8756FA] text-white transition-all duration-300">
+                <ArrowRight className="w-5 h-5 -rotate-45 group-hover:rotate-0 transition-transform duration-300" />
+              </div>
+            </motion.div>
+            
+            {/* Card 2 - Aggiornata con gradiente colorato */}
+            <motion.div 
+              variants={item}
+              whileHover={{ y: -5, scale: 1.02 }}
+              onClick={() => handleNav(`/support?mode=${mode}`)} 
+              className="flex-1 bg-gradient-to-br from-[#FF8731] to-[#E65C00] rounded-[2.5rem] p-8 md:p-10 cursor-pointer relative overflow-hidden group shadow-[0_20px_40px_-10px_rgba(255,135,49,0.6)] hover:shadow-[0_30px_60px_-10px_rgba(255,135,49,0.8)] border-t border-l border-white/30 border-r border-b border-white/10"
+            >
+              <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.1] mix-blend-overlay"></div>
+              <div className="absolute -right-10 -bottom-10 w-40 h-40 bg-white/20 rounded-full blur-[40px] group-hover:scale-150 transition-transform duration-700"></div>
+              
+              <div className="w-16 h-16 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center mb-6 border border-white/30 text-white shadow-inner group-hover:-rotate-12 transition-transform duration-500">
+                <Zap className="w-8 h-8 drop-shadow-md fill-current" />
+              </div>
+              <h3 className="text-3xl font-black font-serif text-white mb-2 relative z-10 tracking-tight drop-shadow-md">Centro<br/>Assistenza</h3>
+              <div className="absolute bottom-8 right-8 w-12 h-12 rounded-full bg-white/10 flex items-center justify-center text-white backdrop-blur-md border border-white/20 group-hover:bg-white group-hover:text-[#FF8731] transition-all duration-300 shadow-inner">
+                <ArrowRight className="w-5 h-5 -rotate-45 group-hover:rotate-0 transition-transform duration-300" />
+              </div>
+            </motion.div>
+
+          </motion.div>
+
+        </motion.div>
+      </div>
+
+      {/* Certificato Invisibile */}
+      <div style={{ position: 'absolute', left: '-9999px', top: '-9999px' }}>
+        <div id="certificate-template" style={{ width: '1123px', height: '794px', backgroundColor: '#ffffff', position: 'relative', overflow: 'hidden', fontFamily: "'Nunito', sans-serif" }}>
+          
+          <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, border: '25px solid #03091B', boxSizing: 'border-box' }}></div>
+          <div style={{ position: 'absolute', top: '35px', left: '35px', right: '35px', bottom: '35px', border: '2px solid #e2e8f0', boxSizing: 'border-box' }}></div>
+          <div style={{ position: 'absolute', top: '40px', left: '40px', right: '40px', bottom: '40px', border: '1px solid #e2e8f0', boxSizing: 'border-box' }}></div>
+
+          <div style={{ position: 'absolute', top: '-100px', right: '-100px', width: '400px', height: '400px', backgroundColor: '#FF8731', borderRadius: '50%', opacity: '0.2' }}></div>
+          <div style={{ position: 'absolute', bottom: '-150px', left: '-150px', width: '500px', height: '500px', backgroundColor: '#03091B', borderRadius: '50%', opacity: '0.05' }}></div>
+
+          <div style={{ position: 'relative', zIndex: 10, height: '100%', padding: '60px 80px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', boxSizing: 'border-box' }}>
+            
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
+                <img src="/images/logos/Logo nero png.png" alt="Lemons" style={{ width: '90px', height: 'auto', objectFit: 'contain' }} />
+                <div style={{ borderLeft: '3px solid #03091B', paddingLeft: '20px' }}>
+                  <h2 style={{ margin: 0, fontSize: '22px', fontWeight: '900', color: '#03091B', letterSpacing: '2px', textTransform: 'uppercase' }}>Lemons</h2>
+                  <p style={{ margin: 0, fontSize: '12px', color: '#64748b', letterSpacing: '3px', textTransform: 'uppercase' }}>in the Room</p>
+                </div>
+              </div>
+              <div style={{ textAlign: 'right', marginTop: '10px' }}>
+                <p style={{ margin: 0, fontSize: '11px', color: '#94a3b8', letterSpacing: '2px', textTransform: 'uppercase', fontWeight: 'bold' }}>Codice Attestato</p>
+                <p style={{ margin: 0, fontSize: '14px', color: '#03091B', letterSpacing: '4px', fontWeight: 'bold', fontFamily: 'monospace' }}>{certificateCode}</p>
+              </div>
+            </div>
+
+            <div style={{ textAlign: 'center', marginTop: '-20px' }}>
+              <div style={{ marginBottom: '30px' }}>
+                <div style={{ display: 'inline-block' }}>
+                  <h1 style={{ margin: 0, fontSize: '56px', fontWeight: '900', color: '#03091B', letterSpacing: '4px', textTransform: 'uppercase', fontFamily: "'Recoleta Alt', serif" }}>
+                    Attestato di Qualifica
+                  </h1>
+                  <div style={{ width: '100%', height: '4px', backgroundColor: '#FF8731', margin: '15px auto 0 auto' }}></div>
+                </div>
+              </div>
+
+              <div style={{ marginBottom: '30px' }}>
+                <p style={{ margin: '0 0 8px 0', fontSize: '18px', color: '#64748b', letterSpacing: '2px', textTransform: 'uppercase' }}>Conferito con merito a:</p>
+                <h2 style={{ margin: 0, fontSize: '48px', fontWeight: 'bold', color: '#03091B', textTransform: 'capitalize' }}>
+                  {user?.name || 'Mario Rossi'}
+                </h2>
+              </div>
+
+              <div>
+                <p style={{ margin: '0 auto', fontSize: '18px', color: '#475569', lineHeight: '1.5', maxWidth: '800px' }}>
+                  Per aver completato con successo l'intero percorso formativo e aver dimostrato piena competenza tecnica, operativa e procedurale nell'utilizzo dell'ecosistema <strong>Lemons in the Room</strong> presso la struttura <strong>{user?.hospital || 'Struttura Ospedaliera'}</strong> ({user?.department || 'Reparto'}).
+                </p>
+              </div>
+            </div>
+
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', padding: '0 20px', marginBottom: '20px' }}>
+              <div style={{ textAlign: 'center', flex: 1 }}>
+                <p style={{ margin: '0 auto 8px auto', fontSize: '20px', fontWeight: 'bold', color: '#03091B', borderBottom: '2px solid #cbd5e1', paddingBottom: '8px', maxWidth: '180px' }}>{certificateDate}</p>
+                <p style={{ margin: 0, fontSize: '12px', color: '#64748b', textTransform: 'uppercase', letterSpacing: '2px', fontWeight: 'bold' }}>Data di Rilascio</p>
+              </div>
+
+              <div style={{ textAlign: 'center', flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-end', marginBottom: '10px' }}>
+                <span style={{ fontSize: '12px', fontWeight: '900', color: '#03091B', textAlign: 'center', lineHeight: '1.2', marginBottom: '8px', letterSpacing: '1px' }}>LEMONS<br/>CERTIFIED</span>
+                <img src="/images/logos/Logo nero png.png" alt="Lemons Certified" style={{ width: '40px', height: 'auto', objectFit: 'contain' }} />
+              </div>
+              <div style={{ textAlign: 'center', flex: 1 }}>
+                <div style={{ margin: '0 auto 8px auto', borderBottom: '2px solid #cbd5e1', paddingBottom: '8px', maxWidth: '220px', display: 'flex', justifyContent: 'center' }}>
+                  <img src="/images/firma-ceo.png" alt="Firma CEO Lemons" style={{ height: '50px', objectFit: 'contain' }} />
+                </div>
+                <p style={{ margin: 0, fontSize: '12px', color: '#64748b', textTransform: 'uppercase', letterSpacing: '2px', fontWeight: 'bold' }}>Firma Autorizzata</p>
+              </div>
+            </div>
+            
+          </div>
+        </div>
+      </div>
+
+    </motion.div>
+  );
+};
+export default Home;
