@@ -128,26 +128,17 @@ const Lesson = ({ lesson, mode, onComplete }) => {
               </motion.div>
             )}
           </div>
-          
-          <div className="p-6 md:p-10 bg-gradient-to-b from-black to-slate-900 dark:to-[#03091B] transition-colors relative z-20 border-t border-white/10 flex-1">
-            <div className="flex flex-wrap items-center gap-3 mb-4 md:mb-6">
-              <span className="px-3 py-1 md:px-4 md:py-1.5 bg-[#FF8731]/10 text-[#FF8731] font-black text-[10px] md:text-[11px] rounded-full border border-[#FF8731]/20 uppercase tracking-widest shadow-inner">Riproduzione</span>
-              <span className="text-slate-400 text-xs md:text-sm font-bold flex items-center gap-2"><PlayCircle className="w-3.5 h-3.5 md:w-4 md:h-4 text-slate-500"/> {lesson.duration} min</span>
-            </div>
-            <h1 className="text-2xl md:text-4xl font-black font-serif text-white mb-4 tracking-tight drop-shadow-md break-words">{lesson.title}</h1>
-            <p className="text-base md:text-lg text-slate-400 leading-relaxed font-medium max-w-4xl break-words">{lesson.description}</p>
-          </div>
         </div>
 
         {/* Sidebar Controls & Quiz - Glassmorphism Console */}
-        <div className="xl:w-1/3 bg-white/40 dark:bg-[#03091B]/40 backdrop-blur-md border-t md:border-t-0 xl:border-l border-white/30 dark:border-white/5 p-6 md:p-12 flex flex-col justify-between transition-colors relative min-h-[400px]">
+        <div className="xl:w-1/3 bg-white/40 dark:bg-[#03091B]/40 backdrop-blur-md border-t md:border-t-0 xl:border-l border-white/30 dark:border-white/5 p-6 md:p-10 flex flex-col transition-colors relative">
           
           <div className="absolute inset-0 opacity-[0.03] mix-blend-overlay pointer-events-none bg-[url('https://grainy-gradients.vercel.app/noise.svg')] z-0"></div>
 
-          <div className="relative z-10 w-full">
+          <div className="relative z-10 w-full flex-1">
             <AnimatePresence mode="wait">
               {showQuiz && !quizPassed ? (
-                <motion.div initial={{ opacity: 0, scale: 0.9, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.9 }} className="bg-[#03091B] p-6 md:p-8 rounded-[2rem] shadow-[0_30px_60px_-15px_rgba(0,0,0,0.5)] border border-[#8756FA]/30 mb-8 relative overflow-hidden group">
+                <motion.div initial={{ opacity: 0, scale: 0.9, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.9 }} className="bg-[#03091B] p-6 md:p-8 rounded-[2rem] shadow-[0_30px_60px_-15px_rgba(0,0,0,0.5)] border border-[#8756FA]/30 mb-6 md:mb-8 relative overflow-hidden group">
                   <div className="absolute -top-20 -right-20 w-40 h-40 bg-[#8756FA] rounded-full blur-[60px] opacity-30 pointer-events-none"></div>
                   
                   <h4 className="text-[#8756FA] font-black text-[10px] md:text-[11px] uppercase tracking-[0.2em] mb-4 md:mb-6 flex items-center gap-2">
@@ -184,7 +175,7 @@ const Lesson = ({ lesson, mode, onComplete }) => {
             </AnimatePresence>
 
             {!quizPassed && mode === 'guided' && (
-              <div className="mt-8 md:mt-12 bg-[#8756FA]/10 border border-[#8756FA]/20 rounded-[2rem] p-6 md:p-8 relative overflow-hidden transition-colors">
+              <div className="mt-6 md:mt-8 bg-[#8756FA]/10 border border-[#8756FA]/20 rounded-[2rem] p-6 md:p-8 relative overflow-hidden transition-colors">
                 <div className="absolute top-0 left-0 w-1.5 md:w-2 h-full bg-[#8756FA]"></div>
                 <h4 className="font-bold text-[#8756FA] dark:text-[#9C73FA] mb-1 md:mb-2 font-hand text-xl md:text-2xl">Nota Tecnica:</h4>
                 <p className="text-sm md:text-base text-slate-700 dark:text-slate-300 leading-relaxed font-hand">La visione integrale del video è necessaria per sbloccare la verifica finale.</p>
@@ -192,7 +183,7 @@ const Lesson = ({ lesson, mode, onComplete }) => {
             )}
           </div>
 
-          <div className="mt-8 md:mt-10 relative z-10 w-full">
+          <div className="mt-6 md:mt-8 relative z-10 w-full">
             <motion.button 
               whileHover={quizPassed || mode === 'full' ? { scale: 1.02 } : {}} 
               whileTap={quizPassed || mode === 'full' ? { scale: 0.98 } : {}} 
