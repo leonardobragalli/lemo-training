@@ -176,7 +176,7 @@ const Home = () => {
                   </svg>
 
                   {/* Center Content with Glass Plate */}
-                  <div className="absolute inset-[25px] rounded-full bg-white/5 backdrop-blur-sm border border-white/10 shadow-[inset_0_4px_20px_rgba(255,255,255,0.05),0_10px_20px_rgba(0,0,0,0.2)] flex flex-col items-center justify-center z-10">
+                  <div className="absolute inset-[25px] rounded-full bg-transparent backdrop-blur-[2px] border border-white/5 shadow-[inset_0_4px_20px_rgba(255,255,255,0.02),0_10px_20px_rgba(0,0,0,0.1)] flex flex-col items-center justify-center z-10">
                     <motion.span 
                       initial={{ scale: 0, opacity: 0 }} 
                       animate={{ scale: 1, opacity: 1 }} 
