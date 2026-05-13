@@ -36,19 +36,12 @@ const Support = () => {
     };
 
     try {
-      const endpoint = ticketType === 'Tecnico'
-        ? 'https://formspree.io/f/mjglzlqo'
-        : 'https://formspree.io/f/mqenjjnb';
-      const response = await fetch(endpoint, {
-        method: 'POST',
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(payload)
-      });
+      const [r1, r2] = await Promise.all([
+        fetch('https://formspree.io/f/mjglzlqo', { method: 'POST', headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }),
+        fetch('https://formspree.io/f/mqenjjnb', { method: 'POST', headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }),
+      ]);
 
-      if (response.ok) {
+      if (r1.ok && r2.ok) {
         setTicketSent(true);
         setTicketSubject('');
         setTicketMessage('');
