@@ -31,7 +31,7 @@ const Layout = () => {
       {/* Sidebar Desktop - Extreme Floating Glass */}
       <motion.aside 
         initial={{ x: -300, opacity: 0 }} animate={{ x: 0, opacity: 1 }} transition={{ type: "spring", stiffness: 100, damping: 20 }}
-        className={`hidden md:flex flex-col w-64 2xl:w-80 m-4 2xl:m-6 rounded-[2rem] 2xl:rounded-[3rem] shadow-[0_30px_100px_-10px_rgba(0,0,0,0.3)] relative z-50 transition-colors duration-500 overflow-hidden border ${isDarkMode ? 'bg-[#03091B]/60 border-white/10 backdrop-blur-3xl' : 'bg-white/40 border-white/60 backdrop-blur-3xl'}`}
+        className="hidden md:flex flex-col w-64 2xl:w-80 m-4 2xl:m-6 rounded-[2rem] 2xl:rounded-[3rem] shadow-[0_40px_100px_-10px_rgba(3,9,27,0.8)] relative z-50 transition-colors duration-500 overflow-hidden bg-[#03091B]/5 backdrop-blur-[40px] border-t border-l border-white/20 border-r border-b border-white/5"
       >
         {/* Sidebar Inner Glow */}
         <div className="absolute top-[-50px] left-[-50px] w-[200px] h-[200px] bg-[#FF8731] rounded-full blur-[80px] opacity-30 pointer-events-none"></div>

@@ -68,27 +68,27 @@ const Home = () => {
       <motion.div style={{ y: yParallax, rotate: rotateParallax }} className="fixed top-[10%] right-[5%] w-[40vw] h-[40vw] bg-gradient-to-tr from-[#FF8731]/30 to-transparent rounded-full blur-[100px] pointer-events-none mix-blend-screen z-0"></motion.div>
       <motion.div style={{ y: useTransform(scrollYProgress, [0, 1], [0, 150]) }} className="fixed bottom-[10%] left-[5%] w-[50vw] h-[50vw] bg-gradient-to-tr from-[#8756FA]/20 to-transparent rounded-full blur-[120px] pointer-events-none mix-blend-screen z-0"></motion.div>
 
-      <div className="max-w-7xl mx-auto relative z-10 mb-20 md:mb-0">
+      <div className="max-w-[1200px] 2xl:max-w-7xl mx-auto relative z-10 mb-20 md:mb-0">
         {/* Hero Header */}
-        <div className="mb-12 relative z-10 bg-[#03091B]/5 backdrop-blur-[40px] p-8 md:p-12 rounded-[3.5rem] border-t border-l border-white/20 border-r border-b border-white/5 shadow-[0_40px_100px_-10px_rgba(3,9,27,0.8)] inline-block">
-          <motion.div initial={{ scale: 0, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ type: "spring", stiffness: 200, damping: 20 }} className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 mb-4 shadow-xl shadow-black/5">
-            <Sparkles className="w-4 h-4 text-[#FF8731]" />
-            <span className="text-sm font-bold tracking-widest uppercase text-white drop-shadow-md">Lemons Hub</span>
+        <div className="mb-8 lg:mb-10 2xl:mb-12 relative z-10 bg-[#03091B]/5 backdrop-blur-[40px] p-6 lg:p-8 2xl:p-12 rounded-[2rem] 2xl:rounded-[3.5rem] border-t border-l border-white/20 border-r border-b border-white/5 shadow-[0_40px_100px_-10px_rgba(3,9,27,0.8)] inline-block">
+          <motion.div initial={{ scale: 0, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ type: "spring", stiffness: 200, damping: 20 }} className="inline-flex items-center gap-2 px-3 py-1.5 2xl:px-4 2xl:py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 mb-3 2xl:mb-4 shadow-xl shadow-black/5">
+            <Sparkles className="w-3 h-3 2xl:w-4 2xl:h-4 text-[#FF8731]" />
+            <span className="text-xs 2xl:text-sm font-bold tracking-widest uppercase text-white drop-shadow-md">Lemons Hub</span>
           </motion.div>
           
-          <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1, duration: 0.8 }} className="text-5xl md:text-6xl lg:text-[4.5rem] font-black font-serif text-white tracking-tighter mb-4 leading-[1.1] pb-2 pr-10 overflow-visible flex flex-wrap items-baseline gap-x-4 drop-shadow-sm">
+          <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1, duration: 0.8 }} className="text-4xl md:text-5xl lg:text-[3.5rem] 2xl:text-[4.5rem] font-black font-serif text-white tracking-tighter mb-2 2xl:mb-4 leading-[1.1] pb-1 2xl:pb-2 pr-10 overflow-visible flex flex-wrap items-baseline gap-x-3 2xl:gap-x-4 drop-shadow-sm">
             <span>Ciao,</span>
             <span className="relative inline-block overflow-visible">
               <span className="relative z-10 text-[#A379F9]" style={{ textShadow: '0 0 40px rgba(135, 86, 250, 0.8), 0 4px 10px rgba(0,0,0,0.8), 0 1px 1px rgba(255,255,255,0.4)' }}>{user?.firstName || 'Ospite'}</span>
             </span>
           </motion.h1>
           
-          <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2, duration: 0.8 }} className="text-slate-200 font-medium text-lg md:text-xl max-w-2xl leading-relaxed drop-shadow-md">
+          <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2, duration: 0.8 }} className="text-slate-200 font-medium text-base lg:text-lg 2xl:text-xl max-w-2xl leading-relaxed drop-shadow-md">
             Benvenuto nel tuo ambiente di simulazione. Qui troverai tutto il necessario per prepararti.
           </motion.p>
         </div>
 
-        <motion.div variants={container} initial="hidden" animate="show" className="grid grid-cols-1 lg:grid-cols-12 gap-8 relative z-10">
+        <motion.div variants={container} initial="hidden" animate="show" className="grid grid-cols-1 lg:grid-cols-12 gap-6 2xl:gap-8 relative z-10">
           
           {/* Main Progress Dashboard - Epic Glassmorphism */}
           <motion.div 
@@ -96,20 +96,18 @@ const Home = () => {
             className="lg:col-span-8 group relative"
           >
             {/* Animated border glow */}
-            <div className="absolute -inset-[2px] bg-gradient-to-r from-[#FF8731] via-[#8756FA] to-[#FF8731] rounded-[3.7rem] opacity-20 group-hover:opacity-100 blur-xl transition-all duration-700 animate-gradient-xy"></div>
+            <div className="absolute -inset-[2px] bg-gradient-to-r from-[#FF8731] via-[#8756FA] to-[#FF8731] rounded-[2.2rem] 2xl:rounded-[3.7rem] opacity-20 group-hover:opacity-100 blur-xl transition-all duration-700 animate-gradient-xy"></div>
             
-            <div className="relative h-full bg-[#03091B]/5 backdrop-blur-[40px] rounded-[3.5rem] p-10 md:p-14 overflow-hidden shadow-[0_40px_100px_-10px_rgba(3,9,27,0.8)] border-t border-l border-white/20 border-r border-b border-white/5 flex flex-col md:flex-row items-center gap-12 group/glass">
+            <div className="relative h-full bg-[#03091B]/5 backdrop-blur-[40px] rounded-[2rem] 2xl:rounded-[3.5rem] p-8 lg:p-10 2xl:p-14 overflow-hidden shadow-[0_40px_100px_-10px_rgba(3,9,27,0.8)] border-t border-l border-white/20 border-r border-b border-white/5 flex flex-col md:flex-row items-center gap-8 lg:gap-10 2xl:gap-12 group/glass">
               
-              <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-transparent pointer-events-none opacity-50 z-0"></div>
-
               {/* Solid Matte 3D Skeuomorphic Progress Ring */}
-              <div className="relative w-64 h-64 shrink-0 flex items-center justify-center z-10">
+              <div className="relative w-48 h-48 lg:w-56 lg:h-56 2xl:w-64 2xl:h-64 shrink-0 flex items-center justify-center z-10">
                 <motion.div 
                   animate={{ rotateY: [0, 5, -5, 0], rotateX: [0, 5, -5, 0] }} 
                   transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
                   className="relative w-full h-full flex items-center justify-center drop-shadow-[0_15px_25px_rgba(3,9,27,0.5)]"
                 >
-                  <svg className="absolute inset-0 w-full h-full transform -rotate-90 overflow-visible">
+                  <svg className="absolute inset-0 w-full h-full transform -rotate-90 overflow-visible" viewBox="0 0 256 256">
                     <defs>
                       <linearGradient id="lemonsGradient" x1="0%" y1="0%" x2="100%" y2="100%">
                         <stop offset="0%" stopColor="#FF9E54" /> {/* Lemons Light Orange */}
@@ -165,30 +163,30 @@ const Home = () => {
                   </svg>
 
                   {/* Center Content with Glass Plate (Matching Hero Panel) */}
-                  <div className="absolute inset-[20px] rounded-full bg-[#03091B]/5 backdrop-blur-[40px] border-t border-l border-white/20 border-r border-b border-white/5 shadow-[0_40px_100px_-10px_rgba(3,9,27,0.8)] flex flex-col items-center justify-center z-10">
+                  <div className="absolute inset-[15px] lg:inset-[20px] rounded-full bg-[#03091B]/5 backdrop-blur-[40px] border-t border-l border-white/20 border-r border-b border-white/5 shadow-[0_40px_100px_-10px_rgba(3,9,27,0.8)] flex flex-col items-center justify-center z-10">
                     <motion.span 
                       initial={{ scale: 0, opacity: 0 }} 
                       animate={{ scale: 1, opacity: 1 }} 
                       transition={{ delay: 0.2, type: "spring", stiffness: 120 }} 
-                      className="text-6xl font-black font-serif text-white tracking-normal flex items-baseline"
+                      className="text-4xl lg:text-5xl 2xl:text-6xl font-black font-serif text-white tracking-normal flex items-baseline"
                       style={{ textShadow: '0 8px 16px rgba(0,0,0,0.9), 0 2px 4px rgba(0,0,0,0.6)' }}
                     >
                       {progressPercentage}
-                      <span className="text-3xl text-white ml-1 font-sans tracking-normal opacity-90">%</span>
+                      <span className="text-2xl 2xl:text-3xl text-white ml-1 font-sans tracking-normal opacity-90">%</span>
                     </motion.span>
                   </div>
                 </motion.div>
               </div>
               
               <div className="flex-1 text-center md:text-left relative z-10">
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-sm font-bold text-white mb-4 border border-white/10 backdrop-blur-md shadow-inner">
-                  <Target className="w-4 h-4 text-[#FF8731]" />
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-xs 2xl:text-sm font-bold text-white mb-3 2xl:mb-4 border border-white/10 backdrop-blur-md shadow-inner">
+                  <Target className="w-3 h-3 2xl:w-4 2xl:h-4 text-[#FF8731]" />
                   {completedCount} di {totalLessons} Moduli Completati
                 </div>
-                <h2 className="text-4xl md:text-5xl font-black font-serif text-white mb-6 leading-tight drop-shadow-sm">
+                <h2 className="text-3xl lg:text-4xl 2xl:text-5xl font-black font-serif text-white mb-4 2xl:mb-6 leading-tight drop-shadow-sm">
                   {hasFinishedAll ? "Status: Operativo" : "Prosegui il Training"}
                 </h2>
-                <p className="text-slate-300 text-lg mb-8 leading-relaxed font-medium">
+                <p className="text-slate-300 text-base 2xl:text-lg mb-6 2xl:mb-8 leading-relaxed font-medium">
                   {hasFinishedAll 
                     ? "Eccellente. Hai acquisito tutte le competenze necessarie. Il tuo profilo è ora abilitato all'uso dell'ecosistema."
                     : "Manca poco. Completa le sessioni rimanenti per sbloccare la tua certificazione ufficiale e l'accesso completo."}
@@ -198,20 +196,20 @@ const Home = () => {
                   <motion.button 
                     whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}
                     onClick={() => handleNav(`/modules?mode=${mode}`)} 
-                    className="w-full md:w-auto px-10 py-6 bg-gradient-to-r from-[#8756FA] to-[#FF8731] text-white rounded-[2.5rem] font-black text-xl flex items-center justify-center gap-4 transition-all shadow-[0_15px_40px_-10px_rgba(135,86,250,0.8),inset_0_2px_4px_rgba(255,255,255,0.3)] hover:shadow-[0_20px_60px_-10px_rgba(255,135,49,1),inset_0_2px_4px_rgba(255,255,255,0.5)] border border-white/20"
+                    className="w-full md:w-auto px-8 2xl:px-10 py-5 2xl:py-6 bg-gradient-to-r from-[#8756FA] to-[#FF8731] text-white rounded-[2rem] 2xl:rounded-[2.5rem] font-black text-lg 2xl:text-xl flex items-center justify-center gap-3 2xl:gap-4 transition-all shadow-[0_15px_40px_-10px_rgba(135,86,250,0.8),inset_0_2px_4px_rgba(255,255,255,0.3)] hover:shadow-[0_20px_60px_-10px_rgba(255,135,49,1),inset_0_2px_4px_rgba(255,255,255,0.5)] border border-white/20"
                   >
                     <span className="relative z-10 drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]">Vai ai Moduli</span>
-                    <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center relative z-10 transition-colors duration-300 border border-white/30 shadow-inner">
-                      <ArrowRight className="w-5 h-5" />
+                    <div className="w-6 h-6 2xl:w-8 2xl:h-8 rounded-full bg-white/20 flex items-center justify-center relative z-10 transition-colors duration-300 border border-white/30 shadow-inner">
+                      <ArrowRight className="w-4 h-4 2xl:w-5 2xl:h-5" />
                     </div>
                   </motion.button>
                 ) : (
                   <motion.button 
                     whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}
                     onClick={downloadCertificate} 
-                    className="w-full md:w-auto px-10 py-6 bg-gradient-to-r from-[#FF8731] to-[#FF9E54] text-white rounded-[2.5rem] font-black text-xl flex items-center justify-center gap-4 transition-all shadow-[0_15px_30px_rgba(255,135,49,0.5),inset_0_2px_10px_rgba(255,255,255,0.4)] hover:shadow-[0_20px_40px_rgba(255,135,49,0.8),inset_0_2px_10px_rgba(255,255,255,0.6)] border border-[#FF8731]/50"
+                    className="w-full md:w-auto px-8 2xl:px-10 py-5 2xl:py-6 bg-gradient-to-r from-[#FF8731] to-[#FF9E54] text-white rounded-[2rem] 2xl:rounded-[2.5rem] font-black text-lg 2xl:text-xl flex items-center justify-center gap-3 2xl:gap-4 transition-all shadow-[0_15px_30px_rgba(255,135,49,0.5),inset_0_2px_10px_rgba(255,255,255,0.4)] hover:shadow-[0_20px_40px_rgba(255,135,49,0.8),inset_0_2px_10px_rgba(255,255,255,0.6)] border border-[#FF8731]/50"
                   >
-                    <Award className="w-7 h-7 relative z-10 drop-shadow-md" /> 
+                    <Award className="w-6 h-6 2xl:w-7 2xl:h-7 relative z-10 drop-shadow-md" /> 
                     <span className="relative z-10 drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] tracking-wide">Ottieni Certificato</span>
                   </motion.button>
                 )}
@@ -220,24 +218,24 @@ const Home = () => {
           </motion.div>
 
           {/* Action Cards Grid */}
-          <motion.div variants={container} className="lg:col-span-4 flex flex-col gap-6">
+          <motion.div variants={container} className="lg:col-span-4 flex flex-col gap-6 2xl:gap-6">
             
             {/* Card 1 */}
             <motion.div 
               variants={item}
               whileHover={{ y: -5, scale: 1.02 }}
               onClick={() => handleNav(`/modules?mode=${mode}`)} 
-              className="flex-1 bg-gradient-to-br from-[#8756FA] to-[#6A35E8] rounded-[2.5rem] p-8 md:p-10 cursor-pointer relative overflow-hidden group shadow-[0_20px_40px_-10px_rgba(135,86,250,0.6)] hover:shadow-[0_30px_60px_-10px_rgba(135,86,250,0.8)] border-t border-l border-white/30 border-r border-b border-white/10"
+              className="flex-1 bg-gradient-to-br from-[#8756FA] to-[#6A35E8] rounded-[2rem] 2xl:rounded-[2.5rem] p-6 lg:p-8 2xl:p-10 cursor-pointer relative overflow-hidden group shadow-[0_20px_40px_-10px_rgba(135,86,250,0.6)] hover:shadow-[0_30px_60px_-10px_rgba(135,86,250,0.8)] border-t border-l border-white/30 border-r border-b border-white/10"
             >
               <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.1] mix-blend-overlay"></div>
-              <div className="absolute -right-10 -top-10 w-40 h-40 bg-white/20 rounded-full blur-[40px] group-hover:scale-150 transition-transform duration-700"></div>
+              <div className="absolute -right-10 -top-10 w-32 h-32 2xl:w-40 2xl:h-40 bg-white/20 rounded-full blur-[40px] group-hover:scale-150 transition-transform duration-700"></div>
               
-              <div className="w-16 h-16 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center mb-6 border border-white/30 text-white shadow-inner group-hover:rotate-12 transition-transform duration-500">
-                <Play className="w-8 h-8 fill-current drop-shadow-md" />
+              <div className="w-12 h-12 2xl:w-16 2xl:h-16 bg-white/20 backdrop-blur-md rounded-[1rem] 2xl:rounded-2xl flex items-center justify-center mb-4 2xl:mb-6 border border-white/30 text-white shadow-inner group-hover:rotate-12 transition-transform duration-500">
+                <Play className="w-6 h-6 2xl:w-8 2xl:h-8 fill-current drop-shadow-md" />
               </div>
-              <h3 className="text-3xl font-black font-serif text-white mb-2 relative z-10 tracking-tight drop-shadow-sm">Esplora i<br/>Contenuti</h3>
-              <div className="absolute bottom-8 right-8 w-12 h-12 rounded-full bg-white/10 flex items-center justify-center backdrop-blur-md border border-white/20 group-hover:bg-white group-hover:text-[#8756FA] text-white transition-all duration-300">
-                <ArrowRight className="w-5 h-5 -rotate-45 group-hover:rotate-0 transition-transform duration-300" />
+              <h3 className="text-2xl lg:text-[1.75rem] 2xl:text-3xl font-black font-serif text-white mb-2 relative z-10 tracking-tight drop-shadow-sm leading-tight">Esplora i<br/>Contenuti</h3>
+              <div className="absolute bottom-6 right-6 2xl:bottom-8 2xl:right-8 w-10 h-10 2xl:w-12 2xl:h-12 rounded-full bg-white/10 flex items-center justify-center backdrop-blur-md border border-white/20 group-hover:bg-white group-hover:text-[#8756FA] text-white transition-all duration-300">
+                <ArrowRight className="w-4 h-4 2xl:w-5 2xl:h-5 -rotate-45 group-hover:rotate-0 transition-transform duration-300" />
               </div>
             </motion.div>
             
@@ -246,17 +244,17 @@ const Home = () => {
               variants={item}
               whileHover={{ y: -5, scale: 1.02 }}
               onClick={() => handleNav(`/support?mode=${mode}`)} 
-              className="flex-1 bg-gradient-to-br from-[#FF8731] to-[#E65C00] rounded-[2.5rem] p-8 md:p-10 cursor-pointer relative overflow-hidden group shadow-[0_20px_40px_-10px_rgba(255,135,49,0.6)] hover:shadow-[0_30px_60px_-10px_rgba(255,135,49,0.8)] border-t border-l border-white/30 border-r border-b border-white/10"
+              className="flex-1 bg-gradient-to-br from-[#FF8731] to-[#E65C00] rounded-[2rem] 2xl:rounded-[2.5rem] p-6 lg:p-8 2xl:p-10 cursor-pointer relative overflow-hidden group shadow-[0_20px_40px_-10px_rgba(255,135,49,0.6)] hover:shadow-[0_30px_60px_-10px_rgba(255,135,49,0.8)] border-t border-l border-white/30 border-r border-b border-white/10"
             >
               <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.1] mix-blend-overlay"></div>
-              <div className="absolute -right-10 -bottom-10 w-40 h-40 bg-white/20 rounded-full blur-[40px] group-hover:scale-150 transition-transform duration-700"></div>
+              <div className="absolute -right-10 -bottom-10 w-32 h-32 2xl:w-40 2xl:h-40 bg-white/20 rounded-full blur-[40px] group-hover:scale-150 transition-transform duration-700"></div>
               
-              <div className="w-16 h-16 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center mb-6 border border-white/30 text-white shadow-inner group-hover:-rotate-12 transition-transform duration-500">
-                <Zap className="w-8 h-8 drop-shadow-md fill-current" />
+              <div className="w-12 h-12 2xl:w-16 2xl:h-16 bg-white/20 backdrop-blur-md rounded-[1rem] 2xl:rounded-2xl flex items-center justify-center mb-4 2xl:mb-6 border border-white/30 text-white shadow-inner group-hover:-rotate-12 transition-transform duration-500">
+                <Zap className="w-6 h-6 2xl:w-8 2xl:h-8 drop-shadow-md fill-current" />
               </div>
-              <h3 className="text-3xl font-black font-serif text-white mb-2 relative z-10 tracking-tight drop-shadow-md">Centro<br/>Assistenza</h3>
-              <div className="absolute bottom-8 right-8 w-12 h-12 rounded-full bg-white/10 flex items-center justify-center text-white backdrop-blur-md border border-white/20 group-hover:bg-white group-hover:text-[#FF8731] transition-all duration-300 shadow-inner">
-                <ArrowRight className="w-5 h-5 -rotate-45 group-hover:rotate-0 transition-transform duration-300" />
+              <h3 className="text-2xl lg:text-[1.75rem] 2xl:text-3xl font-black font-serif text-white mb-2 relative z-10 tracking-tight drop-shadow-md leading-tight">Centro<br/>Assistenza</h3>
+              <div className="absolute bottom-6 right-6 2xl:bottom-8 2xl:right-8 w-10 h-10 2xl:w-12 2xl:h-12 rounded-full bg-white/10 flex items-center justify-center text-white backdrop-blur-md border border-white/20 group-hover:bg-white group-hover:text-[#FF8731] transition-all duration-300 shadow-inner">
+                <ArrowRight className="w-4 h-4 2xl:w-5 2xl:h-5 -rotate-45 group-hover:rotate-0 transition-transform duration-300" />
               </div>
             </motion.div>
 
