@@ -71,6 +71,15 @@ const Lesson = ({ lesson, mode, onComplete }) => {
       setQuizPassed(true);
       setHasWatched(true);
       setShowQuiz(false);
+      const currentUser = JSON.parse(localStorage.getItem('lemo_user'));
+      if (currentUser) {
+        const progressKey = `lemo_progress_${currentUser.name}`;
+        const savedProgress = JSON.parse(localStorage.getItem(progressKey)) || [];
+        if (!savedProgress.includes(lesson.id)) {
+          localStorage.setItem(progressKey, JSON.stringify([...savedProgress, lesson.id]));
+          if (onComplete) onComplete(lesson.id);
+        }
+      }
     } else {
       audio.playError();
       alert(l.wrongAnswer);
