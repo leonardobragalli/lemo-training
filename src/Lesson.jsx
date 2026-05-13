@@ -163,7 +163,6 @@ const Lesson = ({ lesson, mode, onComplete }) => {
                       <div className="w-12 h-12 lg:w-12 lg:h-12 2xl:w-16 2xl:h-16 bg-gradient-to-br from-[#FFF5EE] to-[#FFE8D6] dark:from-[#FF8731]/20 dark:to-[#FF8731]/5 text-[#FF8731] rounded-2xl flex items-center justify-center shrink-0 group-hover:scale-110 group-hover:-rotate-6 transition-transform duration-500 shadow-inner border border-[#FF8731]/20"><FileText className="w-6 h-6 lg:w-6 lg:h-6 2xl:w-7 2xl:h-7" /></div>
                       <div className="flex-1 relative z-10 px-1">
                         <h4 className="font-black text-[#03091B] dark:text-white text-base lg:text-lg 2xl:text-xl mb-0.5 group-hover:text-[#FF8731] transition-colors leading-tight break-words">Materiale Didattico</h4>
-                        <p className="text-xs lg:text-sm 2xl:text-base text-slate-500 dark:text-slate-400 font-medium leading-tight">Slide_Modulo_{lesson.id}</p>
                       </div>
                       <div className="w-8 h-8 lg:w-8 lg:h-8 2xl:w-10 2xl:h-10 rounded-full bg-black/5 dark:bg-white/5 flex items-center justify-center text-slate-400 group-hover:bg-[#FF8731] group-hover:text-white transition-all duration-300 relative z-10 shrink-0">
                         <ChevronRight className="w-4 h-4 lg:w-4 lg:h-4 2xl:w-5 2xl:h-5" />
