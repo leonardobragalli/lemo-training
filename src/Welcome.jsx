@@ -87,17 +87,17 @@ const Welcome = () => {
       {/* Lato Sinistro - Lemons Brand Experience */}
       <div className="hidden md:flex md:w-[50%] lg:w-[55%] p-16 lg:p-16 2xl:p-24 flex-col justify-between relative z-10">
         
-        <div className="relative z-10 mt-12">
-          <motion.div initial={{ scale: 0, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ type: "spring", stiffness: 200, damping: 20 }} className="mb-8 inline-block">
+        <div className="relative z-10 mt-0 lg:-mt-8 2xl:mt-12">
+          <motion.div initial={{ scale: 0, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ type: "spring", stiffness: 200, damping: 20 }} className="mb-6 2xl:mb-8 inline-block">
             <img src="/images/logo-character-photoroom.png" alt="Lemons in the room" className="h-40 2xl:h-56 object-contain drop-shadow-2xl" />
           </motion.div>
-          <motion.h1 initial={{ y: 30, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.2, duration: 0.8, ease: [0.16, 1, 0.3, 1] }} className="text-5xl lg:text-6xl 2xl:text-[6rem] font-black font-serif text-[#03091B] mb-8 leading-[1.1] tracking-tight drop-shadow-2xl pr-10 overflow-visible antialiased" style={{ WebkitFontSmoothing: 'antialiased', MozOsxFontSmoothing: 'grayscale' }}>
+          <motion.h1 initial={{ y: 30, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.2, duration: 0.8, ease: [0.16, 1, 0.3, 1] }} className="text-5xl lg:text-[3.5rem] 2xl:text-[6rem] font-black font-serif text-[#03091B] mb-6 2xl:mb-8 leading-[1.1] tracking-tight drop-shadow-2xl pr-10 overflow-visible antialiased" style={{ WebkitFontSmoothing: 'antialiased', MozOsxFontSmoothing: 'grayscale' }}>
             Il training <br/>
-            <span className="relative inline-block mt-4 overflow-visible">
+            <span className="relative inline-block mt-2 2xl:mt-4 overflow-visible">
               <span className="relative z-10 text-transparent bg-clip-text bg-gradient-to-r from-[#FF8731] to-[#FF9E54] pr-4">che accoglie.</span>
             </span>
           </motion.h1>
-          <motion.p initial={{ y: 30, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.3, duration: 0.8, ease: [0.16, 1, 0.3, 1] }} className="text-[#03091B]/70 text-xl 2xl:text-2xl max-w-xl font-bold leading-relaxed">
+          <motion.p initial={{ y: 30, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.3, duration: 0.8, ease: [0.16, 1, 0.3, 1] }} className="text-[#03091B]/70 text-lg 2xl:text-2xl max-w-xl font-bold leading-relaxed">
             Preparati a vivere la realtà virtuale in reparto. Un percorso formativo semplice, intuitivo e sicuro.
           </motion.p>
         </div>
@@ -109,7 +109,7 @@ const Welcome = () => {
       {/* Lato Destro - Apple-like Floating Form */}
       <div className="flex-1 flex items-center justify-center p-4 sm:p-12 relative z-10">
 
-        <motion.div variants={containerVariants} initial="hidden" animate="visible" className="w-full max-w-[460px] 2xl:max-w-[540px] relative z-10 bg-black/20 backdrop-blur-[40px] p-8 pt-4 md:p-10 2xl:p-14 rounded-[3.5rem] shadow-xl border-t border-l border-white/20 border-r border-b border-white/5 my-8 md:my-0 group/glass">
+        <motion.div variants={containerVariants} initial="hidden" animate="visible" className="w-full max-w-[420px] 2xl:max-w-[540px] relative z-10 bg-black/20 backdrop-blur-[40px] p-8 pt-4 md:p-8 md:px-10 2xl:p-14 rounded-[3.5rem] shadow-xl border-t border-l border-white/20 border-r border-b border-white/5 my-8 md:my-0 group/glass">
 
           <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-transparent rounded-[3.5rem] pointer-events-none opacity-50 z-0"></div>
 
