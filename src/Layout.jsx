@@ -26,7 +26,7 @@ const Layout = () => {
   const handleNavClick = () => audio.playClick();
 
   return (
-    <div className={`flex h-screen overflow-hidden font-sans transition-colors duration-300 ${isDarkMode ? 'bg-[#020617]' : 'bg-[#FFF5EE]'}`}>
+    <div className={`flex h-[100dvh] overflow-hidden font-sans transition-colors duration-300 ${isDarkMode ? 'bg-[#020617]' : 'bg-[#FFF5EE]'}`}>
       
       {/* Sidebar Desktop - Extreme Floating Glass */}
       <motion.aside 
