@@ -77,7 +77,7 @@ const MobileLangPicker = ({ isDarkMode, inline }) => {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 8, scale: 0.95 }}
             transition={{ duration: 0.15 }}
-            className="absolute bottom-full mb-2 left-0 bg-[#03091B]/90 backdrop-blur-xl border border-white/10 rounded-[1.5rem] overflow-hidden shadow-xl z-50 min-w-[140px]"
+            className="absolute bottom-full mb-2 right-0 bg-[#03091B]/90 backdrop-blur-xl border border-white/10 rounded-[1.5rem] overflow-hidden shadow-xl z-50 min-w-[140px]"
           >
             {LANGUAGES.map(l => (
               <button
@@ -175,7 +175,10 @@ const Layout = () => {
       </motion.aside>
 
       {/* Mobile Top Actions */}
-      <div className="md:hidden fixed top-6 right-6 z-50">
+      <div className="md:hidden fixed top-6 right-6 z-50 flex flex-col items-end gap-3">
+        <a href="https://www.lemonsintheroom.com/" target="_blank" rel="noopener noreferrer" onClick={() => audio.playClick()} className={`w-12 h-12 rounded-full backdrop-blur-2xl border flex items-center justify-center shadow-lg transition-all ${isDarkMode ? 'bg-white/10 border-white/20 text-slate-300' : 'bg-white/80 border-slate-200 text-slate-600'}`}>
+          <Globe className="w-5 h-5" />
+        </a>
         <button onClick={handleLogout} className={`w-12 h-12 rounded-full backdrop-blur-2xl border flex items-center justify-center shadow-lg transition-all ${isDarkMode ? 'bg-red-500/10 border-red-500/20 text-red-400' : 'bg-red-50 border-red-200 text-red-500'}`}>
           <LogOut className="w-5 h-5 ml-0.5" />
         </button>
