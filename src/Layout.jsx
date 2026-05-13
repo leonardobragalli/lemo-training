@@ -40,14 +40,14 @@ const Layout = () => {
           <img src={isDarkMode ? "/images/logos/logo esteso bianco panna png.png" : "/images/logos/logo esteso nero png.png"} alt="Lemons in the room Logo" className="h-16 w-auto object-contain drop-shadow-md" />
         </div>
 
-        <nav className="flex-1 px-6 py-10 space-y-4">
+        <nav className="flex-1 px-6 py-6 overflow-y-auto space-y-2 lg:space-y-4">
           {navItems.map((item) => (
             <NavLink
               key={item.label}
               to={item.path}
               onClick={handleNavClick}
               className={({ isActive }) => 
-                `flex items-center gap-5 px-6 py-5 rounded-[2rem] font-bold transition-all duration-300 relative group overflow-hidden ${
+                `flex items-center gap-4 px-5 py-4 lg:gap-5 lg:px-6 lg:py-5 rounded-[2rem] font-bold transition-all duration-300 relative group overflow-hidden ${
                   isActive ? 'text-white shadow-[0_20px_40px_-10px_rgba(255,135,49,0.5)] scale-[1.02]' : 
                   (isDarkMode ? 'text-slate-400 hover:text-white' : 'text-slate-600 hover:text-[#03091B]')
                 }`
