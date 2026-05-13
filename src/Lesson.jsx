@@ -100,7 +100,7 @@ const Lesson = ({ lesson, mode, onComplete }) => {
       <div className="flex flex-col lg:flex-row h-full">
         
         {/* Video Player Section - Spatial Glass Screen */}
-        <div className="lg:w-[60%] xl:w-2/3 relative flex flex-col self-start">
+        <div className="lg:w-[60%] xl:w-2/3 relative flex flex-col">
           <div className="w-full relative group shadow-2xl shrink-0 bg-black/90 dark:bg-black overflow-hidden">
             <video
               ref={playerRef}
@@ -127,6 +127,23 @@ const Lesson = ({ lesson, mode, onComplete }) => {
                 <span className="tracking-wide uppercase">{l.mandatoryView}</span>
               </motion.div>
             )}
+          </div>
+
+          {/* Desktop: area below video, same bg as sidebar */}
+          <div className="hidden lg:flex flex-1 bg-white/40 dark:bg-[#03091B]/40 backdrop-blur-md border-t border-white/30 dark:border-white/5 items-center justify-center p-8 2xl:p-10">
+            <motion.button
+              whileHover={quizPassed || mode === 'full' ? { scale: 1.02 } : {}}
+              whileTap={quizPassed || mode === 'full' ? { scale: 0.98 } : {}}
+              onClick={markAsCompleted}
+              disabled={!quizPassed && mode === 'guided'}
+              className={`w-full max-w-xs py-4 2xl:py-5 px-4 text-sm 2xl:text-lg font-black rounded-full flex items-center justify-center gap-2 2xl:gap-3 transition-all duration-500 relative overflow-hidden group ${
+                quizPassed || mode === 'full' ? 'bg-[#03091B] dark:bg-white text-white dark:text-[#03091B] shadow-[0_20px_40px_-10px_rgba(0,0,0,0.3)] dark:shadow-[0_20px_40px_-10px_rgba(255,255,255,0.3)] cursor-pointer' : 'bg-black/5 dark:bg-white/5 text-slate-400 dark:text-slate-600 cursor-not-allowed border border-black/10 dark:border-white/10 shadow-none'
+              }`}
+            >
+              {(quizPassed || mode === 'full') && <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 dark:via-black/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-in-out"></div>}
+              <CheckCircle className={`w-5 h-5 2xl:w-6 2xl:h-6 relative z-10 ${quizPassed || mode === 'full' ? 'text-[#10B981]' : ''}`} />
+              <span className="relative z-10 text-center">{quizPassed || mode === 'full' ? l.certify : l.waitingCompletion}</span>
+            </motion.button>
           </div>
         </div>
 
@@ -182,19 +199,19 @@ const Lesson = ({ lesson, mode, onComplete }) => {
             )}
           </div>
 
-          <div className="mt-6 lg:mt-6 2xl:mt-8 relative z-10 w-full">
-            <motion.button 
-              whileHover={quizPassed || mode === 'full' ? { scale: 1.02 } : {}} 
-              whileTap={quizPassed || mode === 'full' ? { scale: 0.98 } : {}} 
-              onClick={markAsCompleted} 
+          {/* Mobile only button */}
+          <div className="lg:hidden mt-6 relative z-10 w-full">
+            <motion.button
+              whileHover={quizPassed || mode === 'full' ? { scale: 1.02 } : {}}
+              whileTap={quizPassed || mode === 'full' ? { scale: 0.98 } : {}}
+              onClick={markAsCompleted}
               disabled={!quizPassed && mode === 'guided'}
-              className={`w-full py-4 lg:py-4 2xl:py-5 px-4 text-sm lg:text-sm 2xl:text-lg font-black rounded-full flex flex-col sm:flex-row items-center justify-center gap-2 lg:gap-2 2xl:gap-3 transition-all duration-500 relative overflow-hidden group ${
+              className={`w-full py-4 px-4 text-sm font-black rounded-full flex items-center justify-center gap-2 transition-all duration-500 relative overflow-hidden group ${
                 quizPassed || mode === 'full' ? 'bg-[#03091B] dark:bg-white text-white dark:text-[#03091B] shadow-[0_20px_40px_-10px_rgba(0,0,0,0.3)] dark:shadow-[0_20px_40px_-10px_rgba(255,255,255,0.3)] cursor-pointer' : 'bg-black/5 dark:bg-white/5 text-slate-400 dark:text-slate-600 cursor-not-allowed border border-black/10 dark:border-white/10 shadow-none'
               }`}
             >
               {(quizPassed || mode === 'full') && <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 dark:via-black/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-in-out"></div>}
-              
-              <CheckCircle className={`w-5 h-5 lg:w-5 lg:h-5 2xl:w-6 2xl:h-6 relative z-10 ${quizPassed || mode === 'full' ? 'text-[#10B981]' : ''}`} />
+              <CheckCircle className={`w-5 h-5 relative z-10 ${quizPassed || mode === 'full' ? 'text-[#10B981]' : ''}`} />
               <span className="relative z-10 text-center">{quizPassed || mode === 'full' ? l.certify : l.waitingCompletion}</span>
             </motion.button>
           </div>
