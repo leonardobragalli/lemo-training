@@ -164,11 +164,6 @@ const Support = () => {
                 <div className="space-y-2.5 2xl:space-y-4 pl-[3.5rem] 2xl:pl-[4.5rem]">
                   <div className="relative">
                     <div className="absolute left-[-1.25rem] 2xl:left-[-1.5rem] top-1.5 2xl:top-2 w-1.5 h-1.5 rounded-full bg-[#FF8731]"></div>
-                    <h3 className="text-sm 2xl:text-xl font-black font-serif tracking-tight truncate text-white">Niccolò Cesareo Santoro</h3>
-                    <a href="tel:+393888281986" className="inline-block text-xs 2xl:text-base font-black tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-white to-white/70 hover:from-[#FF8731] hover:to-[#FF9E54] transition-all drop-shadow-md">+39 388 828 1986</a>
-                  </div>
-                  <div className="relative">
-                    <div className="absolute left-[-1.25rem] 2xl:left-[-1.5rem] top-1.5 2xl:top-2 w-1.5 h-1.5 rounded-full bg-[#FF8731]"></div>
                     <h3 className="text-sm 2xl:text-xl font-black font-serif tracking-tight truncate text-white">Leonardo Bragalli</h3>
                     <a href="tel:+393487589509" className="inline-block text-xs 2xl:text-base font-black tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-white to-white/70 hover:from-[#FF8731] hover:to-[#FF9E54] transition-all drop-shadow-md">+39 348 758 9509</a>
                   </div>
