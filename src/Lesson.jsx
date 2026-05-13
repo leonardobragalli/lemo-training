@@ -36,17 +36,6 @@ const Lesson = ({ lesson, mode, onComplete }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [lesson.id]);
 
-  useEffect(() => {
-    // Scroll to the video player when the lesson is opened
-    // Use a slight delay to allow the accordion opening animation to happen first
-    const timer = setTimeout(() => {
-      if (playerRef.current) {
-        playerRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }
-    }, 300);
-    return () => clearTimeout(timer);
-  }, []);
-
   const handleTimeUpdate = () => {
     if (!playerRef.current || hasWatched) return;
 
