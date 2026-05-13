@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ShieldAlert, Users, CheckCircle, Activity, Building2, Search, History, Download, TrendingUp, ChevronDown, ChevronUp, Lock, Target } from 'lucide-react';
+import { ShieldAlert, Users, CheckCircle, Activity, Building2, Search, History, Download, TrendingUp, ChevronDown, ChevronUp, Lock, Target, Trash2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer, PieChart, Pie, Cell, AreaChart, Area } from 'recharts';
 import { QRCodeCanvas } from 'qrcode.react';
@@ -51,19 +51,6 @@ const Admin = () => {
       });
     });
 
-    if (usersArray.length === 0) {
-      usersArray = [
-        { name: "Mario Rossi", hospital: "Careggi", department: "Cardiologia", progressCount: 4, percentage: 100, loginCount: 5, firstLogin: new Date(Date.now() - 86400000 * 3).toISOString(), lastLogin: new Date().toISOString(), completedModulesList: [1,2,3,4], mode: 'guided' },
-        { name: "Giulia Bianchi", hospital: "Meyer", department: "Pediatria", progressCount: 2, percentage: 50, loginCount: 2, firstLogin: new Date(Date.now() - 86400000).toISOString(), lastLogin: new Date(Date.now() - 3600000).toISOString(), completedModulesList: [1,2], mode: 'guided' },
-        { name: "Luca Verdi", hospital: "San Raffaele", department: "Pronto Soccorso", progressCount: 0, percentage: 0, loginCount: 1, firstLogin: new Date().toISOString(), lastLogin: new Date().toISOString(), completedModulesList: [], mode: 'full' }
-      ];
-      hospitalsMap = { 'Careggi': 15, 'Meyer': 8, 'San Raffaele': 5 };
-      dropOffMap = { 0: 5, 1: 10, 2: 12, 3: 8, 4: 25 };
-      completedCount = 25;
-      activeTodayCount = 12;
-      totalLogins = 145;
-    }
-
     usersArray.sort((a, b) => new Date(b.lastLogin || 0) - new Date(a.lastLogin || 0));
     setAllUsersList(usersArray);
 
@@ -76,21 +63,29 @@ const Admin = () => {
       { name: 'Completati', utenti: dropOffMap[4] },
     ];
 
+    const loginsByDay = {};
+    Object.values(globalUsers).forEach(user => {
+      if (user.lastLogin) {
+        const day = user.lastLogin.split('T')[0];
+        loginsByDay[day] = (loginsByDay[day] || 0) + 1;
+      }
+    });
     const activityData = Array.from({length: 7}).map((_, i) => {
       const d = new Date();
       d.setDate(d.getDate() - (6 - i));
-      return { 
-        name: d.toLocaleDateString('it-IT', { weekday: 'short' }), 
-        accessi: Math.floor(Math.random() * 20) + 5 
+      const dayKey = d.toISOString().split('T')[0];
+      return {
+        name: d.toLocaleDateString('it-IT', { weekday: 'short' }),
+        accessi: loginsByDay[dayKey] || 0
       };
     });
 
     setStats({
-      totalUsers: usersArray.length > 3 ? usersArray.length : 60,
+      totalUsers: usersArray.length,
       completed: completedCount,
       activeToday: activeTodayCount,
       totalLogins: totalLogins,
-      completionRate: Math.round((completedCount / (usersArray.length > 3 ? usersArray.length : 60)) * 100) || 0,
+      completionRate: usersArray.length > 0 ? Math.round((completedCount / usersArray.length) * 100) : 0,
       hospitals: hospitalsData,
       completionRates: completionRatesData,
       activityData: activityData
@@ -107,6 +102,17 @@ const Admin = () => {
       audio.playError();
       alert('Password errata!');
     }
+  };
+
+  const deleteUser = (userName) => {
+    if (!window.confirm(`Eliminare definitivamente la sessione di "${userName}"? L'operazione non è reversibile.`)) return;
+    audio.playClick();
+    const globalUsers = JSON.parse(localStorage.getItem('lemo_all_users')) || {};
+    delete globalUsers[userName];
+    localStorage.setItem('lemo_all_users', JSON.stringify(globalUsers));
+    localStorage.removeItem(`lemo_progress_${userName}`);
+    setExpandedUser(null);
+    loadStats();
   };
 
   const exportCSV = () => {
@@ -436,6 +442,12 @@ const Admin = () => {
                                     <div className="flex justify-between"><span className="text-slate-500">Primo Login:</span> <span>{new Date(u.firstLogin || u.lastLogin || Date.now()).toLocaleDateString('it-IT')}</span></div>
                                     <div className="flex justify-between"><span className="text-slate-500">Ultimo Login:</span> <span className="text-white font-bold">{new Date(u.lastLogin || Date.now()).toLocaleString('it-IT')}</span></div>
                                   </div>
+                                  <button
+                                    onClick={(e) => { e.stopPropagation(); deleteUser(u.name); }}
+                                    className="mt-4 flex items-center gap-2 px-4 py-2 bg-red-500/10 hover:bg-red-500/20 border border-red-500/20 hover:border-red-500/40 text-red-400 hover:text-red-300 rounded-xl text-xs font-bold transition-all duration-200"
+                                  >
+                                    <Trash2 className="w-3.5 h-3.5" /> Elimina sessione
+                                  </button>
                                 </div>
                                 <div className="md:col-span-2">
                                   <p className="text-[10px] uppercase tracking-widest text-slate-500 font-bold mb-3">Moduli Completati</p>
