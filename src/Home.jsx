@@ -83,7 +83,7 @@ const Home = () => {
             </span>
           </motion.h1>
           
-          <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2, duration: 0.8 }} className="text-slate-200 font-medium text-xs lg:text-sm 2xl:text-xl max-w-lg 2xl:max-w-2xl leading-relaxed drop-shadow-md">
+          <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2, duration: 0.8 }} className="text-slate-200 font-medium text-xs lg:text-sm 2xl:text-xl leading-relaxed drop-shadow-md">
             Benvenuto nel tuo ambiente di simulazione. Qui troverai tutto il necessario per prepararti.
           </motion.p>
         </div>
