@@ -53,7 +53,7 @@ const LangPicker = ({ isHome, isDarkMode }) => {
   );
 };
 
-const MobileLangPicker = ({ isDarkMode }) => {
+const MobileLangPicker = ({ isDarkMode, inline }) => {
   const { lang, switchLang } = useLang();
   const [open, setOpen] = useState(false);
   const current = LANGUAGES.find(l => l.code === lang);
@@ -62,9 +62,13 @@ const MobileLangPicker = ({ isDarkMode }) => {
     <div className="relative">
       <button
         onClick={() => { audio.playClick(); setOpen(o => !o); }}
-        className={`w-12 h-12 rounded-full backdrop-blur-2xl border flex items-center justify-center shadow-lg transition-all text-lg ${isDarkMode ? 'bg-white/10 border-white/20' : 'bg-white/80 border-slate-200'}`}
+        className={inline
+          ? `flex flex-col items-center justify-center gap-1 px-4 py-2 rounded-2xl transition-all ${isDarkMode ? 'text-slate-400 hover:text-white' : 'text-slate-500 hover:text-black'}`
+          : `w-12 h-12 rounded-full backdrop-blur-2xl border flex items-center justify-center shadow-lg transition-all text-lg ${isDarkMode ? 'bg-white/10 border-white/20' : 'bg-white/80 border-slate-200'}`
+        }
       >
-        {current.flag}
+        <span className="text-base leading-none">{current.flag}</span>
+        {inline && <span className="text-[9px] font-black uppercase tracking-widest">{current.code.toUpperCase()}</span>}
       </button>
       <AnimatePresence>
         {open && (
@@ -73,7 +77,7 @@ const MobileLangPicker = ({ isDarkMode }) => {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 8, scale: 0.95 }}
             transition={{ duration: 0.15 }}
-            className="absolute top-full mt-2 right-0 bg-[#03091B]/90 backdrop-blur-xl border border-white/10 rounded-[1.5rem] overflow-hidden shadow-xl z-50 min-w-[140px]"
+            className="absolute bottom-full mb-2 left-0 bg-[#03091B]/90 backdrop-blur-xl border border-white/10 rounded-[1.5rem] overflow-hidden shadow-xl z-50 min-w-[140px]"
           >
             {LANGUAGES.map(l => (
               <button
@@ -170,16 +174,7 @@ const Layout = () => {
         </div>
       </motion.aside>
 
-      {/* Mobile Top Actions */}
-      <div className="md:hidden fixed top-6 right-6 z-50 flex flex-col items-end gap-3">
-        <MobileLangPicker isDarkMode={isDarkMode} />
-        <a href="https://www.lemonsintheroom.com/" target="_blank" rel="noopener noreferrer" onClick={() => audio.playClick()} className={`w-12 h-12 rounded-full backdrop-blur-2xl border flex items-center justify-center shadow-lg transition-all ${isDarkMode ? 'bg-white/10 border-white/20 text-slate-300' : 'bg-white/80 border-slate-200 text-slate-600'}`}>
-          <Globe className="w-5 h-5" />
-        </a>
-        <button onClick={handleLogout} className={`w-12 h-12 rounded-full backdrop-blur-2xl border flex items-center justify-center shadow-lg transition-all ${isDarkMode ? 'bg-red-500/10 border-red-500/20 text-red-400' : 'bg-red-50 border-red-200 text-red-500'}`}>
-          <LogOut className="w-5 h-5 ml-0.5" />
-        </button>
-      </div>
+      {/* Mobile Top Actions — rimossi, ora nel bottom nav */}
 
       {/* Main Content */}
       <main className="flex-1 overflow-y-auto relative scroll-smooth bg-transparent pb-28 md:pb-0">
@@ -189,7 +184,22 @@ const Layout = () => {
       </main>
 
       {/* Bottom Nav Mobile */}
-      <div className="md:hidden fixed bottom-6 left-4 right-4 z-50">
+      <div className="md:hidden fixed bottom-6 left-4 right-4 z-50 flex flex-col gap-2">
+
+        {/* Riga secondaria: lingua, sito, logout */}
+        <div className={`backdrop-blur-[40px] border flex justify-around items-center px-3 py-1.5 rounded-[2rem] transition-colors duration-500 ${isDarkMode ? 'bg-[#03091B]/60 border-white/20' : 'bg-white/70 border-black/10'}`}>
+          <MobileLangPicker isDarkMode={isDarkMode} inline />
+          <a href="https://www.lemonsintheroom.com/" target="_blank" rel="noopener noreferrer" onClick={() => audio.playClick()} className={`flex flex-col items-center justify-center gap-1 px-4 py-2 rounded-2xl transition-all ${isDarkMode ? 'text-slate-400 hover:text-white' : 'text-slate-500 hover:text-black'}`}>
+            <Globe className="w-4 h-4" />
+            <span className="text-[9px] font-black uppercase tracking-widest">Sito</span>
+          </a>
+          <button onClick={handleLogout} className={`flex flex-col items-center justify-center gap-1 px-4 py-2 rounded-2xl transition-all ${isDarkMode ? 'text-red-400 hover:text-red-300' : 'text-red-500 hover:text-red-600'}`}>
+            <LogOut className="w-4 h-4" />
+            <span className="text-[9px] font-black uppercase tracking-widest">{t.nav.logout}</span>
+          </button>
+        </div>
+
+        {/* Riga principale: navigazione */}
         <div className={`backdrop-blur-[40px] border flex justify-around items-center p-2 rounded-[2.5rem] transition-colors duration-500 ${isDarkMode ? 'bg-[#03091B]/60 border-white/20 shadow-[0_30px_60px_rgba(0,0,0,0.8),inset_0_2px_10px_rgba(255,255,255,0.1)]' : 'bg-white/70 border-black/10 shadow-[0_20px_40px_rgba(0,0,0,0.1),inset_0_2px_10px_rgba(255,255,255,0.4)]'}`}>
           {navItems.map((item) => (
             <NavLink
