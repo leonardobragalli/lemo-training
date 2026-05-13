@@ -111,6 +111,7 @@ const Lesson = ({ lesson, mode, onComplete }) => {
               disablePictureInPicture
               onTimeUpdate={handleTimeUpdate}
               onEnded={handleEnded}
+              onRateChange={() => { if (!hasWatched && mode === 'guided' && playerRef.current) { playerRef.current.playbackRate = 1; } }}
               className="w-full h-auto block pointer-events-auto"
               onClick={() => {
                 if (!hasWatched && mode === 'guided') {                  if (playerRef.current.paused) {
