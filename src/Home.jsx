@@ -70,20 +70,20 @@ const Home = () => {
 
       <div className="max-w-[1200px] 2xl:max-w-7xl mx-auto relative z-10 mb-20 md:mb-0">
         {/* Hero Header */}
-        <div className="mb-8 lg:mb-10 2xl:mb-12 relative z-10 bg-[#03091B]/5 backdrop-blur-[40px] p-6 lg:p-8 2xl:p-12 rounded-[2rem] 2xl:rounded-[3.5rem] border-t border-l border-white/20 border-r border-b border-white/5 shadow-[0_40px_100px_-10px_rgba(3,9,27,0.8)] inline-block">
-          <motion.div initial={{ scale: 0, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ type: "spring", stiffness: 200, damping: 20 }} className="inline-flex items-center gap-2 px-3 py-1.5 2xl:px-4 2xl:py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 mb-3 2xl:mb-4 shadow-xl shadow-black/5">
+        <div className="mb-6 lg:mb-8 2xl:mb-12 relative z-10 bg-[#03091B]/5 backdrop-blur-[40px] p-6 lg:p-6 2xl:p-12 rounded-[1.5rem] lg:rounded-[2rem] 2xl:rounded-[3.5rem] border-t border-l border-white/20 border-r border-b border-white/5 shadow-[0_40px_100px_-10px_rgba(3,9,27,0.8)] inline-block">
+          <motion.div initial={{ scale: 0, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ type: "spring", stiffness: 200, damping: 20 }} className="inline-flex items-center gap-2 px-3 py-1.5 2xl:px-4 2xl:py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 mb-2 2xl:mb-4 shadow-xl shadow-black/5">
             <Sparkles className="w-3 h-3 2xl:w-4 2xl:h-4 text-[#FF8731]" />
-            <span className="text-xs 2xl:text-sm font-bold tracking-widest uppercase text-white drop-shadow-md">Lemons Hub</span>
+            <span className="text-[10px] lg:text-xs 2xl:text-sm font-bold tracking-widest uppercase text-white drop-shadow-md">Lemons Hub</span>
           </motion.div>
           
-          <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1, duration: 0.8 }} className="text-4xl md:text-5xl lg:text-[3.5rem] 2xl:text-[4.5rem] font-black font-serif text-white tracking-tighter mb-2 2xl:mb-4 leading-[1.1] pb-1 2xl:pb-2 pr-10 overflow-visible flex flex-wrap items-baseline gap-x-3 2xl:gap-x-4 drop-shadow-sm">
+          <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1, duration: 0.8 }} className="text-4xl lg:text-[2.5rem] 2xl:text-[4.5rem] font-black font-serif text-white tracking-tighter mb-1.5 2xl:mb-4 leading-[1.1] pb-1 2xl:pb-2 pr-8 2xl:pr-10 overflow-visible flex flex-wrap items-baseline gap-x-2 2xl:gap-x-4 drop-shadow-sm">
             <span>Ciao,</span>
             <span className="relative inline-block overflow-visible">
               <span className="relative z-10 text-[#A379F9]" style={{ textShadow: '0 0 40px rgba(135, 86, 250, 0.8), 0 4px 10px rgba(0,0,0,0.8), 0 1px 1px rgba(255,255,255,0.4)' }}>{user?.firstName || 'Ospite'}</span>
             </span>
           </motion.h1>
           
-          <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2, duration: 0.8 }} className="text-slate-200 font-medium text-base lg:text-lg 2xl:text-xl max-w-2xl leading-relaxed drop-shadow-md">
+          <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2, duration: 0.8 }} className="text-slate-200 font-medium text-sm lg:text-base 2xl:text-xl max-w-xl 2xl:max-w-2xl leading-relaxed drop-shadow-md">
             Benvenuto nel tuo ambiente di simulazione. Qui troverai tutto il necessario per prepararti.
           </motion.p>
         </div>
