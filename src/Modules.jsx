@@ -111,8 +111,12 @@ const Modules = () => {
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="px-6 pt-12 pb-6 md:px-10 md:pt-12 lg:px-12 lg:pt-12 2xl:p-16 2xl:pt-20 max-w-[1200px] 2xl:max-w-7xl mx-auto mb-20 md:mb-0 relative z-10 min-h-screen">
       
-      {/* Mobile Custom Background */}
+      {/* Backgrounds */}
       <div className="fixed inset-0 bg-cover bg-center z-[-30] bg-[url('/images/bg-mobile-modules.png')] md:hidden opacity-30 dark:opacity-20 mix-blend-luminosity"></div>
+      
+      <div className="hidden md:block fixed inset-0 bg-cover bg-center z-[-30] bg-[url('/images/bg-modules.png')] opacity-100"></div>
+      {/* Semi-transparent overlay to improve text legibility on PC */}
+      <div className="hidden md:block fixed inset-0 bg-white/50 dark:bg-black/50 backdrop-blur-[2px] z-[-29]"></div>
 
       {/* Immersive Background Elements - Performance Optimized */}
       <div className="fixed top-[-20%] right-[-10%] w-[50vw] h-[50vw] bg-gradient-to-tr from-[#8756FA] to-transparent rounded-full blur-[120px] opacity-20 pointer-events-none -z-20"></div>
