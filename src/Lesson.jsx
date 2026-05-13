@@ -3,8 +3,11 @@ import { CheckCircle, FileText, PlayCircle, AlertTriangle, ChevronRight, X, Arro
 import { motion, AnimatePresence } from 'framer-motion';
 import { createPortal } from 'react-dom';
 import { audio } from './utils/audio';
+import { useLang } from './LanguageContext';
 
 const Lesson = ({ lesson, mode, onComplete }) => {
+  const { t } = useLang();
+  const l = t.lesson;
   const [hasWatched, setHasWatched] = useState(false);
   const [showQuiz, setShowQuiz] = useState(false);
   const [quizPassed, setQuizPassed] = useState(false);
@@ -70,7 +73,7 @@ const Lesson = ({ lesson, mode, onComplete }) => {
       setShowQuiz(false);
     } else {
       audio.playError();
-      alert("Risposta errata, riprova!");
+      alert(l.wrongAnswer);
     }
   };
 
@@ -124,7 +127,7 @@ const Lesson = ({ lesson, mode, onComplete }) => {
             {!hasWatched && mode === 'guided' && (
               <motion.div initial={{ y: -20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} className="absolute top-4 left-4 lg:top-5 lg:left-5 2xl:top-6 2xl:left-6 bg-black/60 backdrop-blur-xl border border-white/10 text-white text-[10px] lg:text-xs px-3 py-1.5 lg:px-4 lg:py-2 rounded-full font-bold flex items-center gap-2 lg:gap-3 pointer-events-none z-20 shadow-lg">
                 <AlertTriangle className="w-3 h-3 lg:w-4 lg:h-4 text-[#FF8731]" />
-                <span className="tracking-wide uppercase">Visione Obbligatoria</span>
+                <span className="tracking-wide uppercase">{l.mandatoryView}</span>
               </motion.div>
             )}
           </div>
@@ -142,7 +145,7 @@ const Lesson = ({ lesson, mode, onComplete }) => {
                   <div className="absolute -top-20 -right-20 w-40 h-40 bg-[#8756FA] rounded-full blur-[60px] opacity-30 pointer-events-none"></div>
                   
                   <h4 className="text-[#8756FA] font-black text-[10px] lg:text-[11px] uppercase tracking-[0.2em] mb-4 flex items-center gap-2">
-                    <Zap className="w-3.5 h-3.5 lg:w-4 lg:h-4" /> Verifica Interattiva
+                    <Zap className="w-3.5 h-3.5 lg:w-4 lg:h-4" /> {l.interactiveCheck}
                   </h4>
                   <p className="text-white font-bold text-lg lg:text-xl mb-6 leading-snug break-words">{lesson.question}</p>
                   <div className="space-y-3">
@@ -155,14 +158,14 @@ const Lesson = ({ lesson, mode, onComplete }) => {
                 </motion.div>
               ) : (
                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="w-full">
-                  <h3 className="text-[10px] lg:text-[11px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-[0.2em] mb-4 lg:mb-5">Risorse Addizionali</h3>
+                  <h3 className="text-[10px] lg:text-[11px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-[0.2em] mb-4 lg:mb-5">{l.additionalResources}</h3>
                   <div className="space-y-4 w-full">
                     <div onClick={() => { audio.playClick(); setIsSlideModalOpen(true); }} className="group bg-white/80 dark:bg-black/40 backdrop-blur-md p-4 lg:p-4 2xl:p-6 rounded-[1.5rem] 2xl:rounded-[2rem] border border-white/50 dark:border-white/10 hover:border-[#FF8731] dark:hover:border-[#FF8731]/50 transition-all duration-500 cursor-pointer shadow-lg hover:shadow-[0_20px_40px_-10px_rgba(255,135,49,0.2)] flex items-center gap-3 lg:gap-4 2xl:gap-6 relative overflow-hidden w-full">
                       <div className="absolute top-0 right-0 w-32 h-32 bg-[#FF8731] rounded-full blur-[50px] opacity-0 group-hover:opacity-10 transition-opacity duration-500"></div>
                       
                       <div className="w-12 h-12 lg:w-12 lg:h-12 2xl:w-16 2xl:h-16 bg-gradient-to-br from-[#FFF5EE] to-[#FFE8D6] dark:from-[#FF8731]/20 dark:to-[#FF8731]/5 text-[#FF8731] rounded-2xl flex items-center justify-center shrink-0 group-hover:scale-110 group-hover:-rotate-6 transition-transform duration-500 shadow-inner border border-[#FF8731]/20"><FileText className="w-6 h-6 lg:w-6 lg:h-6 2xl:w-7 2xl:h-7" /></div>
                       <div className="flex-1 relative z-10 px-1">
-                        <h4 className="font-black text-[#03091B] dark:text-white text-base lg:text-lg 2xl:text-xl mb-0.5 group-hover:text-[#FF8731] transition-colors leading-tight break-words">Materiale Didattico</h4>
+                        <h4 className="font-black text-[#03091B] dark:text-white text-base lg:text-lg 2xl:text-xl mb-0.5 group-hover:text-[#FF8731] transition-colors leading-tight break-words">{l.teachingMaterial}</h4>
                       </div>
                       <div className="w-8 h-8 lg:w-8 lg:h-8 2xl:w-10 2xl:h-10 rounded-full bg-black/5 dark:bg-white/5 flex items-center justify-center text-slate-400 group-hover:bg-[#FF8731] group-hover:text-white transition-all duration-300 relative z-10 shrink-0">
                         <ChevronRight className="w-4 h-4 lg:w-4 lg:h-4 2xl:w-5 2xl:h-5" />
@@ -176,8 +179,8 @@ const Lesson = ({ lesson, mode, onComplete }) => {
             {!quizPassed && mode === 'guided' && (
               <div className="mt-6 lg:mt-6 2xl:mt-8 bg-[#8756FA]/10 border border-[#8756FA]/20 rounded-[1.5rem] 2xl:rounded-[2rem] p-5 lg:p-5 2xl:p-8 relative overflow-hidden transition-colors">
                 <div className="absolute top-0 left-0 w-1.5 lg:w-2 h-full bg-[#8756FA]"></div>
-                <h4 className="font-bold text-[#8756FA] dark:text-[#9C73FA] mb-1 font-hand text-xl lg:text-xl 2xl:text-2xl">Nota Tecnica:</h4>
-                <p className="text-sm lg:text-sm 2xl:text-base text-slate-700 dark:text-slate-300 leading-relaxed font-hand">La visione integrale del video è necessaria per sbloccare la verifica finale.</p>
+                <h4 className="font-bold text-[#8756FA] dark:text-[#9C73FA] mb-1 font-hand text-xl lg:text-xl 2xl:text-2xl">{l.technicalNote}</h4>
+                <p className="text-sm lg:text-sm 2xl:text-base text-slate-700 dark:text-slate-300 leading-relaxed font-hand">{l.technicalNoteText}</p>
               </div>
             )}
           </div>
@@ -195,7 +198,7 @@ const Lesson = ({ lesson, mode, onComplete }) => {
               {(quizPassed || mode === 'full') && <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 dark:via-black/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-in-out"></div>}
               
               <CheckCircle className={`w-5 h-5 lg:w-5 lg:h-5 2xl:w-6 2xl:h-6 relative z-10 ${quizPassed || mode === 'full' ? 'text-[#10B981]' : ''}`} />
-              <span className="relative z-10 text-center">{quizPassed || mode === 'full' ? 'Certifica Completamento' : 'In Attesa Completamento'}</span>
+              <span className="relative z-10 text-center">{quizPassed || mode === 'full' ? l.certify : l.waitingCompletion}</span>
             </motion.button>
           </div>
         </div>
@@ -224,8 +227,8 @@ const Lesson = ({ lesson, mode, onComplete }) => {
                       <img src="/images/logos/logo bianco panna png.png" alt="Lemons Logo" className="w-6 h-6 md:w-8 md:h-8 object-contain drop-shadow-lg" />
                     </div>
                     <div className="min-w-0">
-                      <h3 className="font-black font-serif text-white text-lg md:text-2xl leading-tight tracking-tight truncate">Materiale Didattico</h3>
-                      <p className="text-[10px] md:text-sm font-bold text-[#FF8731] tracking-widest uppercase mt-0.5 md:mt-1">Slide {currentSlideIndex + 1} di {lesson.slides.length}</p>
+                      <h3 className="font-black font-serif text-white text-lg md:text-2xl leading-tight tracking-tight truncate">{l.teachingMaterial}</h3>
+                      <p className="text-[10px] md:text-sm font-bold text-[#FF8731] tracking-widest uppercase mt-0.5 md:mt-1">Slide {currentSlideIndex + 1} {l.slideOf} {lesson.slides.length}</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-3">
@@ -260,7 +263,7 @@ const Lesson = ({ lesson, mode, onComplete }) => {
                 {/* Modal Footer / Controls */}
                 <div className="p-5 md:p-8 border-t border-white/10 flex justify-between items-center bg-black/40 backdrop-blur-md shrink-0">
                   <button onClick={prevSlide} disabled={currentSlideIndex === 0} className={`px-4 py-3 md:px-6 md:py-4 rounded-full font-black text-sm md:text-lg flex items-center gap-2 md:gap-3 transition-all duration-300 border ${currentSlideIndex === 0 ? 'opacity-30 cursor-not-allowed text-slate-500 border-white/5 bg-transparent' : 'bg-white/10 text-white hover:bg-white/20 border-white/20 shadow-lg hover:shadow-white/10'}`}>
-                    <ArrowLeft className="w-4 h-4 md:w-5 md:h-5" /> <span className="hidden sm:inline">Indietro</span>
+                    <ArrowLeft className="w-4 h-4 md:w-5 md:h-5" /> <span className="hidden sm:inline">{l.prev}</span>
                   </button>
                   
                   <div className="flex gap-1.5 md:gap-3 bg-white/5 p-2 md:p-3 rounded-full border border-white/10 mx-2">
@@ -270,7 +273,7 @@ const Lesson = ({ lesson, mode, onComplete }) => {
                   </div>
 
                   <button onClick={nextSlide} disabled={currentSlideIndex === lesson.slides.length - 1} className={`px-4 py-3 md:px-6 md:py-4 rounded-full font-black text-sm md:text-lg flex items-center gap-2 md:gap-3 transition-all duration-300 border border-transparent ${currentSlideIndex === lesson.slides.length - 1 ? 'opacity-30 cursor-not-allowed text-slate-500 border-white/5' : 'bg-gradient-to-r from-[#8756FA] to-[#9C73FA] text-white hover:scale-105 shadow-[0_15px_30px_-10px_rgba(135,86,250,0.6)]'}`}>
-                    <span className="hidden sm:inline">Avanti</span> <ChevronRight className="w-4 h-4 md:w-5 md:h-5" />
+                    <span className="hidden sm:inline">{l.next}</span> <ChevronRight className="w-4 h-4 md:w-5 md:h-5" />
                   </button>
                 </div>
               </motion.div>

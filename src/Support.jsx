@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { HelpCircle, MessageSquareHeart, Phone, Send, ChevronDown, ChevronUp, CheckCircle, Sparkles } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { audio } from './utils/audio';
+import { useLang } from './LanguageContext';
 
 const Support = () => {
   const [openFaq, setOpenFaq] = useState(null);
@@ -11,6 +12,8 @@ const Support = () => {
   const [ticketSent, setTicketSent] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const { t } = useLang();
+  const s = t.support;
 
   const handleTicketSubmit = async (e) => {
     e.preventDefault();
@@ -48,25 +51,17 @@ const Support = () => {
         setTicketMessage('');
         setTimeout(() => setTicketSent(false), 5000);
       } else {
-        setErrorMessage("Errore durante l'invio del ticket. Riprova più tardi.");
+        setErrorMessage(s.errorSend);
       }
     } catch (error) {
       console.error(error);
-      setErrorMessage("Errore di connessione. Verifica di essere connesso a internet.");
+      setErrorMessage(s.errorConnection);
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  const faqs = [
-    { q: "Quanto tempo serve?", a: "Per completare l'intero percorso formativo di base sono sufficienti circa 15-20 minuti. Potrai comunque mettere in pausa e riprendere in qualsiasi momento." },
-    { q: "È sicuro per tutti?", a: "Sì, l'ecosistema Lemons in the Room è progettato per essere utilizzato in totale sicurezza dai pazienti. Segui sempre le linee guida cliniche del tuo reparto." },
-    { q: "La luce della basetta lampeggia", a: "Se la luce della basetta di ricarica lampeggia, verifica che il visore sia posizionato correttamente sui pin magnetici e che il cavo di alimentazione sia ben collegato alla presa." },
-    { q: "Il visore non si carica", a: "Controlla che i contatti metallici sul visore e sulla basetta siano puliti. Assicurati inoltre che l'alimentatore sia inserito in una presa di corrente funzionante." },
-    { q: "Come si igienizza il visore?", a: "Usa esclusivamente salviette disinfettanti senza alcol o prodotti approvati dalla tua struttura. Pulisci delicatamente le lenti con un panno in microfibra asciutto per evitare graffi." },
-    { q: "Vedo lo scenario spostato", a: "Tieni premuto a lungo (circa 2-3 secondi) il tasto 'Oculus' (quello con il logo) sul controller destro, oppure unisci pollice e indice della mano destra e tieni premuto per ricentrare la visuale." },
-    { q: "Sento la voce ma non vedo nulla", a: "Il sensore di prossimità potrebbe non rilevare la testa. Assicurati che il visore sia indossato correttamente e che non ci siano ostacoli davanti al sensore interno tra le due lenti." }
-  ];
+  const faqs = s.faqs;
 
   const container = { hidden: { opacity: 0 }, show: { opacity: 1, transition: { staggerChildren: 0.15, delayChildren: 0.1 } } };
   const item = { hidden: { opacity: 0, y: 30 }, show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 100, damping: 20 } } };
@@ -89,18 +84,18 @@ const Support = () => {
       <div className="mb-8 lg:mb-10 2xl:mb-20 relative z-10">
         <motion.div initial={{ scale: 0, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ type: "spring", stiffness: 200, damping: 20 }} className="inline-flex items-center gap-2 px-3 py-1.5 2xl:px-4 2xl:py-2 rounded-full bg-white/10 dark:bg-white/5 backdrop-blur-md border border-white/20 mb-4 2xl:mb-6 shadow-xl shadow-black/5">
           <Sparkles className="w-3 h-3 2xl:w-4 2xl:h-4 text-[#8756FA]" />
-          <span className="text-xs 2xl:text-sm font-bold tracking-widest uppercase bg-clip-text text-transparent bg-gradient-to-r from-[#8756FA] to-[#FF8731]">Lemons Hub</span>
+          <span className="text-xs 2xl:text-sm font-bold tracking-widest uppercase bg-clip-text text-transparent bg-gradient-to-r from-[#8756FA] to-[#FF8731]">{s.badge}</span>
         </motion.div>
         
         <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1, duration: 0.8 }} className="text-4xl md:text-[3rem] lg:text-[3.5rem] 2xl:text-[4.5rem] font-black font-serif text-[#03091B] dark:text-white tracking-tighter mb-1 leading-[1.1] pr-10 overflow-visible flex flex-wrap items-baseline gap-x-4">
-          <span>Supporto</span>
+          <span>{s.titleMain}</span>
           <span className="relative inline-block overflow-visible">
-            <span className="relative z-10 text-transparent bg-clip-text bg-gradient-to-r from-[#FF8731] to-[#FF9E54] drop-shadow-sm pr-4">Operativo</span>
+            <span className="relative z-10 text-transparent bg-clip-text bg-gradient-to-r from-[#FF8731] to-[#FF9E54] drop-shadow-sm pr-4">{s.titleAccent}</span>
           </span>
         </motion.h1>
         
         <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2, duration: 0.8 }} className="text-slate-700 dark:text-slate-400 font-medium text-base lg:text-lg 2xl:text-2xl max-w-2xl leading-relaxed">
-          Assistenza immediata e risoluzione problemi per il personale medico.
+          {s.subtitle}
         </motion.p>
       </div>
 
@@ -110,7 +105,7 @@ const Support = () => {
         <motion.div variants={item} className="space-y-4 2xl:space-y-6 relative">
           <h2 className="text-2xl lg:text-[1.75rem] 2xl:text-4xl font-black font-serif text-[#03091B] dark:text-white mb-4 2xl:mb-5 flex items-center gap-3 2xl:gap-4 drop-shadow-sm">
             <HelpCircle className="w-7 h-7 lg:w-8 lg:h-8 2xl:w-10 2xl:h-10 text-[#8756FA]" />
-            Domande Frequenti
+            {s.faqTitle}
           </h2>
           
           <div className="space-y-3 2xl:space-y-5">
@@ -148,7 +143,7 @@ const Support = () => {
         <motion.div variants={item} className="space-y-4 2xl:space-y-8">
           <h2 className="text-2xl lg:text-[1.75rem] 2xl:text-4xl font-black font-serif text-[#03091B] dark:text-white mb-4 2xl:mb-5 flex items-center gap-3 2xl:gap-4 drop-shadow-sm">
             <div className="w-3 h-6 2xl:w-4 2xl:h-12 bg-gradient-to-b from-[#FF8731] to-[#FF9E54] rounded-full shadow-[0_0_20px_rgba(255,135,49,0.6)]"></div>
-            Assistenza Diretta
+            {s.directTitle}
           </h2>
 
           <div className="flex flex-col gap-3 2xl:gap-6">
@@ -164,9 +159,9 @@ const Support = () => {
                   </div>
                   <div className="min-w-0">
                     <p className="text-white/50 font-bold text-[9px] 2xl:text-xs mb-0.5 tracking-[0.2em] uppercase flex items-center gap-1.5">
-                      <Sparkles className="w-2.5 h-2.5 2xl:w-3 2xl:h-3 text-[#FF8731] shrink-0" /> Supporto Tecnico
+                      <Sparkles className="w-2.5 h-2.5 2xl:w-3 2xl:h-3 text-[#FF8731] shrink-0" /> {s.techSupport}
                     </p>
-                    <p className="text-[11px] 2xl:text-sm text-slate-300 leading-tight">Problemi hardware, sistema o accensione.</p>
+                    <p className="text-[11px] 2xl:text-sm text-slate-300 leading-tight">{s.techDesc}</p>
                   </div>
                 </div>
 
@@ -197,9 +192,9 @@ const Support = () => {
                   </div>
                   <div className="min-w-0">
                     <p className="text-white/50 font-bold text-[9px] 2xl:text-xs mb-0.5 tracking-[0.2em] uppercase flex items-center gap-1.5">
-                      <Sparkles className="w-2.5 h-2.5 2xl:w-3 2xl:h-3 text-[#8756FA] shrink-0" /> Assistenza Operativa
+                      <Sparkles className="w-2.5 h-2.5 2xl:w-3 2xl:h-3 text-[#8756FA] shrink-0" /> {s.opSupport}
                     </p>
-                    <p className="text-[11px] 2xl:text-sm text-slate-300 leading-tight">Dubbi sull'utilizzo, info generali, app.</p>
+                    <p className="text-[11px] 2xl:text-sm text-slate-300 leading-tight">{s.opDesc}</p>
                   </div>
                 </div>
 
@@ -224,49 +219,49 @@ const Support = () => {
             <div className="absolute top-0 right-0 w-40 h-40 2xl:w-64 2xl:h-64 bg-[#8756FA] rounded-full blur-[80px] 2xl:blur-[120px] opacity-20 pointer-events-none"></div>
             
             <h3 className="text-xl 2xl:text-3xl font-black font-serif text-[#03091B] dark:text-white mb-1 2xl:mb-2 flex items-center gap-2 2xl:gap-4 relative z-10 tracking-tight">
-              <Send className="w-5 h-5 2xl:w-8 2xl:h-8 text-[#8756FA]" /> Ticket Immediato
+              <Send className="w-5 h-5 2xl:w-8 2xl:h-8 text-[#8756FA]" /> {s.ticketTitle}
             </h3>
-            <p className="text-slate-500 dark:text-slate-400 font-medium text-sm 2xl:text-lg mb-4 2xl:mb-8 relative z-10 leading-relaxed">Invia una segnalazione per ricevere assistenza tecnica o operativa prioritaria.</p>
+            <p className="text-slate-500 dark:text-slate-400 font-medium text-sm 2xl:text-lg mb-4 2xl:mb-8 relative z-10 leading-relaxed">{s.ticketDesc}</p>
             
             <AnimatePresence mode="wait">
               {ticketSent ? (
                 <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }} className="bg-gradient-to-b from-[#8756FA]/10 to-[#8756FA]/5 border border-[#8756FA]/30 p-8 2xl:p-10 rounded-[1.5rem] 2xl:rounded-[2.5rem] flex flex-col items-center justify-center text-center py-10 2xl:py-16 relative z-10 shadow-inner">
                   <CheckCircle className="w-12 h-12 2xl:w-20 2xl:h-20 text-[#8756FA] mb-4 2xl:mb-6 drop-shadow-lg" />
-                  <h4 className="font-black font-serif text-2xl 2xl:text-3xl text-[#03091B] dark:text-white mb-2 2xl:mb-3">Ticket Inviato!</h4>
-                  <p className="text-slate-600 dark:text-slate-300 text-base 2xl:text-xl font-medium">Il team ti assisterà a breve.</p>
+                  <h4 className="font-black font-serif text-2xl 2xl:text-3xl text-[#03091B] dark:text-white mb-2 2xl:mb-3">{s.sentTitle}</h4>
+                  <p className="text-slate-600 dark:text-slate-300 text-base 2xl:text-xl font-medium">{s.sentDesc}</p>
                 </motion.div>
               ) : (
                 <motion.form initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onSubmit={handleTicketSubmit} className="space-y-3 2xl:space-y-5 relative z-10">
                   <div className="space-y-1">
-                    <label className="text-[9px] 2xl:text-[11px] font-black text-[#8756FA] uppercase ml-2 tracking-[0.2em]">Tipo Assistenza</label>
+                    <label className="text-[9px] 2xl:text-[11px] font-black text-[#8756FA] uppercase ml-2 tracking-[0.2em]">{s.ticketType}</label>
                     <div className="relative">
                       <select
                         value={ticketType} onChange={(e) => setTicketType(e.target.value)}
                         className="block w-full pl-4 pr-8 2xl:pr-10 py-3 2xl:py-5 bg-white/60 dark:bg-black/20 border border-white/50 dark:border-white/10 focus:bg-white dark:focus:bg-[#03091B]/80 rounded-[1rem] 2xl:rounded-[2rem] text-[#03091B] dark:text-white focus:ring-0 focus:border-[#8756FA] transition-all shadow-inner outline-none font-bold text-sm 2xl:text-lg appearance-none cursor-pointer truncate"
                       >
-                        <option value="Tecnico" className="text-black">Guasto Hardware / Sistema</option>
-                        <option value="Operativo" className="text-black">Aiuto App / Formazione</option>
+                        <option value="Tecnico" className="text-black">{s.optionTech}</option>
+                        <option value="Operativo" className="text-black">{s.optionOp}</option>
                       </select>
                       <ChevronDown className="absolute right-3 2xl:right-6 top-1/2 -translate-y-1/2 w-4 h-4 2xl:w-5 2xl:h-5 text-[#8756FA] pointer-events-none" />
                     </div>
                   </div>
                   
                   <div className="space-y-1">
-                    <label className="text-[9px] 2xl:text-[11px] font-black text-[#8756FA] uppercase ml-2 tracking-[0.2em]">Oggetto Richiesta</label>
-                    <input 
+                    <label className="text-[9px] 2xl:text-[11px] font-black text-[#8756FA] uppercase ml-2 tracking-[0.2em]">{s.ticketSubject}</label>
+                    <input
                       type="text" required
                       value={ticketSubject} onChange={(e) => setTicketSubject(e.target.value)}
                       className="block w-full px-4 2xl:px-6 py-3 2xl:py-5 bg-white/60 dark:bg-black/20 border border-white/50 dark:border-white/10 focus:bg-white dark:focus:bg-[#03091B]/80 rounded-[1rem] 2xl:rounded-[2rem] text-[#03091B] dark:text-white focus:ring-0 focus:border-[#8756FA] transition-all shadow-inner outline-none font-bold text-sm 2xl:text-lg placeholder-slate-400 dark:placeholder-slate-600 truncate"
-                      placeholder="Es. Visore bloccato..."
+                      placeholder={s.placeholderSubject}
                     />
                   </div>
                   <div className="space-y-1">
-                    <label className="text-[9px] 2xl:text-[11px] font-black text-[#8756FA] uppercase ml-2 tracking-[0.2em]">Dettagli Tecnici</label>
-                    <textarea 
+                    <label className="text-[9px] 2xl:text-[11px] font-black text-[#8756FA] uppercase ml-2 tracking-[0.2em]">{s.ticketDetails}</label>
+                    <textarea
                       required rows="3"
                       value={ticketMessage} onChange={(e) => setTicketMessage(e.target.value)}
                       className="block w-full px-4 2xl:px-6 py-3 2xl:py-5 bg-white/60 dark:bg-black/20 border border-white/50 dark:border-white/10 focus:bg-white dark:focus:bg-[#03091B]/80 rounded-[1rem] 2xl:rounded-[2rem] text-[#03091B] dark:text-white focus:ring-0 focus:border-[#8756FA] transition-all shadow-inner outline-none font-medium text-sm 2xl:text-lg placeholder-slate-400 dark:placeholder-slate-600 resize-none"
-                      placeholder="Descrivi cosa sta succedendo..."
+                      placeholder={s.placeholderDetails}
                     ></textarea>
                   </div>
                   <motion.button 
@@ -276,7 +271,7 @@ const Support = () => {
                     className={`w-full py-4 2xl:py-6 mt-2 2xl:mt-4 text-base 2xl:text-xl font-black rounded-[1.5rem] 2xl:rounded-[2.5rem] shadow-2xl flex items-center justify-center gap-2 2xl:gap-4 transition-all relative overflow-hidden group ${isSubmitting ? 'bg-slate-300 dark:bg-slate-800 text-slate-500 cursor-not-allowed' : 'bg-gradient-to-r from-[#8756FA] to-[#9C73FA] text-white shadow-[0_20px_40px_-10px_rgba(135,86,250,0.5)]'}`}
                   >
                     <div className="absolute inset-0 bg-white/20 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000 ease-in-out pointer-events-none"></div>
-                    <span className="relative z-10 tracking-wide drop-shadow-sm">{isSubmitting ? 'Invio...' : 'Invia Segnalazione'}</span> {!isSubmitting && <Send className="w-4 h-4 2xl:w-6 2xl:h-6 relative z-10 drop-shadow-sm" />}
+                    <span className="relative z-10 tracking-wide drop-shadow-sm">{isSubmitting ? s.submitting : s.submitBtn}</span> {!isSubmitting && <Send className="w-4 h-4 2xl:w-6 2xl:h-6 relative z-10 drop-shadow-sm" />}
                   </motion.button>
                   {errorMessage && <p className="text-red-500 text-xs 2xl:text-sm font-bold text-center mt-2 2xl:mt-4 bg-red-50 dark:bg-red-500/10 py-2 2xl:py-3 rounded-lg 2xl:rounded-xl border border-red-200 dark:border-red-500/20">{errorMessage}</p>}
                 </motion.form>

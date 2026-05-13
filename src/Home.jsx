@@ -5,6 +5,7 @@ import { motion, useScroll, useTransform } from 'framer-motion';
 import html2pdf from 'html2pdf.js';
 
 import { audio } from './utils/audio';
+import { useLang } from './LanguageContext';
 
 const Home = () => {
   const navigate = useNavigate();
@@ -14,6 +15,9 @@ const Home = () => {
   const mode = searchParams.get('mode') || 'guided';
   
   const totalLessons = 4;
+
+  const { t } = useLang();
+  const h = t.home;
 
   const { scrollYProgress } = useScroll();
   const yParallax = useTransform(scrollYProgress, [0, 1], [0, -100]);
@@ -73,18 +77,18 @@ const Home = () => {
         <div className="mb-6 lg:mb-8 2xl:mb-12 relative z-10 bg-[#03091B]/20 dark:bg-[#03091B]/40 backdrop-blur-[40px] p-5 lg:p-6 2xl:p-12 rounded-[1.5rem] lg:rounded-[2rem] 2xl:rounded-[3.5rem] border-t border-l border-white/20 border-r border-b border-white/5 shadow-[0_20px_60px_-10px_rgba(0,0,0,0.3)] w-full flex flex-col justify-center">
           <motion.div initial={{ scale: 0, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ type: "spring", stiffness: 200, damping: 20 }} className="inline-flex items-center gap-2 px-3 py-1.5 2xl:px-4 2xl:py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 mb-2 2xl:mb-4 shadow-xl shadow-black/5 w-fit">
             <Sparkles className="w-3 h-3 2xl:w-4 2xl:h-4 text-[#FF8731]" />
-            <span className="text-[9px] lg:text-[10px] 2xl:text-sm font-bold tracking-widest uppercase text-white drop-shadow-md">Lemons Hub</span>
+            <span className="text-[9px] lg:text-[10px] 2xl:text-sm font-bold tracking-widest uppercase text-white drop-shadow-md">{h.badge}</span>
           </motion.div>
           
           <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1, duration: 0.8 }} className="text-3xl lg:text-[2rem] 2xl:text-[4.5rem] font-black font-serif text-white tracking-tighter mb-1.5 2xl:mb-4 leading-[1.1] pb-1 2xl:pb-2 overflow-visible flex flex-wrap items-baseline gap-x-2 2xl:gap-x-4 drop-shadow-sm">
-            <span>Ciao,</span>
+            <span>{h.greeting}</span>
             <span className="relative inline-block overflow-visible">
-              <span className="relative z-10 text-[#A379F9]" style={{ textShadow: '0 0 40px rgba(135, 86, 250, 0.8), 0 4px 10px rgba(0,0,0,0.8), 0 1px 1px rgba(255,255,255,0.4)' }}>{user?.firstName || 'Ospite'}</span>
+              <span className="relative z-10 text-[#A379F9]" style={{ textShadow: '0 0 40px rgba(135, 86, 250, 0.8), 0 4px 10px rgba(0,0,0,0.8), 0 1px 1px rgba(255,255,255,0.4)' }}>{user?.firstName || h.guest}</span>
             </span>
           </motion.h1>
           
           <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2, duration: 0.8 }} className="text-slate-200 font-medium text-xs lg:text-sm 2xl:text-xl leading-relaxed drop-shadow-md">
-            Benvenuto nel tuo ambiente di simulazione. Qui troverai tutto il necessario per prepararti.
+            {h.subtitle}
           </motion.p>
         </div>
 
@@ -179,15 +183,13 @@ const Home = () => {
               <div className="flex-1 text-center md:text-left relative z-10">
                 <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-xs 2xl:text-sm font-bold text-white mb-3 2xl:mb-4 border border-white/10 backdrop-blur-md shadow-inner">
                   <Target className="w-3 h-3 2xl:w-4 2xl:h-4 text-[#FF8731]" />
-                  {completedCount} di {totalLessons} Moduli Completati
+                  {completedCount} {h.modulesOf} {totalLessons} {h.modulesCompleted}
                 </div>
                 <h2 className="text-3xl lg:text-4xl 2xl:text-5xl font-black font-serif text-white mb-4 2xl:mb-6 leading-tight drop-shadow-sm">
-                  {hasFinishedAll ? "Status: Operativo" : "Prosegui il Training"}
+                  {hasFinishedAll ? h.statusDone : h.statusProgress}
                 </h2>
                 <p className="text-slate-300 text-base 2xl:text-lg mb-6 2xl:mb-8 leading-relaxed font-medium">
-                  {hasFinishedAll 
-                    ? "Eccellente. Hai acquisito tutte le competenze necessarie. Il tuo profilo è ora abilitato all'uso dell'ecosistema."
-                    : "Manca poco. Completa le sessioni rimanenti per sbloccare la tua certificazione ufficiale e l'accesso completo."}
+                  {hasFinishedAll ? h.descDone : h.descProgress}
                 </p>
                 
                 {!hasFinishedAll ? (
@@ -196,7 +198,7 @@ const Home = () => {
                     onClick={() => handleNav(`/modules?mode=${mode}`)} 
                     className="w-full md:w-auto px-8 2xl:px-10 py-5 2xl:py-6 bg-gradient-to-r from-[#8756FA] to-[#FF8731] text-white rounded-[2rem] 2xl:rounded-[2.5rem] font-black text-lg 2xl:text-xl flex items-center justify-center gap-3 2xl:gap-4 transition-all shadow-[0_15px_40px_-10px_rgba(135,86,250,0.8),inset_0_2px_4px_rgba(255,255,255,0.3)] hover:shadow-[0_20px_60px_-10px_rgba(255,135,49,1),inset_0_2px_4px_rgba(255,255,255,0.5)] border border-white/20"
                   >
-                    <span className="relative z-10 drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]">Vai ai Moduli</span>
+                    <span className="relative z-10 drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]">{h.goModules}</span>
                     <div className="w-6 h-6 2xl:w-8 2xl:h-8 rounded-full bg-white/20 flex items-center justify-center relative z-10 transition-colors duration-300 border border-white/30 shadow-inner">
                       <ArrowRight className="w-4 h-4 2xl:w-5 2xl:h-5" />
                     </div>
@@ -208,7 +210,7 @@ const Home = () => {
                     className="w-full md:w-auto px-8 2xl:px-10 py-5 2xl:py-6 bg-gradient-to-r from-[#FF8731] to-[#FF9E54] text-white rounded-[2rem] 2xl:rounded-[2.5rem] font-black text-lg 2xl:text-xl flex items-center justify-center gap-3 2xl:gap-4 transition-all shadow-[0_15px_30px_rgba(255,135,49,0.5),inset_0_2px_10px_rgba(255,255,255,0.4)] hover:shadow-[0_20px_40px_rgba(255,135,49,0.8),inset_0_2px_10px_rgba(255,255,255,0.6)] border border-[#FF8731]/50"
                   >
                     <Award className="w-6 h-6 2xl:w-7 2xl:h-7 relative z-10 drop-shadow-md" /> 
-                    <span className="relative z-10 drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] tracking-wide">Ottieni Certificato</span>
+                    <span className="relative z-10 drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] tracking-wide">{h.getCert}</span>
                   </motion.button>
                 )}
               </div>
@@ -231,7 +233,7 @@ const Home = () => {
               <div className="w-12 h-12 2xl:w-16 2xl:h-16 bg-white/20 backdrop-blur-md rounded-[1rem] 2xl:rounded-2xl flex items-center justify-center mb-4 2xl:mb-6 border border-white/30 text-white shadow-inner group-hover:rotate-12 transition-transform duration-500">
                 <Play className="w-6 h-6 2xl:w-8 2xl:h-8 fill-current drop-shadow-md" />
               </div>
-              <h3 className="text-2xl lg:text-[1.75rem] 2xl:text-3xl font-black font-serif text-white mb-2 relative z-10 tracking-tight drop-shadow-sm leading-tight">Esplora i<br/>Contenuti</h3>
+              <h3 className="text-2xl lg:text-[1.75rem] 2xl:text-3xl font-black font-serif text-white mb-2 relative z-10 tracking-tight drop-shadow-sm leading-tight whitespace-pre-line">{h.exploreTitle}</h3>
               <div className="absolute bottom-6 right-6 2xl:bottom-8 2xl:right-8 w-10 h-10 2xl:w-12 2xl:h-12 rounded-full bg-white/10 flex items-center justify-center backdrop-blur-md border border-white/20 group-hover:bg-white group-hover:text-[#8756FA] text-white transition-all duration-300">
                 <ArrowRight className="w-4 h-4 2xl:w-5 2xl:h-5 -rotate-45 group-hover:rotate-0 transition-transform duration-300" />
               </div>
@@ -250,7 +252,7 @@ const Home = () => {
               <div className="w-12 h-12 2xl:w-16 2xl:h-16 bg-white/20 backdrop-blur-md rounded-[1rem] 2xl:rounded-2xl flex items-center justify-center mb-4 2xl:mb-6 border border-white/30 text-white shadow-inner group-hover:-rotate-12 transition-transform duration-500">
                 <Zap className="w-6 h-6 2xl:w-8 2xl:h-8 drop-shadow-md fill-current" />
               </div>
-              <h3 className="text-2xl lg:text-[1.75rem] 2xl:text-3xl font-black font-serif text-white mb-2 relative z-10 tracking-tight drop-shadow-md leading-tight">Centro<br/>Assistenza</h3>
+              <h3 className="text-2xl lg:text-[1.75rem] 2xl:text-3xl font-black font-serif text-white mb-2 relative z-10 tracking-tight drop-shadow-md leading-tight whitespace-pre-line">{h.supportTitle}</h3>
               <div className="absolute bottom-6 right-6 2xl:bottom-8 2xl:right-8 w-10 h-10 2xl:w-12 2xl:h-12 rounded-full bg-white/10 flex items-center justify-center text-white backdrop-blur-md border border-white/20 group-hover:bg-white group-hover:text-[#FF8731] transition-all duration-300 shadow-inner">
                 <ArrowRight className="w-4 h-4 2xl:w-5 2xl:h-5 -rotate-45 group-hover:rotate-0 transition-transform duration-300" />
               </div>

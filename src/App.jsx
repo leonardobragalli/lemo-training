@@ -9,6 +9,7 @@ import Support from './Support';
 import Layout from './Layout';
 import Admin from './Admin';
 import { ThemeContext } from './ThemeContext';
+import { LanguageProvider } from './LanguageContext';
 
 function AnimatedRoutes() {
   const location = useLocation();
@@ -43,11 +44,13 @@ function App() {
   const toggleTheme = () => setIsDarkMode(!isDarkMode);
 
   return (
-    <ThemeContext.Provider value={{ isDarkMode, toggleTheme }}>
-      <BrowserRouter>
-        <AnimatedRoutes />
-      </BrowserRouter>
-    </ThemeContext.Provider>
+    <LanguageProvider>
+      <ThemeContext.Provider value={{ isDarkMode, toggleTheme }}>
+        <BrowserRouter>
+          <AnimatedRoutes />
+        </BrowserRouter>
+      </ThemeContext.Provider>
+    </LanguageProvider>
   );
 }
 
