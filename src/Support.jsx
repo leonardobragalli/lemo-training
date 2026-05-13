@@ -110,7 +110,7 @@ const Support = () => {
                 <div className="absolute inset-0 opacity-[0.03] mix-blend-overlay pointer-events-none bg-[url('https://grainy-gradients.vercel.app/noise.svg')] z-0"></div>
                 
                 <button 
-                  onClick={() => { audio.playClick(); setOpenFaq(openFaq === index ? null : index); }}
+                  onClick={() => setOpenFaq(openFaq === index ? null : index)}
                   className="w-full px-5 py-4 lg:px-6 lg:py-5 2xl:px-8 2xl:py-7 flex items-center justify-between font-black text-sm lg:text-base 2xl:text-xl text-[#03091B] dark:text-white text-left group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-[#8756FA] group-hover:to-[#9C73FA] transition-all relative z-10"
                 >
                   <span className="pr-4 leading-tight">{faq.q}</span>
