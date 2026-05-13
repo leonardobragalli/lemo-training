@@ -104,7 +104,7 @@ const Lesson = ({ lesson, mode, onComplete }) => {
           {/* Subtle reflection */}
           <div className="absolute top-0 left-0 w-full h-1/2 bg-gradient-to-b from-white/5 to-transparent pointer-events-none z-10"></div>
           
-          <div className="aspect-video w-full relative group shadow-2xl shrink-0">
+          <div className="w-full relative group shadow-2xl shrink-0">
             <video
               ref={playerRef}
               src={lesson.videoUrl}
@@ -114,7 +114,7 @@ const Lesson = ({ lesson, mode, onComplete }) => {
               disablePictureInPicture
               onTimeUpdate={handleTimeUpdate}
               onEnded={handleEnded}
-              className="absolute inset-0 w-full h-full object-contain pointer-events-auto"
+              className="w-full h-auto block pointer-events-auto"
               onClick={() => {
                 if (!hasWatched && mode === 'guided') {                  if (playerRef.current.paused) {
                     playerRef.current.play();
