@@ -249,15 +249,22 @@ const Admin = () => {
               Stampa o mostra questo QR Code. Permette agli operatori di accedere immediatamente alla piattaforma dal proprio smartphone. 
               <span className="block mt-2 text-emerald-400 font-bold">Il sistema riconoscerà in automatico i dispositivi già registrati, saltando il form di login.</span>
             </p>
-            <button 
-              onClick={() => window.print()} 
+            <button
+              onClick={() => {
+                audio.playClick();
+                const canvas = document.querySelector('#qr-canvas canvas') || document.querySelector('canvas');
+                const dataUrl = canvas?.toDataURL('image/png') || '';
+                const win = window.open('', '_blank', 'width=400,height=500');
+                win.document.write(`<!DOCTYPE html><html><head><title>QR Code - Lemons in the Room</title><style>body{margin:0;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;background:#fff;font-family:sans-serif;}img{width:280px;height:280px;}p{margin-top:16px;font-size:11px;font-weight:900;letter-spacing:.2em;text-transform:uppercase;color:#888;}</style></head><body><img src="${dataUrl}" /><p>Scan to Enter</p><script>window.onload=()=>{window.print();window.onafterprint=()=>window.close();}<\/script></body></html>`);
+                win.document.close();
+              }}
               className="px-8 py-4 bg-gradient-to-r from-[#8756FA] to-[#6A35E8] hover:from-[#9C73FA] hover:to-[#8756FA] text-white font-black rounded-2xl transition-all shadow-[0_15px_30px_-10px_rgba(135,86,250,0.5)] hover:scale-105 active:scale-95"
             >
               Stampa QR Code
             </button>
           </div>
           
-          <div className="bg-white p-6 rounded-[2.5rem] shadow-[0_0_40px_rgba(0,0,0,0.3)] shrink-0 relative z-10 border border-slate-200 group-hover:rotate-3 transition-transform duration-500">
+          <div id="qr-canvas" className="bg-white p-6 rounded-[2.5rem] shadow-[0_0_40px_rgba(0,0,0,0.3)] shrink-0 relative z-10 border border-slate-200 group-hover:rotate-3 transition-transform duration-500">
             <QRCodeCanvas value={window.location.origin} size={220} level="H" includeMargin={false} />
             <div className="mt-4 text-center">
               <span className="text-[10px] font-black tracking-widest uppercase text-slate-400">Scan to Enter</span>
