@@ -36,14 +36,8 @@ const Layout = () => {
         {/* Sidebar Inner Glow */}
         <div className="absolute top-[-50px] left-[-50px] w-[200px] h-[200px] bg-[#FF8731] rounded-full blur-[80px] opacity-30 pointer-events-none"></div>
 
-        <div className={`p-10 flex items-center gap-5 border-b ${isDarkMode ? 'border-white/5' : 'border-[#03091B]/5'}`}>
-          <div className="w-16 h-16 rounded-[1.5rem] flex items-center justify-center relative shrink-0 shadow-inner bg-white/10">
-            <img src={isDarkMode ? "/images/logos/logo bianco panna png.png" : "/images/logos/Logo nero png.png"} alt="Lemons Logo" className="w-10 h-10 object-contain drop-shadow-lg" />
-          </div>
-          <div>
-            <span className={`font-black font-serif text-3xl tracking-tight block ${isDarkMode ? 'text-white' : 'text-[#03091B]'}`}>Lemons</span>
-            <span className={`text-[10px] font-black uppercase tracking-[0.3em] block mt-1 ${isDarkMode ? 'text-[#FF8731]' : 'text-[#8756FA]'}`}>in the room</span>
-          </div>
+        <div className={`p-10 flex items-center justify-center border-b ${isDarkMode ? 'border-white/5' : 'border-[#03091B]/5'}`}>
+          <img src={isDarkMode ? "/images/logos/logo esteso bianco panna png.png" : "/images/logos/logo esteso nero png.png"} alt="Lemons in the room Logo" className="h-16 w-auto object-contain drop-shadow-md" />
         </div>
 
         <nav className="flex-1 px-6 py-10 space-y-4">

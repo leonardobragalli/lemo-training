@@ -279,12 +279,8 @@ const Home = () => {
           <div style={{ position: 'relative', zIndex: 10, height: '100%', padding: '60px 80px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', boxSizing: 'border-box' }}>
             
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
-                <img src="/images/logos/Logo nero png.png" alt="Lemons" style={{ width: '90px', height: 'auto', objectFit: 'contain' }} />
-                <div style={{ borderLeft: '3px solid #03091B', paddingLeft: '20px' }}>
-                  <h2 style={{ margin: 0, fontSize: '22px', fontWeight: '900', color: '#03091B', letterSpacing: '2px', textTransform: 'uppercase' }}>Lemons</h2>
-                  <p style={{ margin: 0, fontSize: '12px', color: '#64748b', letterSpacing: '3px', textTransform: 'uppercase' }}>in the Room</p>
-                </div>
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+                <img src="/images/logos/logo esteso nero png.png" alt="Lemons in the Room" style={{ height: '70px', width: 'auto', objectFit: 'contain' }} />
               </div>
               <div style={{ textAlign: 'right', marginTop: '10px' }}>
                 <p style={{ margin: 0, fontSize: '11px', color: '#94a3b8', letterSpacing: '2px', textTransform: 'uppercase', fontWeight: 'bold' }}>Codice Attestato</p>
