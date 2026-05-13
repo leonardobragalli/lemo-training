@@ -120,20 +120,20 @@ const Support = () => {
                 
                 <button 
                   onClick={() => { audio.playClick(); setOpenFaq(openFaq === index ? null : index); }}
-                  className="w-full px-6 py-5 2xl:px-8 2xl:py-7 flex items-center justify-between font-black text-base lg:text-lg 2xl:text-xl text-[#03091B] dark:text-white text-left group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-[#8756FA] group-hover:to-[#9C73FA] transition-all relative z-10"
+                  className="w-full px-5 py-4 lg:px-6 lg:py-5 2xl:px-8 2xl:py-7 flex items-center justify-between font-black text-sm lg:text-base 2xl:text-xl text-[#03091B] dark:text-white text-left group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-[#8756FA] group-hover:to-[#9C73FA] transition-all relative z-10"
                 >
                   <span className="pr-4 leading-tight">{faq.q}</span>
-                  <div className={`w-10 h-10 2xl:w-12 2xl:h-12 rounded-full flex items-center justify-center shrink-0 transition-all duration-500 shadow-inner ${openFaq === index ? 'bg-gradient-to-br from-[#8756FA] to-[#6A35E8] text-white shadow-[#8756FA]/30' : 'bg-white/50 dark:bg-black/20 text-slate-400 border border-white/50 dark:border-white/5 group-hover:bg-[#8756FA]/10 group-hover:text-[#8756FA] group-hover:border-[#8756FA]/20'}`}>
-                    {openFaq === index ? <ChevronUp className="w-5 h-5 2xl:w-6 2xl:h-6" /> : <ChevronDown className="w-5 h-5 2xl:w-6 2xl:h-6" />}
+                  <div className={`w-8 h-8 lg:w-10 lg:h-10 2xl:w-12 2xl:h-12 rounded-full flex items-center justify-center shrink-0 transition-all duration-500 shadow-inner ${openFaq === index ? 'bg-gradient-to-br from-[#8756FA] to-[#6A35E8] text-white shadow-[#8756FA]/30' : 'bg-white/50 dark:bg-black/20 text-slate-400 border border-white/50 dark:border-white/5 group-hover:bg-[#8756FA]/10 group-hover:text-[#8756FA] group-hover:border-[#8756FA]/20'}`}>
+                    {openFaq === index ? <ChevronUp className="w-4 h-4 lg:w-5 lg:h-5 2xl:w-6 2xl:h-6" /> : <ChevronDown className="w-4 h-4 lg:w-5 lg:h-5 2xl:w-6 2xl:h-6" />}
                   </div>
                 </button>
                 <AnimatePresence>
                   {openFaq === index && (
                     <motion.div 
                       initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.3 }}
-                      className="px-6 pb-6 2xl:px-8 2xl:pb-8 text-slate-600 dark:text-slate-300 font-medium text-base 2xl:text-lg leading-relaxed relative z-10"
+                      className="px-5 pb-5 lg:px-6 lg:pb-6 2xl:px-8 2xl:pb-8 text-slate-600 dark:text-slate-300 font-medium text-sm lg:text-base 2xl:text-lg leading-relaxed relative z-10"
                     >
-                      <div className="pt-4 2xl:pt-6 border-t border-slate-300 dark:border-slate-800/50">
+                      <div className="pt-3 lg:pt-4 2xl:pt-6 border-t border-slate-300 dark:border-slate-800/50">
                         {faq.a}
                       </div>
                     </motion.div>
