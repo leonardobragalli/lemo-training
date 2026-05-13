@@ -95,8 +95,6 @@ const Home = () => {
             variants={item} 
             className="lg:col-span-8 group relative"
           >
-            {/* Animated border glow */}
-            <div className="absolute -inset-[2px] bg-gradient-to-r from-[#FF8731] via-[#8756FA] to-[#FF8731] rounded-[2.2rem] 2xl:rounded-[3.7rem] opacity-20 group-hover:opacity-100 blur-xl transition-all duration-700 animate-gradient-xy"></div>
             
             <div className="relative h-full bg-[#03091B]/5 backdrop-blur-[40px] rounded-[2rem] 2xl:rounded-[3.5rem] p-8 lg:p-10 2xl:p-14 overflow-hidden shadow-[0_40px_100px_-10px_rgba(3,9,27,0.8)] border-t border-l border-white/20 border-r border-b border-white/5 flex flex-col md:flex-row items-center gap-8 lg:gap-10 2xl:gap-12 group/glass">
               
