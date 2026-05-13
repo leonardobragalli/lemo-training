@@ -123,25 +123,25 @@ const Modules = () => {
       <div className="fixed bottom-[-10%] left-[-10%] w-[40vw] h-[40vw] bg-gradient-to-tr from-[#FF8731] to-transparent rounded-full blur-[100px] opacity-15 pointer-events-none -z-20"></div>
 
       {/* Hero Header */}
-      <div className="mb-20 relative z-10">
-        <motion.div initial={{ scale: 0, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ type: "spring", stiffness: 200, damping: 20 }} className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 dark:bg-white/5 backdrop-blur-md border border-white/20 mb-6 shadow-xl shadow-black/5">
-          <Sparkles className="w-4 h-4 text-[#8756FA]" />
-          <span className="text-sm font-bold tracking-widest uppercase bg-clip-text text-transparent bg-gradient-to-r from-[#8756FA] to-[#FF8731]">Training Center</span>
+      <div className="mb-8 lg:mb-10 2xl:mb-20 relative z-10">
+        <motion.div initial={{ scale: 0, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ type: "spring", stiffness: 200, damping: 20 }} className="inline-flex items-center gap-2 px-3 py-1.5 2xl:px-4 2xl:py-2 rounded-full bg-white/10 dark:bg-white/5 backdrop-blur-md border border-white/20 mb-4 2xl:mb-6 shadow-xl shadow-black/5">
+          <Sparkles className="w-3 h-3 2xl:w-4 2xl:h-4 text-[#8756FA]" />
+          <span className="text-xs 2xl:text-sm font-bold tracking-widest uppercase bg-clip-text text-transparent bg-gradient-to-r from-[#8756FA] to-[#FF8731]">Training Center</span>
         </motion.div>
         
-        <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1, duration: 0.8 }} className="text-4xl md:text-6xl lg:text-[4.5rem] font-black font-serif text-[#03091B] dark:text-white tracking-tighter mb-1 leading-[1.1] pr-10 overflow-visible flex flex-wrap items-baseline gap-x-4">
+        <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1, duration: 0.8 }} className="text-4xl md:text-[3rem] lg:text-[3.5rem] 2xl:text-[4.5rem] font-black font-serif text-[#03091B] dark:text-white tracking-tighter mb-1 leading-[1.1] pr-10 overflow-visible flex flex-wrap items-baseline gap-x-4">
           <span>Libreria</span>
           <span className="relative inline-block overflow-visible">
             <span className="relative z-10 text-transparent bg-clip-text bg-gradient-to-r from-[#8756FA] to-[#9C73FA] drop-shadow-sm pr-4">Moduli</span>
           </span>
         </motion.h1>
         
-        <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2, duration: 0.8 }} className="text-slate-700 dark:text-slate-400 font-medium text-lg md:text-2xl max-w-2xl leading-relaxed">
+        <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2, duration: 0.8 }} className="text-slate-700 dark:text-slate-400 font-medium text-base lg:text-lg 2xl:text-2xl max-w-2xl leading-relaxed">
           {mode === 'full' ? "Accesso libero a tutti i contenuti formativi." : "Completa le lezioni in sequenza per abilitare la certificazione."}
         </motion.p>
       </div>
 
-      <motion.div variants={container} initial="hidden" animate="show" className="grid gap-8 relative z-10">
+      <motion.div variants={container} initial="hidden" animate="show" className="grid gap-6 2xl:gap-8 relative z-10">
         
         {lessons.map((lesson, index) => {
           const unlocked = isUnlocked(index);
