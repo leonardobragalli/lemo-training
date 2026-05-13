@@ -161,9 +161,9 @@ const Lesson = ({ lesson, mode, onComplete }) => {
                       <div className="absolute top-0 right-0 w-32 h-32 bg-[#FF8731] rounded-full blur-[50px] opacity-0 group-hover:opacity-10 transition-opacity duration-500"></div>
                       
                       <div className="w-12 h-12 md:w-16 md:h-16 bg-gradient-to-br from-[#FFF5EE] to-[#FFE8D6] dark:from-[#FF8731]/20 dark:to-[#FF8731]/5 text-[#FF8731] rounded-2xl flex items-center justify-center shrink-0 group-hover:scale-110 group-hover:-rotate-6 transition-transform duration-500 shadow-inner border border-[#FF8731]/20"><FileText className="w-6 h-6 md:w-7 md:h-7" /></div>
-                      <div className="flex-1 relative z-10">
-                        <h4 className="font-black text-[#03091B] dark:text-white text-base md:text-lg mb-0.5 group-hover:text-[#FF8731] transition-colors whitespace-nowrap overflow-hidden text-ellipsis">Materiale Didattico</h4>
-                        <p className="text-[10px] md:text-sm text-slate-500 dark:text-slate-400 font-medium whitespace-nowrap overflow-hidden text-ellipsis">Slide_Modulo_{lesson.id}</p>
+                      <div className="flex-1 relative z-10 min-w-0">
+                        <h4 className="font-black text-[#03091B] dark:text-white text-base md:text-lg mb-0.5 group-hover:text-[#FF8731] transition-colors truncate">Materiale Didattico</h4>
+                        <p className="text-[10px] md:text-sm text-slate-500 dark:text-slate-400 font-medium truncate">Slide_Modulo_{lesson.id}</p>
                       </div>
                       <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-black/5 dark:bg-white/5 flex items-center justify-center text-slate-400 group-hover:bg-[#FF8731] group-hover:text-white transition-all duration-300 relative z-10 shrink-0">
                         <ChevronRight className="w-4 h-4 md:w-5 md:h-5" />
