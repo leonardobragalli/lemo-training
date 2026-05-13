@@ -196,7 +196,7 @@ const Home = () => {
                   <motion.button 
                     whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}
                     onClick={() => handleNav(`/modules?mode=${mode}`)} 
-                    className="w-full md:w-auto px-8 2xl:px-10 py-5 2xl:py-6 bg-gradient-to-r from-[#8756FA] to-[#FF8731] text-white rounded-[2rem] 2xl:rounded-[2.5rem] font-black text-lg 2xl:text-xl flex items-center justify-center gap-3 2xl:gap-4 transition-all shadow-[0_15px_40px_-10px_rgba(135,86,250,0.8),inset_0_2px_4px_rgba(255,255,255,0.3)] hover:shadow-[0_20px_60px_-10px_rgba(255,135,49,1),inset_0_2px_4px_rgba(255,255,255,0.5)] border border-white/20"
+                    className="w-full md:w-auto px-8 2xl:px-10 py-5 2xl:py-6 bg-gradient-to-r from-[#8756FA] to-[#FF8731] text-white rounded-[2rem] 2xl:rounded-[2.5rem] font-black text-lg 2xl:text-xl flex items-center justify-center gap-3 2xl:gap-4 transition-all shadow-[0_15px_40px_-10px_rgba(135,86,250,0.8),inset_0_2px_4px_rgba(255,255,255,0.3)] hover:shadow-[0_20px_60px_-10px_rgba(255,135,49,1),inset_0_2px_4px_rgba(255,255,255,0.5)]"
                   >
                     <span className="relative z-10 drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]">{h.goModules}</span>
                     <div className="w-6 h-6 2xl:w-8 2xl:h-8 rounded-full bg-white/20 flex items-center justify-center relative z-10 transition-colors duration-300 border border-white/30 shadow-inner">
