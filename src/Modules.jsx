@@ -21,20 +21,20 @@ const Modules = () => {
   const isPediatria = patientType === 'pediatria';
 
   const lessons = [
-    { id: 1, type: "Video", videoUrl: "/videos/ISTRUZIONI GENERALI.mp4", correct: 2,
+    { id: 1, type: "Video", videoUrl: "https://res.cloudinary.com/dzhtuyaq0/video/upload/v1778689579/ISTRUZIONI_GENERALI_compressed_gihswp.mp4", correct: 2,
       title: tl[0].title, duration: tl[0].duration, description: tl[0].description,
       question: tl[0].question, answers: tl[0].answers, slides: tl[0].slides },
-    { id: 2, type: "Video", videoUrl: "/videos/PULIZIA.mp4", correct: 0,
+    { id: 2, type: "Video", videoUrl: "https://res.cloudinary.com/dzhtuyaq0/video/upload/v1778688357/PULIZIA_gq4bhm.mp4", correct: 0,
       title: tl[1].title, duration: tl[1].duration, description: tl[1].description,
       question: tl[1].question, answers: tl[1].answers, slides: tl[1].slides },
     isPediatria
-      ? { id: 3, type: "Video", videoUrl: "/videos/Ricarica LEMO JR.mp4", correct: 1,
+      ? { id: 3, type: "Video", videoUrl: "https://res.cloudinary.com/dzhtuyaq0/video/upload/v1778688378/Ricarica_LEMO_JR_fb3opv.mp4", correct: 1,
           title: l2.titlePediatria, duration: l2.durationPediatria, description: l2.descriptionPediatria,
           question: l2.questionPediatria, answers: l2.answersPediatria, slides: l2.slidesPediatria }
-      : { id: 3, type: "Video", videoUrl: "/videos/Ricarica LEMO.mp4", correct: 2,
+      : { id: 3, type: "Video", videoUrl: "https://res.cloudinary.com/dzhtuyaq0/video/upload/v1778688371/Ricarica_LEMO_hhcuix.mp4", correct: 2,
           title: l2.titleAdulti, duration: l2.duration, description: l2.descriptionAdulti,
           question: l2.questionAdulti, answers: l2.answersAdulti, slides: l2.slidesAdulti },
-    { id: 4, type: "Tutorial", videoUrl: "/videos/Simulazione.mp4", correct: 1,
+    { id: 4, type: "Tutorial", videoUrl: "https://res.cloudinary.com/dzhtuyaq0/video/upload/v1778689695/Simulazione_compressed_wuviqs.mp4", correct: 1,
       title: tl[3].title, duration: tl[3].duration, description: tl[3].description,
       question: tl[3].question, answers: tl[3].answers, slides: tl[3].slides },
   ];
