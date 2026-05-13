@@ -109,12 +109,12 @@ const Welcome = () => {
       {/* Lato Destro - Apple-like Floating Form */}
       <div className="flex-1 flex items-center justify-center p-4 sm:p-12 relative z-10">
 
-        <motion.div variants={containerVariants} initial="hidden" animate="visible" className="w-full max-w-[540px] relative z-10 bg-transparent px-4 py-2 md:p-14 rounded-[3.5rem] my-8 md:my-0">
+        <motion.div variants={containerVariants} initial="hidden" animate="visible" className="w-full max-w-[540px] relative z-10 bg-black/20 backdrop-blur-[40px] p-8 pt-4 md:p-14 rounded-[3.5rem] shadow-xl border-t border-l border-white/20 border-r border-b border-white/5 my-8 md:my-0 group/glass">
 
-          <div className="absolute inset-0 bg-transparent pointer-events-none z-0"></div>
+          <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-transparent rounded-[3.5rem] pointer-events-none opacity-50 z-0"></div>
 
           {/* MOBILE LOGO */}
-          <div className="md:hidden flex justify-center mb-2 mt-4 relative z-10">
+          <div className="md:hidden flex justify-center mb-8 relative z-10">
             <img src="/images/logo-character-photoroom.png" alt="Lemons Logo" className="h-40 object-contain drop-shadow-[0_20px_20px_rgba(0,0,0,0.6)]" />
           </div>
 
