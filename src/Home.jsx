@@ -91,12 +91,12 @@ const Home = () => {
         <motion.div variants={container} initial="hidden" animate="show" className="grid grid-cols-1 lg:grid-cols-12 gap-6 2xl:gap-8 relative z-10">
           
           {/* Main Progress Dashboard - Epic Glassmorphism */}
-          <motion.div 
-            variants={item} 
-            className="lg:col-span-8 group relative"
+          <motion.div
+            variants={item}
+            className="lg:col-span-8 group relative h-full bg-[#03091B]/20 dark:bg-[#03091B]/40 backdrop-blur-[40px] rounded-[2rem] 2xl:rounded-[3.5rem] p-8 lg:p-10 2xl:p-14 shadow-[0_20px_60px_-10px_rgba(0,0,0,0.3)] border-t border-l border-white/20 border-r border-b border-white/5 flex flex-col md:flex-row items-center gap-8 lg:gap-10 2xl:gap-12"
           >
-            
-            <div className="relative h-full bg-[#03091B]/20 dark:bg-[#03091B]/40 backdrop-blur-[40px] rounded-[2rem] 2xl:rounded-[3.5rem] p-8 lg:p-10 2xl:p-14 overflow-hidden shadow-[0_20px_60px_-10px_rgba(0,0,0,0.3)] border-t border-l border-white/20 border-r border-b border-white/5 flex flex-col md:flex-row items-center gap-8 lg:gap-10 2xl:gap-12 group/glass">
+
+            <div className="contents">
               
               {/* Solid Matte 3D Skeuomorphic Progress Ring */}
               <div className="relative w-48 h-48 lg:w-56 lg:h-56 2xl:w-64 2xl:h-64 shrink-0 flex items-center justify-center z-10">
