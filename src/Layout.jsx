@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { NavLink, Outlet, useSearchParams, useNavigate } from 'react-router-dom';
+import { NavLink, Outlet, useSearchParams, useNavigate, useLocation } from 'react-router-dom';
 import { Home, BookOpen, LifeBuoy, LogOut, Moon, Sun, Globe } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { ThemeContext } from './ThemeContext';
@@ -9,7 +9,10 @@ const Layout = () => {
   const [searchParams] = useSearchParams();
   const mode = searchParams.get('mode') || 'guided';
   const navigate = useNavigate();
+  const location = useLocation();
   const { isDarkMode, toggleTheme } = useContext(ThemeContext);
+
+  const isHome = location.pathname.includes('/home');
 
   const navItems = [
     { icon: Home, label: 'Home', path: `/home?mode=${mode}` },
@@ -37,7 +40,7 @@ const Layout = () => {
         <div className="absolute top-[-50px] left-[-50px] w-[200px] h-[200px] bg-[#FF8731] rounded-full blur-[80px] opacity-30 pointer-events-none"></div>
 
         <div className="p-4 2xl:p-10 flex items-center justify-center border-b shrink-0 border-white/10">
-          <img src="/images/logos/logo esteso bianco panna png.png" alt="Lemons in the room Logo" className="h-8 2xl:h-16 w-auto object-contain drop-shadow-md" />
+          <img src={isHome || isDarkMode ? "/images/logos/logo esteso bianco panna png.png" : "/images/logos/logo esteso nero png.png"} alt="Lemons in the room Logo" className="h-8 2xl:h-16 w-auto object-contain drop-shadow-md" />
         </div>
 
         <nav className="flex-1 min-h-0 px-4 py-4 2xl:px-6 2xl:py-6 overflow-y-auto space-y-1 2xl:space-y-4">
@@ -48,14 +51,15 @@ const Layout = () => {
               onClick={handleNavClick}
               className={({ isActive }) => 
                 `flex items-center gap-3 px-4 py-3 2xl:gap-5 2xl:px-6 2xl:py-5 rounded-[1.5rem] 2xl:rounded-[2rem] font-bold transition-all duration-300 relative group overflow-hidden shrink-0 ${
-                  isActive ? 'text-white shadow-[0_20px_40px_-10px_rgba(255,135,49,0.5)] scale-[1.02]' : 'text-slate-300 hover:text-white hover:bg-white/10'
+                  isActive ? 'text-white shadow-[0_20px_40px_-10px_rgba(255,135,49,0.5)] scale-[1.02]' : 
+                  (isHome || isDarkMode ? 'text-slate-300 hover:text-white hover:bg-white/10' : 'text-slate-700 hover:text-black hover:bg-black/5')
                 }`
               }
             >
               {({ isActive }) => (
                 <>
                   {isActive && <motion.div layoutId="activeNav" className="absolute inset-0 bg-gradient-to-r from-[#FF8731] to-[#FF9E54] z-0" />}
-                  {!isActive && <div className="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity z-0"></div>}
+                  {!isActive && <div className={`absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity z-0 ${isHome || isDarkMode ? 'bg-white/5' : 'bg-black/5'}`}></div>}
                   <item.icon className={`w-5 h-5 2xl:w-6 2xl:h-6 relative z-10 transition-transform duration-300 ${isActive ? 'scale-110' : 'group-hover:scale-110'}`} />
                   <span className="relative z-10 text-base 2xl:text-lg tracking-wide">{item.label}</span>
                 </>
@@ -65,12 +69,12 @@ const Layout = () => {
         </nav>
 
         <div className="p-4 2xl:p-8 space-y-2 2xl:space-y-4 border-t border-white/10 shrink-0">
-          <a href="https://www.lemonsintheroom.com/" target="_blank" rel="noopener noreferrer" onClick={() => audio.playClick()} className="flex items-center gap-3 px-4 py-3 2xl:gap-4 2xl:px-6 2xl:py-5 w-full rounded-[1.5rem] 2xl:rounded-[2rem] transition-all duration-300 text-left font-bold group border border-transparent text-slate-300 hover:text-white hover:border-white/10 hover:bg-white/5">
+          <a href="https://www.lemonsintheroom.com/" target="_blank" rel="noopener noreferrer" onClick={() => audio.playClick()} className={`flex items-center gap-3 px-4 py-3 2xl:gap-4 2xl:px-6 2xl:py-5 w-full rounded-[1.5rem] 2xl:rounded-[2rem] transition-all duration-300 text-left font-bold group border border-transparent ${isHome || isDarkMode ? 'text-slate-300 hover:text-white hover:border-white/10 hover:bg-white/5' : 'text-slate-700 hover:text-black hover:border-black/10 hover:bg-black/5'}`}>
             <Globe className="w-5 h-5 2xl:w-6 2xl:h-6 group-hover:rotate-12 transition-transform duration-500" />
             <span className="text-base 2xl:text-lg">Visita il Sito</span>
           </a>
 
-          <button onClick={handleLogout} className="flex items-center gap-3 px-4 py-3 2xl:gap-4 2xl:px-6 2xl:py-5 w-full rounded-[1.5rem] 2xl:rounded-[2rem] transition-all duration-300 text-left font-bold group border border-transparent text-slate-400 hover:text-red-400 hover:border-red-500/20 hover:bg-red-500/10">
+          <button onClick={handleLogout} className={`flex items-center gap-3 px-4 py-3 2xl:gap-4 2xl:px-6 2xl:py-5 w-full rounded-[1.5rem] 2xl:rounded-[2rem] transition-all duration-300 text-left font-bold group border border-transparent ${isHome || isDarkMode ? 'text-slate-400 hover:text-red-400 hover:border-red-500/20 hover:bg-red-500/10' : 'text-slate-600 hover:text-red-600 hover:border-red-500/20 hover:bg-red-50'}`}>
             <LogOut className="w-5 h-5 2xl:w-6 2xl:h-6 group-hover:-translate-x-2 transition-transform duration-300" />
             <span className="text-base 2xl:text-lg">Chiudi Sessione</span>
           </button>
