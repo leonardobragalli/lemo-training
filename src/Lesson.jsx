@@ -100,11 +100,8 @@ const Lesson = ({ lesson, mode, onComplete }) => {
       <div className="flex flex-col lg:flex-row h-full">
         
         {/* Video Player Section - Spatial Glass Screen */}
-        <div className="lg:w-[60%] xl:w-2/3 bg-black/90 dark:bg-black relative overflow-hidden flex flex-col">
-          {/* Subtle reflection */}
-          <div className="absolute top-0 left-0 w-full h-1/2 bg-gradient-to-b from-white/5 to-transparent pointer-events-none z-10"></div>
-          
-          <div className="w-full relative group shadow-2xl shrink-0">
+        <div className="lg:w-[60%] xl:w-2/3 relative flex flex-col self-start">
+          <div className="w-full relative group shadow-2xl shrink-0 bg-black/90 dark:bg-black overflow-hidden">
             <video
               ref={playerRef}
               src={lesson.videoUrl}
