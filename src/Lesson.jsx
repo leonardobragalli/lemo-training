@@ -216,7 +216,7 @@ const Lesson = ({ lesson, mode, onComplete }) => {
               <motion.div 
                 initial={{ scale: 0.95, y: 40, rotateX: 10 }} animate={{ scale: 1, y: 0, rotateX: 0 }} exit={{ scale: 0.95, y: 40, rotateX: -10 }} transition={{ type: "spring", stiffness: 100, damping: 20 }}
                 className="bg-white/10 dark:bg-[#03091B]/80 backdrop-blur-3xl w-full max-w-5xl rounded-[2.5rem] md:rounded-[3rem] shadow-[0_50px_100px_-20px_rgba(0,0,0,0.5)] overflow-hidden flex flex-col relative border border-white/20 perspective-[1000px]"
-                style={{ height: '90vh' }}
+                style={{ height: '100%', maxHeight: '85dvh' }}
               >
                 {/* Modal Header */}
                 <div className="flex items-center justify-between p-5 md:p-8 border-b border-white/10 bg-white/5 shrink-0">

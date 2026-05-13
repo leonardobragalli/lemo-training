@@ -78,11 +78,6 @@ const Layout = () => {
         </div>
       </motion.aside>
 
-      {/* Mobile Top Logo */}
-      <div className="md:hidden fixed top-6 left-6 z-50 flex items-center justify-center bg-white/20 dark:bg-black/20 backdrop-blur-md rounded-2xl px-4 py-2 border border-white/30 dark:border-white/10 shadow-lg">
-        <img src={isDarkMode ? "/images/logos/logo esteso bianco panna png.png" : "/images/logos/logo esteso nero png.png"} alt="Lemons Logo" className="h-8 w-auto object-contain drop-shadow-md" />
-      </div>
-
       {/* Mobile Top Actions (Site, Logout) */}
       <div className="md:hidden fixed top-6 right-6 z-50 flex flex-col items-end gap-3">
         <a href="https://www.lemonsintheroom.com/" target="_blank" rel="noopener noreferrer" onClick={() => audio.playClick()} className={`w-12 h-12 rounded-full backdrop-blur-2xl border flex items-center justify-center shadow-lg transition-all ${isDarkMode ? 'bg-white/10 border-white/20 text-slate-300' : 'bg-white/80 border-slate-200 text-slate-600'}`}>
