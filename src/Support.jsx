@@ -72,47 +72,50 @@ const Support = () => {
   const item = { hidden: { opacity: 0, y: 30 }, show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 100, damping: 20 } } };
 
   return (
-    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="px-6 pt-12 pb-6 md:px-10 md:pt-16 lg:px-16 lg:pt-16 2xl:pt-20 max-w-[1600px] mx-auto mb-20 md:mb-0 relative z-10 min-h-screen">
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="px-6 pt-12 pb-6 md:px-10 md:pt-12 lg:px-12 lg:pt-12 2xl:p-16 2xl:pt-20 max-w-[1200px] 2xl:max-w-[1600px] mx-auto mb-20 md:mb-0 relative z-10 min-h-screen">
       
       {/* Backgrounds */}
       <div className="fixed inset-0 bg-cover bg-center z-[-30] bg-[url('/images/bg-mobile-support.png')] md:hidden opacity-30 dark:opacity-20 mix-blend-luminosity"></div>
+      
       <div className="hidden md:block fixed inset-0 bg-cover bg-center z-[-30] bg-[url('/images/bg-support.png')] opacity-100"></div>
+      {/* Semi-transparent overlay to improve text legibility on PC */}
+      <div className="hidden md:block fixed inset-0 bg-white/50 dark:bg-black/50 backdrop-blur-[2px] z-[-29]"></div>
 
       {/* Immersive Background Elements - Performance Optimized */}
       <div className="fixed top-[-20%] right-[-10%] w-[50vw] h-[50vw] bg-gradient-to-tr from-[#FF8731] to-transparent rounded-full blur-[120px] opacity-20 pointer-events-none -z-20"></div>
       <div className="fixed bottom-[-10%] left-[-10%] w-[40vw] h-[40vw] bg-gradient-to-tr from-[#8756FA] to-transparent rounded-full blur-[100px] opacity-15 pointer-events-none -z-20"></div>
 
       {/* Hero Header */}
-      <div className="mb-12 2xl:mb-20 relative z-10">
-        <motion.div initial={{ scale: 0, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ type: "spring", stiffness: 200, damping: 20 }} className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 dark:bg-white/5 backdrop-blur-md border border-white/20 mb-4 2xl:mb-6 shadow-xl shadow-black/5">
-          <Sparkles className="w-4 h-4 text-[#8756FA]" />
-          <span className="text-sm font-bold tracking-widest uppercase bg-clip-text text-transparent bg-gradient-to-r from-[#8756FA] to-[#FF8731]">Lemons Hub</span>
+      <div className="mb-8 lg:mb-10 2xl:mb-20 relative z-10">
+        <motion.div initial={{ scale: 0, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ type: "spring", stiffness: 200, damping: 20 }} className="inline-flex items-center gap-2 px-3 py-1.5 2xl:px-4 2xl:py-2 rounded-full bg-white/10 dark:bg-white/5 backdrop-blur-md border border-white/20 mb-4 2xl:mb-6 shadow-xl shadow-black/5">
+          <Sparkles className="w-3 h-3 2xl:w-4 2xl:h-4 text-[#8756FA]" />
+          <span className="text-xs 2xl:text-sm font-bold tracking-widest uppercase bg-clip-text text-transparent bg-gradient-to-r from-[#8756FA] to-[#FF8731]">Lemons Hub</span>
         </motion.div>
         
-        <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1, duration: 0.8 }} className="text-4xl md:text-5xl lg:text-6xl 2xl:text-[4.5rem] font-black font-serif text-[#03091B] dark:text-white tracking-tighter mb-1 leading-[1.1] pr-10 overflow-visible flex flex-wrap items-baseline gap-x-4">
+        <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1, duration: 0.8 }} className="text-4xl md:text-[3rem] lg:text-[3.5rem] 2xl:text-[4.5rem] font-black font-serif text-[#03091B] dark:text-white tracking-tighter mb-1 leading-[1.1] pr-10 overflow-visible flex flex-wrap items-baseline gap-x-4">
           <span>Supporto</span>
           <span className="relative inline-block overflow-visible">
             <span className="relative z-10 text-transparent bg-clip-text bg-gradient-to-r from-[#FF8731] to-[#FF9E54] drop-shadow-sm pr-4">Operativo</span>
           </span>
         </motion.h1>
         
-        <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2, duration: 0.8 }} className="text-slate-700 dark:text-slate-400 font-medium text-lg lg:text-xl 2xl:text-2xl max-w-2xl leading-relaxed">
+        <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2, duration: 0.8 }} className="text-slate-700 dark:text-slate-400 font-medium text-base lg:text-lg 2xl:text-2xl max-w-2xl leading-relaxed">
           Assistenza immediata e risoluzione problemi per il personale medico.
         </motion.p>
       </div>
 
-      <motion.div variants={container} initial="hidden" animate="show" className="grid grid-cols-1 lg:grid-cols-2 gap-8 relative z-10">
+      <motion.div variants={container} initial="hidden" animate="show" className="grid grid-cols-1 lg:grid-cols-2 gap-6 2xl:gap-8 relative z-10">
         
         {/* Accordion FAQ (Glassmorphism Extreme) */}
-        <motion.div variants={item} className="space-y-6 relative">
-          <h2 className="text-3xl lg:text-3xl 2xl:text-4xl font-black font-serif text-[#03091B] dark:text-white mb-5 flex items-center gap-4 drop-shadow-sm">
-            <HelpCircle className="w-8 h-8 lg:w-8 lg:h-8 2xl:w-10 2xl:h-10 text-[#8756FA]" />
+        <motion.div variants={item} className="space-y-4 2xl:space-y-6 relative">
+          <h2 className="text-2xl lg:text-[1.75rem] 2xl:text-4xl font-black font-serif text-[#03091B] dark:text-white mb-4 2xl:mb-5 flex items-center gap-3 2xl:gap-4 drop-shadow-sm">
+            <HelpCircle className="w-7 h-7 lg:w-8 lg:h-8 2xl:w-10 2xl:h-10 text-[#8756FA]" />
             Domande Frequenti
           </h2>
           
-          <div className="space-y-4 2xl:space-y-5">
+          <div className="space-y-3 2xl:space-y-5">
             {faqs.map((faq, index) => (
-              <div key={index} className="bg-white/40 dark:bg-[#03091B]/40 backdrop-blur-3xl border border-white/50 dark:border-white/10 rounded-[2rem] 2xl:rounded-[2.5rem] overflow-hidden transition-all duration-500 hover:shadow-[0_20px_40px_-10px_rgba(135,86,250,0.15)] hover:border-[#8756FA]/30 group relative">
+              <div key={index} className="bg-white/40 dark:bg-[#03091B]/40 backdrop-blur-3xl border border-white/50 dark:border-white/10 rounded-[1.5rem] 2xl:rounded-[2.5rem] overflow-hidden transition-all duration-500 hover:shadow-[0_20px_40px_-10px_rgba(135,86,250,0.15)] hover:border-[#8756FA]/30 group relative">
                 <div className="absolute inset-0 opacity-[0.03] mix-blend-overlay pointer-events-none bg-[url('https://grainy-gradients.vercel.app/noise.svg')] z-0"></div>
                 
                 <button 
