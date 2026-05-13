@@ -115,7 +115,7 @@ const Welcome = () => {
       {/* Lato Destro - Apple-like Floating Form */}
       <div className="flex-1 flex items-center justify-center p-4 sm:p-12 relative z-10">
 
-        <motion.div variants={containerVariants} initial="hidden" animate="visible" className="w-full max-w-[420px] 2xl:max-w-[480px] relative z-10 bg-black/20 backdrop-blur-[40px] p-8 pt-4 md:p-8 md:px-10 2xl:p-10 rounded-[3.5rem] shadow-xl border-t border-l border-white/20 border-r border-b border-white/5 my-8 md:my-0 group/glass max-h-[90vh] overflow-y-auto">
+        <motion.div variants={containerVariants} initial="hidden" animate="visible" className="w-full max-w-[420px] 2xl:max-w-[480px] relative z-10 bg-black/20 backdrop-blur-[40px] p-8 pt-4 md:p-8 md:px-10 2xl:p-10 rounded-[3.5rem] shadow-xl border-t border-l border-white/20 border-r border-b border-white/5 my-8 md:my-0 group/glass">
 
           <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-transparent rounded-[3.5rem] pointer-events-none opacity-50 z-0"></div>
 
