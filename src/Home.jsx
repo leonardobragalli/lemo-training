@@ -80,7 +80,7 @@ const Home = () => {
             <span className="text-[9px] lg:text-[10px] 2xl:text-sm font-bold tracking-widest uppercase text-white drop-shadow-md">{h.badge}</span>
           </motion.div>
           
-          <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1, duration: 0.8 }} className="text-3xl lg:text-[2rem] 2xl:text-[4.5rem] font-black font-serif text-white tracking-tighter mb-1.5 2xl:mb-4 leading-[1.1] pb-1 2xl:pb-2 overflow-visible flex flex-wrap items-baseline gap-x-2 2xl:gap-x-4 drop-shadow-sm">
+          <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1, duration: 0.8 }} className="text-5xl lg:text-[2rem] 2xl:text-[4.5rem] font-black font-serif text-white tracking-tighter mb-1.5 2xl:mb-4 leading-[1.1] pb-1 2xl:pb-2 overflow-visible flex flex-wrap items-baseline gap-x-2 2xl:gap-x-4 drop-shadow-sm">
             <span>{h.greeting}</span>
             <span className="relative inline-block overflow-visible">
               <span className="relative z-10 text-[#A379F9]" style={{ textShadow: '0 0 40px rgba(135, 86, 250, 0.8), 0 4px 10px rgba(0,0,0,0.8), 0 1px 1px rgba(255,255,255,0.4)' }}>{user?.firstName || h.guest}</span>

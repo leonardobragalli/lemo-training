@@ -53,6 +53,45 @@ const LangPicker = ({ isHome, isDarkMode }) => {
   );
 };
 
+const MobileLangPicker = ({ isDarkMode }) => {
+  const { lang, switchLang } = useLang();
+  const [open, setOpen] = useState(false);
+  const current = LANGUAGES.find(l => l.code === lang);
+
+  return (
+    <div className="relative">
+      <button
+        onClick={() => { audio.playClick(); setOpen(o => !o); }}
+        className={`w-12 h-12 rounded-full backdrop-blur-2xl border flex items-center justify-center shadow-lg transition-all text-lg ${isDarkMode ? 'bg-white/10 border-white/20' : 'bg-white/80 border-slate-200'}`}
+      >
+        {current.flag}
+      </button>
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            initial={{ opacity: 0, y: 8, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 8, scale: 0.95 }}
+            transition={{ duration: 0.15 }}
+            className="absolute top-full mt-2 right-0 bg-[#03091B]/90 backdrop-blur-xl border border-white/10 rounded-[1.5rem] overflow-hidden shadow-xl z-50 min-w-[140px]"
+          >
+            {LANGUAGES.map(l => (
+              <button
+                key={l.code}
+                onClick={() => { audio.playClick(); switchLang(l.code); setOpen(false); }}
+                className={`flex items-center gap-3 px-4 py-3 w-full text-left font-bold text-sm transition-all duration-200 ${lang === l.code ? 'text-white bg-white/10' : 'text-slate-300 hover:text-white hover:bg-white/5'}`}
+              >
+                <span className="text-base">{l.flag}</span>
+                <span>{l.label}</span>
+              </button>
+            ))}
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+};
+
 const Layout = () => {
   const [searchParams] = useSearchParams();
   const mode = searchParams.get('mode') || 'guided';
@@ -133,6 +172,7 @@ const Layout = () => {
 
       {/* Mobile Top Actions */}
       <div className="md:hidden fixed top-6 right-6 z-50 flex flex-col items-end gap-3">
+        <MobileLangPicker isDarkMode={isDarkMode} />
         <a href="https://www.lemonsintheroom.com/" target="_blank" rel="noopener noreferrer" onClick={() => audio.playClick()} className={`w-12 h-12 rounded-full backdrop-blur-2xl border flex items-center justify-center shadow-lg transition-all ${isDarkMode ? 'bg-white/10 border-white/20 text-slate-300' : 'bg-white/80 border-slate-200 text-slate-600'}`}>
           <Globe className="w-5 h-5" />
         </a>
