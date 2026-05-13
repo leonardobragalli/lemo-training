@@ -74,7 +74,7 @@ const Modules = () => {
           <span className="text-xs 2xl:text-sm font-bold tracking-widest uppercase bg-clip-text text-transparent bg-gradient-to-r from-[#8756FA] to-[#FF8731]">{m.badge}</span>
         </motion.div>
         
-        <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1, duration: 0.8 }} className="text-4xl md:text-[3rem] lg:text-[3.5rem] 2xl:text-[4.5rem] font-black font-serif text-[#03091B] dark:text-white tracking-tighter mb-1 leading-[1.1] pr-10 overflow-visible flex flex-wrap items-baseline gap-x-4">
+        <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1, duration: 0.8 }} className="text-5xl md:text-[3rem] lg:text-[3.5rem] 2xl:text-[4.5rem] font-black font-serif text-[#03091B] dark:text-white tracking-tighter mb-1 leading-[1.1] pr-10 overflow-visible flex flex-wrap items-baseline gap-x-4">
           <span>{m.titleMain}</span>
           <span className="relative inline-block overflow-visible">
             <span className="relative z-10 text-transparent bg-clip-text bg-gradient-to-r from-[#8756FA] to-[#9C73FA] drop-shadow-sm pr-4">{m.titleAccent}</span>
