@@ -85,7 +85,7 @@ const Welcome = () => {
       <div className="fixed inset-0 opacity-[0.03] pointer-events-none bg-[url('https://grainy-gradients.vercel.app/noise.svg')] z-0"></div>
 
       {/* Lato Sinistro - Lemons Brand Experience */}
-      <div className="hidden md:flex md:w-[50%] lg:w-[55%] px-12 lg:px-16 2xl:px-20 py-16 2xl:py-24 flex-col justify-center items-end relative z-10">
+      <div className="hidden md:flex md:w-[50%] lg:w-[55%] pl-12 lg:pl-16 2xl:pl-20 pr-20 lg:pr-28 2xl:pr-36 py-16 2xl:py-24 flex-col justify-center items-end relative z-10">
 
         <div className="relative z-10">
           {/* Logo nel banner */}
