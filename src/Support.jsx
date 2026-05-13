@@ -36,7 +36,10 @@ const Support = () => {
     };
 
     try {
-      const response = await fetch('https://formspree.io/f/YOUR_ENDPOINT_ID', {
+      const endpoint = ticketType === 'Tecnico'
+        ? 'https://formspree.io/f/mjglzlqo'
+        : 'https://formspree.io/f/mqenjjnb';
+      const response = await fetch(endpoint, {
         method: 'POST',
         headers: {
           'Accept': 'application/json',
