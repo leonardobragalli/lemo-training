@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ShieldAlert, Users, CheckCircle, Activity, Building2, Search, History, Download, TrendingUp, ChevronDown, ChevronUp, Lock, Target, Trash2 } from 'lucide-react';
+import { ShieldAlert, Users, CheckCircle, Activity, Building2, Search, History, Download, TrendingUp, ChevronDown, ChevronUp, Lock, Target, Trash2, RefreshCw, Baby, UserRound } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer, PieChart, Pie, Cell, AreaChart, Area } from 'recharts';
 import { QRCodeCanvas } from 'qrcode.react';
@@ -13,6 +13,7 @@ const Admin = () => {
   const [allUsersList, setAllUsersList] = useState([]);
   const [searchTerm, setSearchParams] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
+  const [hospitalFilter, setHospitalFilter] = useState('all');
   const [expandedUser, setExpandedUser] = useState(null);
   const navigate = useNavigate();
 
@@ -135,17 +136,21 @@ const Admin = () => {
     link.click();
   };
 
+  const uniqueHospitals = [...new Set(allUsersList.map(u => u.hospital).filter(Boolean))].sort();
+
   const filteredUsers = allUsersList.filter(u => {
-    const matchesSearch = (u.name || '').toLowerCase().includes(searchTerm.toLowerCase()) || 
+    const matchesSearch = (u.name || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
                           (u.hospital || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
                           (u.department || '').toLowerCase().includes(searchTerm.toLowerCase());
-    
+
     let matchesStatus = true;
     if (statusFilter === 'completed') matchesStatus = u.percentage === 100;
     if (statusFilter === 'in_progress') matchesStatus = u.percentage < 100 && u.percentage > 0;
     if (statusFilter === 'not_started') matchesStatus = u.percentage === 0;
 
-    return matchesSearch && matchesStatus;
+    const matchesHospital = hospitalFilter === 'all' || u.hospital === hospitalFilter;
+
+    return matchesSearch && matchesStatus && matchesHospital;
   });
 
   if (!isAuthenticated) {
@@ -187,8 +192,11 @@ const Admin = () => {
             </div>
           </div>
           <div className="flex items-center gap-4 w-full md:w-auto">
+            <button onClick={() => { audio.playClick(); loadStats(); }} className="px-4 py-3 bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white rounded-xl font-bold transition-all flex items-center justify-center gap-2 border border-slate-700">
+              <RefreshCw className="w-4 h-4" /> Aggiorna
+            </button>
             <button onClick={exportCSV} className="flex-1 md:flex-none px-6 py-3 bg-indigo-500 hover:bg-indigo-600 text-white rounded-xl font-bold transition-all flex items-center justify-center gap-2 shadow-lg shadow-indigo-500/20">
-              <Download className="w-4 h-4" /> Esporta Dati (CSV)
+              <Download className="w-4 h-4" /> Esporta CSV
             </button>
             <button onClick={() => navigate('/')} className="px-6 py-3 bg-slate-800 hover:bg-slate-700 rounded-xl font-bold transition-colors border border-slate-700">
               Esci
@@ -315,7 +323,7 @@ const Admin = () => {
               </ResponsiveContainer>
             </div>
             <div className="flex flex-wrap justify-center gap-4 mt-2">
-              {(stats?.hospitals || []).slice(0, 4).map((h, i) => (
+              {(stats?.hospitals || []).map((h, i) => (
                 <div key={i} className="flex items-center gap-2">
                   <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: COLORS[i % COLORS.length] }}></div>
                   <span className="text-xs font-bold text-slate-300">{h.name}</span>
@@ -353,10 +361,22 @@ const Admin = () => {
             <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
               <div>
                 <h3 className="text-2xl font-black text-white">Anagrafica Operatori</h3>
-                <p className="text-sm text-slate-500 font-medium mt-1">Gestione dettagliata di ogni singola risorsa.</p>
+                <p className="text-sm text-slate-500 font-medium mt-1">
+                  {filteredUsers.length === allUsersList.length
+                    ? `${allUsersList.length} operatori totali`
+                    : `${filteredUsers.length} di ${allUsersList.length} operatori`}
+                </p>
               </div>
-              <div className="flex flex-col sm:flex-row gap-4 w-full lg:w-auto">
-                <select 
+              <div className="flex flex-col sm:flex-row gap-4 w-full lg:w-auto flex-wrap">
+                <select
+                  value={hospitalFilter}
+                  onChange={(e) => setHospitalFilter(e.target.value)}
+                  className="bg-slate-950 border border-slate-800 text-slate-300 px-5 py-3.5 rounded-2xl focus:border-[#FF8731] focus:ring-1 focus:ring-[#FF8731] outline-none transition-all font-bold text-sm appearance-none cursor-pointer"
+                >
+                  <option value="all">Tutte le strutture</option>
+                  {uniqueHospitals.map(h => <option key={h} value={h}>{h}</option>)}
+                </select>
+                <select
                   value={statusFilter}
                   onChange={(e) => setStatusFilter(e.target.value)}
                   className="bg-slate-950 border border-slate-800 text-slate-300 px-5 py-3.5 rounded-2xl focus:border-[#FF8731] focus:ring-1 focus:ring-[#FF8731] outline-none transition-all font-bold text-sm appearance-none cursor-pointer"
@@ -366,11 +386,11 @@ const Admin = () => {
                   <option value="in_progress">In Corso (1-99%)</option>
                   <option value="not_started">Non Iniziato (0%)</option>
                 </select>
-                <div className="relative w-full sm:w-80">
+                <div className="relative w-full sm:w-72">
                   <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500" />
-                  <input 
-                    type="text" 
-                    placeholder="Cerca nome, ospedale, reparto..." 
+                  <input
+                    type="text"
+                    placeholder="Cerca nome, reparto..."
                     value={searchTerm}
                     onChange={(e) => setSearchParams(e.target.value)}
                     className="w-full bg-slate-950 border border-slate-800 text-white pl-12 pr-4 py-3.5 rounded-2xl focus:border-[#FF8731] focus:ring-1 focus:ring-[#FF8731] outline-none transition-all font-medium text-sm"
@@ -386,6 +406,7 @@ const Admin = () => {
                 <tr className="bg-slate-950 text-slate-400 text-[10px] uppercase tracking-widest font-black border-b border-slate-800">
                   <th className="px-8 py-5">Operatore</th>
                   <th className="px-8 py-5">Dettagli Struttura</th>
+                  <th className="px-8 py-5">Profilo</th>
                   <th className="px-8 py-5">Stato Formazione</th>
                   <th className="px-8 py-5 text-center">Attività</th>
                   <th className="px-8 py-5 text-right">Dettagli</th>
@@ -411,6 +432,12 @@ const Admin = () => {
                       <td className="px-8 py-6">
                         <div className="font-bold text-slate-200 text-sm">{u.hospital}</div>
                         <div className="text-xs text-slate-500 font-medium flex items-center gap-1 mt-1"><Building2 className="w-3 h-3"/> {u.department}</div>
+                      </td>
+                      <td className="px-8 py-6">
+                        {u.patientType === 'pediatria'
+                          ? <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-violet-500/10 border border-violet-500/20 text-violet-400 text-xs font-bold"><Baby className="w-3 h-3"/>Pediatria</span>
+                          : <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-bold"><UserRound className="w-3 h-3"/>Adulti</span>
+                        }
                       </td>
                       <td className="px-8 py-6">
                         <div className="flex flex-col gap-2">
