@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ShieldAlert, Users, CheckCircle, Activity, Building2, Search, History, Download, TrendingUp, ChevronDown, ChevronUp, Lock, Target, Trash2, RefreshCw, Baby, UserRound } from 'lucide-react';
+import { ShieldAlert, Users, CheckCircle, Activity, Building2, Search, History, Download, TrendingUp, ChevronDown, ChevronUp, Lock, Target, Trash2, RefreshCw, Baby, UserRound, ArrowUpDown, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer, PieChart, Pie, Cell, AreaChart, Area } from 'recharts';
 import { QRCodeCanvas } from 'qrcode.react';
@@ -14,10 +14,30 @@ const Admin = () => {
   const [searchTerm, setSearchParams] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [hospitalFilter, setHospitalFilter] = useState('all');
+  const [sortBy, setSortBy] = useState('lastLogin');
+  const [sortDir, setSortDir] = useState('desc');
   const [expandedUser, setExpandedUser] = useState(null);
   const navigate = useNavigate();
 
   const totalLessons = 4;
+
+  const timeAgo = (iso) => {
+    if (!iso) return '—';
+    const diff = Math.floor((Date.now() - new Date(iso)) / 1000);
+    if (diff < 60) return 'Adesso';
+    if (diff < 3600) return `${Math.floor(diff / 60)} min fa`;
+    if (diff < 86400) return `${Math.floor(diff / 3600)} ore fa`;
+    if (diff < 172800) return 'Ieri';
+    return `${Math.floor(diff / 86400)} giorni fa`;
+  };
+
+  const handleSort = (col) => {
+    if (sortBy === col) setSortDir(d => d === 'asc' ? 'desc' : 'asc');
+    else { setSortBy(col); setSortDir('asc'); }
+  };
+
+  const hasActiveFilters = statusFilter !== 'all' || hospitalFilter !== 'all' || searchTerm !== '';
+  const resetFilters = () => { setStatusFilter('all'); setHospitalFilter('all'); setSearchParams(''); };
 
   const loadStats = () => {
     const globalUsers = JSON.parse(localStorage.getItem('lemo_all_users')) || {};
@@ -118,11 +138,12 @@ const Admin = () => {
 
   const exportCSV = () => {
     audio.playClick();
-    const headers = ['Operatore', 'Ospedale', 'Reparto', 'Modalità', 'Progresso %', 'Moduli Completati', 'Login Totali', 'Primo Accesso', 'Ultimo Accesso'];
+    const headers = ['Operatore', 'Ospedale', 'Reparto', 'Profilo', 'Modalità', 'Progresso %', 'Moduli Completati', 'Login Totali', 'Primo Accesso', 'Ultimo Accesso'];
     const csvContent = [
       headers.join(','),
       ...filteredUsers.map(u => [
-        `"${u.name || ''}"`, `"${u.hospital || ''}"`, `"${u.department || ''}"`, `"${u.mode || ''}"`,
+        `"${u.name || ''}"`, `"${u.hospital || ''}"`, `"${u.department || ''}"`,
+        `"${u.patientType === 'pediatria' ? 'Pediatria' : 'Adulti'}"`, `"${u.mode || ''}"`,
         `"${u.percentage || 0}%"`, `"${u.progressCount || 0}/${totalLessons}"`, `"${u.loginCount || 1}"`,
         `"${new Date(u.firstLogin || u.lastLogin || Date.now()).toLocaleDateString('it-IT')}"`,
         `"${new Date(u.lastLogin || Date.now()).toLocaleString('it-IT')}"`
@@ -137,21 +158,28 @@ const Admin = () => {
   };
 
   const uniqueHospitals = [...new Set(allUsersList.map(u => u.hospital).filter(Boolean))].sort();
+  const todayStr = new Date().toISOString().split('T')[0];
 
-  const filteredUsers = allUsersList.filter(u => {
-    const matchesSearch = (u.name || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
-                          (u.hospital || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
-                          (u.department || '').toLowerCase().includes(searchTerm.toLowerCase());
-
-    let matchesStatus = true;
-    if (statusFilter === 'completed') matchesStatus = u.percentage === 100;
-    if (statusFilter === 'in_progress') matchesStatus = u.percentage < 100 && u.percentage > 0;
-    if (statusFilter === 'not_started') matchesStatus = u.percentage === 0;
-
-    const matchesHospital = hospitalFilter === 'all' || u.hospital === hospitalFilter;
-
-    return matchesSearch && matchesStatus && matchesHospital;
-  });
+  const filteredUsers = allUsersList
+    .filter(u => {
+      const matchesSearch = (u.name || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+                            (u.hospital || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+                            (u.department || '').toLowerCase().includes(searchTerm.toLowerCase());
+      let matchesStatus = true;
+      if (statusFilter === 'completed') matchesStatus = u.percentage === 100;
+      if (statusFilter === 'in_progress') matchesStatus = u.percentage < 100 && u.percentage > 0;
+      if (statusFilter === 'not_started') matchesStatus = u.percentage === 0;
+      const matchesHospital = hospitalFilter === 'all' || u.hospital === hospitalFilter;
+      return matchesSearch && matchesStatus && matchesHospital;
+    })
+    .sort((a, b) => {
+      let va, vb;
+      if (sortBy === 'name') { va = a.name || ''; vb = b.name || ''; return sortDir === 'asc' ? va.localeCompare(vb) : vb.localeCompare(va); }
+      if (sortBy === 'percentage') { va = a.percentage || 0; vb = b.percentage || 0; }
+      else if (sortBy === 'loginCount') { va = a.loginCount || 1; vb = b.loginCount || 1; }
+      else { va = new Date(a.lastLogin || 0); vb = new Date(b.lastLogin || 0); }
+      return sortDir === 'asc' ? va - vb : vb - va;
+    });
 
   if (!isAuthenticated) {
     return (
@@ -361,10 +389,15 @@ const Admin = () => {
             <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
               <div>
                 <h3 className="text-2xl font-black text-white">Anagrafica Operatori</h3>
-                <p className="text-sm text-slate-500 font-medium mt-1">
+                <p className="text-sm text-slate-500 font-medium mt-1 flex items-center gap-3">
                   {filteredUsers.length === allUsersList.length
                     ? `${allUsersList.length} operatori totali`
                     : `${filteredUsers.length} di ${allUsersList.length} operatori`}
+                  {hasActiveFilters && (
+                    <button onClick={resetFilters} className="inline-flex items-center gap-1 text-[#FF8731] hover:text-[#FF9E54] font-bold text-xs transition-colors">
+                      <X className="w-3 h-3" /> Azzera filtri
+                    </button>
+                  )}
                 </p>
               </div>
               <div className="flex flex-col sm:flex-row gap-4 w-full lg:w-auto flex-wrap">
@@ -404,12 +437,16 @@ const Admin = () => {
             <table className="w-full text-left border-collapse">
               <thead>
                 <tr className="bg-slate-950 text-slate-400 text-[10px] uppercase tracking-widest font-black border-b border-slate-800">
-                  <th className="px-8 py-5">Operatore</th>
-                  <th className="px-8 py-5">Dettagli Struttura</th>
-                  <th className="px-8 py-5">Profilo</th>
-                  <th className="px-8 py-5">Stato Formazione</th>
-                  <th className="px-8 py-5 text-center">Attività</th>
-                  <th className="px-8 py-5 text-right">Dettagli</th>
+                  {[['name','Operatore'],['hospital','Struttura'],['','Profilo'],['percentage','Formazione'],['loginCount','Attività']].map(([col, label]) => (
+                    <th key={label} className="px-8 py-5">
+                      {col ? (
+                        <button onClick={() => handleSort(col)} className="flex items-center gap-1.5 font-black uppercase tracking-widest text-[10px] text-slate-400 hover:text-white transition-colors">
+                          {label} <ArrowUpDown className={`w-3 h-3 ${sortBy === col ? 'text-[#FF8731]' : ''}`} />
+                        </button>
+                      ) : <span className="text-[10px] uppercase tracking-widest">{label}</span>}
+                    </th>
+                  ))}
+                  <th className="px-8 py-5 text-right text-[10px] uppercase tracking-widest">Dettagli</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-800/50">
@@ -422,7 +459,12 @@ const Admin = () => {
                             {u.firstName?.[0]}{u.lastName?.[0] || u.name?.[0]}
                           </div>
                           <div>
-                            <div className="font-bold text-white text-base">{u.name}</div>
+                            <div className="font-bold text-white text-base flex items-center gap-2">
+                              {u.name}
+                              {u.firstLogin && u.firstLogin.startsWith(todayStr) && (
+                                <span className="text-[9px] font-black px-1.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 uppercase tracking-wider">Nuovo</span>
+                              )}
+                            </div>
                             <div className="text-xs font-bold px-2 py-0.5 mt-1 rounded-md inline-block bg-slate-800 text-slate-400">
                               {u.mode === 'full' ? 'Modalità Libera' : 'Percorso Guidato'}
                             </div>
@@ -451,11 +493,12 @@ const Admin = () => {
                         </div>
                       </td>
                       <td className="px-8 py-6 text-center">
-                        <div className="flex flex-col items-center gap-1">
+                        <div className="flex flex-col items-center gap-1.5">
                           <div className="inline-flex items-center gap-1.5 bg-slate-800 px-3 py-1 rounded-lg text-xs font-bold text-white border border-slate-700">
                             <History className="w-3.5 h-3.5 text-slate-400" />
                             {u.loginCount || 1} Accessi
                           </div>
+                          <span className="text-[10px] text-slate-500 font-medium">{timeAgo(u.lastLogin)}</span>
                         </div>
                       </td>
                       <td className="px-8 py-6 text-right">
