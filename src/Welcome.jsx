@@ -4,6 +4,7 @@ import { Stethoscope, ArrowRight, ShieldCheck, Sparkles, Type, SquareUser, Build
 import { motion } from 'framer-motion';
 import { useLang } from './LanguageContext';
 import { audio } from './utils/audio';
+import { supabase } from './utils/supabase';
 
 const capitalize = (str) => {
   if (!str) return '';
@@ -35,16 +36,15 @@ const Welcome = () => {
     if (mode === 'full') navigate(`/home?mode=full`);
   }, [mode, navigate]);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!firstName.trim() || !lastName.trim() || !hospital.trim() || !department.trim() || !patientType) return;
 
     audio.playClick();
     const fullName = `${firstName} ${lastName}`;
-    
+
     // --- DEMO CHEAT CODE ---
     const isDemoAccount = (firstName.toLowerCase().trim() === 'mario' && lastName.toLowerCase().trim() === 'rossi') || firstName.toLowerCase().trim() === 'demo';
-    
     if (isDemoAccount) {
       localStorage.setItem(`lemo_progress_${fullName}`, JSON.stringify([1, 2, 3, 4]));
     }
@@ -52,10 +52,47 @@ const Welcome = () => {
     const userData = { name: fullName, firstName, lastName, hospital, department, patientType, mode };
     localStorage.setItem('lemo_user', JSON.stringify(userData));
 
+    // Supabase upsert
+    const now = new Date().toISOString();
+    const { data: existing } = await supabase
+      .from('users')
+      .select('id, login_count, first_login, completed_modules')
+      .eq('name', fullName)
+      .maybeSingle();
+
+    if (existing) {
+      await supabase.from('users').update({
+        first_name: firstName,
+        last_name: lastName,
+        hospital,
+        department,
+        patient_type: patientType,
+        mode,
+        login_count: (existing.login_count || 1) + 1,
+        last_login: now,
+        completed_modules: isDemoAccount ? [1, 2, 3, 4] : (existing.completed_modules || []),
+      }).eq('name', fullName);
+    } else {
+      await supabase.from('users').insert({
+        name: fullName,
+        first_name: firstName,
+        last_name: lastName,
+        hospital,
+        department,
+        patient_type: patientType,
+        mode,
+        login_count: 1,
+        first_login: now,
+        last_login: now,
+        completed_modules: isDemoAccount ? [1, 2, 3, 4] : [],
+      });
+    }
+
+    // localStorage fallback (per compatibilità Admin locale)
     const allUsers = JSON.parse(localStorage.getItem('lemo_all_users')) || {};
     if (allUsers[fullName]) {
       allUsers[fullName].loginCount = (allUsers[fullName].loginCount || 1) + 1;
-      allUsers[fullName].lastLogin = new Date().toISOString();
+      allUsers[fullName].lastLogin = now;
       allUsers[fullName].hospital = hospital;
       allUsers[fullName].department = department;
       allUsers[fullName].patientType = patientType;
@@ -64,9 +101,9 @@ const Welcome = () => {
       allUsers[fullName] = {
         ...userData,
         loginCount: 1,
-        firstLogin: new Date().toISOString(),
-        lastLogin: new Date().toISOString(),
-        completedModulesList: isDemoAccount ? [1,2,3,4] : []
+        firstLogin: now,
+        lastLogin: now,
+        completedModulesList: isDemoAccount ? [1, 2, 3, 4] : []
       };
     }
     localStorage.setItem('lemo_all_users', JSON.stringify(allUsers));

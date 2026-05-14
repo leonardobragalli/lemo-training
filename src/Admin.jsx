@@ -4,6 +4,7 @@ import { ShieldAlert, Users, CheckCircle, Activity, Building2, Search, History, 
 import { motion, AnimatePresence } from 'framer-motion';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer, PieChart, Pie, Cell, AreaChart, Area } from 'recharts';
 import { QRCodeCanvas } from 'qrcode.react';
+import { supabase } from './utils/supabase';
 
 const MODULE_NAMES = { 1: 'Istruzioni Generali', 2: 'Pulizia', 3: 'Ricarica', 4: 'Simulazione' };
 const ITEMS_PER_PAGE = 20;
@@ -80,8 +81,32 @@ const Admin = () => {
   };
   const closeConfirm = () => setConfirmModal(m => ({ ...m, open: false }));
 
-  const loadStats = () => {
-    const globalUsers = JSON.parse(localStorage.getItem('lemo_all_users')) || {};
+  const loadStats = async () => {
+    // Fetch all users from Supabase
+    const { data: supaUsers, error } = await supabase
+      .from('users')
+      .select('*')
+      .order('last_login', { ascending: false });
+
+    // Fallback to localStorage if Supabase fails
+    const source = (!error && supaUsers && supaUsers.length > 0)
+      ? supaUsers.map(u => ({
+          name: u.name,
+          firstName: u.first_name,
+          lastName: u.last_name,
+          hospital: u.hospital,
+          department: u.department,
+          patientType: u.patient_type,
+          mode: u.mode,
+          loginCount: u.login_count,
+          firstLogin: u.first_login,
+          lastLogin: u.last_login,
+          completedModulesList: u.completed_modules || [],
+        }))
+      : Object.values(JSON.parse(localStorage.getItem('lemo_all_users')) || {}).map(u => ({
+          ...u,
+          completedModulesList: JSON.parse(localStorage.getItem(`lemo_progress_${u.name}`)) || u.completedModulesList || [],
+        }));
 
     let usersArray = [];
     let hospitalsMap = {};
@@ -95,10 +120,8 @@ const Admin = () => {
 
     const todayStr = new Date().toISOString().split('T')[0];
 
-    Object.values(globalUsers).forEach(user => {
-      const progressKey = `lemo_progress_${user.name}`;
-      const userProgress = JSON.parse(localStorage.getItem(progressKey)) || [];
-      const completedModules = userProgress.length;
+    source.forEach(user => {
+      const completedModules = (user.completedModulesList || []).length;
 
       if (completedModules === totalLessons) completedCount++;
       if (user.lastLogin && user.lastLogin.startsWith(todayStr)) activeTodayCount++;
@@ -110,17 +133,15 @@ const Admin = () => {
 
       const hosp = user.hospital || 'Sconosciuto';
       hospitalsMap[hosp] = (hospitalsMap[hosp] || 0) + 1;
-      dropOffMap[completedModules]++;
+      dropOffMap[Math.min(completedModules, 4)]++;
 
       usersArray.push({
         ...user,
         progressCount: completedModules,
         percentage: Math.round((completedModules / totalLessons) * 100),
-        completedModulesList: userProgress
       });
     });
 
-    usersArray.sort((a, b) => new Date(b.lastLogin || 0) - new Date(a.lastLogin || 0));
     setAllUsersList(usersArray);
 
     const hospitalsData = Object.keys(hospitalsMap).map(k => ({ name: k, value: hospitalsMap[k] }));
@@ -133,7 +154,7 @@ const Admin = () => {
     ];
 
     const loginsByDay = {};
-    Object.values(globalUsers).forEach(user => {
+    source.forEach(user => {
       if (user.lastLogin) {
         const day = user.lastLogin.split('T')[0];
         loginsByDay[day] = (loginsByDay[day] || 0) + 1;
@@ -154,7 +175,7 @@ const Admin = () => {
       totalUsers: count,
       completed: completedCount,
       activeToday: activeTodayCount,
-      totalLogins: totalLogins,
+      totalLogins,
       completionRate: count > 0 ? Math.round((completedCount / count) * 100) : 0,
       avgProgress: count > 0 ? Math.round((totalProgressSum / (count * totalLessons)) * 100) : 0,
       avgLogins: count > 0 ? Math.round((totalLogins / count) * 10) / 10 : 0,
@@ -180,7 +201,8 @@ const Admin = () => {
     openConfirm(
       'Elimina Sessione',
       `Eliminare definitivamente "${userName}"? Tutti i dati e il progresso verranno persi. Operazione irreversibile.`,
-      () => {
+      async () => {
+        await supabase.from('users').delete().eq('name', userName);
         const globalUsers = JSON.parse(localStorage.getItem('lemo_all_users')) || {};
         delete globalUsers[userName];
         localStorage.setItem('lemo_all_users', JSON.stringify(globalUsers));
@@ -197,7 +219,8 @@ const Admin = () => {
     openConfirm(
       'Azzera Progresso',
       `Azzerare il progresso formativo di "${userName}"? L'utente verrà riportato al Modulo 1 ma manterrà il suo account.`,
-      () => {
+      async () => {
+        await supabase.from('users').update({ completed_modules: [] }).eq('name', userName);
         localStorage.removeItem(`lemo_progress_${userName}`);
         const globalUsers = JSON.parse(localStorage.getItem('lemo_all_users')) || {};
         if (globalUsers[userName]) {
@@ -215,8 +238,9 @@ const Admin = () => {
     openConfirm(
       'Sblocca Tutti i Moduli',
       `Sbloccare l'intero percorso formativo per "${userName}"? Tutti i 4 moduli verranno segnati come completati.`,
-      () => {
+      async () => {
         const allModules = [1, 2, 3, 4];
+        await supabase.from('users').update({ completed_modules: allModules }).eq('name', userName);
         localStorage.setItem(`lemo_progress_${userName}`, JSON.stringify(allModules));
         const globalUsers = JSON.parse(localStorage.getItem('lemo_all_users')) || {};
         if (globalUsers[userName]) {

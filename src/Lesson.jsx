@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { createPortal } from 'react-dom';
 import { audio } from './utils/audio';
 import { useLang } from './LanguageContext';
+import { supabase } from './utils/supabase';
 
 const Lesson = ({ lesson, mode, onComplete }) => {
   const { t } = useLang();
@@ -65,7 +66,7 @@ const Lesson = ({ lesson, mode, onComplete }) => {
     }
   };
 
-  const handleAnswer = (index) => {
+  const handleAnswer = async (index) => {
     if (index === lesson.correct) {
       audio.playSuccess();
       setQuizPassed(true);
@@ -76,7 +77,20 @@ const Lesson = ({ lesson, mode, onComplete }) => {
         const progressKey = `lemo_progress_${currentUser.name}`;
         const savedProgress = JSON.parse(localStorage.getItem(progressKey)) || [];
         if (!savedProgress.includes(lesson.id)) {
-          localStorage.setItem(progressKey, JSON.stringify([...savedProgress, lesson.id]));
+          const newProgress = [...savedProgress, lesson.id];
+          localStorage.setItem(progressKey, JSON.stringify(newProgress));
+
+          // Supabase sync
+          const { data: existing } = await supabase
+            .from('users')
+            .select('completed_modules')
+            .eq('name', currentUser.name)
+            .maybeSingle();
+          if (existing) {
+            const updated = [...new Set([...(existing.completed_modules || []), lesson.id])];
+            await supabase.from('users').update({ completed_modules: updated }).eq('name', currentUser.name);
+          }
+
           if (onComplete) onComplete(lesson.id);
         }
       }
