@@ -1,10 +1,37 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ShieldAlert, Users, CheckCircle, Activity, Building2, Search, History, Download, TrendingUp, ChevronDown, ChevronUp, Lock, Target, Trash2, RefreshCw, Baby, UserRound, ArrowUpDown, X } from 'lucide-react';
+import { ShieldAlert, Users, CheckCircle, Activity, Building2, Search, History, Download, TrendingUp, ChevronDown, ChevronUp, Lock, Target, Trash2, RefreshCw, Baby, UserRound, ArrowUpDown, X, AlertTriangle, RotateCcw, Unlock, ChevronLeft, ChevronRight, MapPin, Star } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer, PieChart, Pie, Cell, AreaChart, Area } from 'recharts';
 import { QRCodeCanvas } from 'qrcode.react';
-import { audio } from './utils/audio';
+
+const MODULE_NAMES = { 1: 'Istruzioni Generali', 2: 'Pulizia', 3: 'Ricarica', 4: 'Simulazione' };
+const ITEMS_PER_PAGE = 20;
+
+const ConfirmModal = ({ open, title, message, onConfirm, onCancel, danger = true }) => (
+  <AnimatePresence>
+    {open && (
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-6">
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={onCancel} />
+        <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }} transition={{ type: 'spring', stiffness: 300, damping: 30 }} className="relative z-10 bg-slate-900 border border-slate-700 rounded-[2rem] p-8 max-w-md w-full shadow-2xl">
+          <div className={`w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-5 ${danger ? 'bg-red-500/10 border border-red-500/20' : 'bg-amber-500/10 border border-amber-500/20'}`}>
+            <AlertTriangle className={`w-7 h-7 ${danger ? 'text-red-400' : 'text-amber-400'}`} />
+          </div>
+          <h3 className="text-xl font-black text-white text-center mb-2">{title}</h3>
+          <p className="text-slate-400 text-center text-sm font-medium mb-8 leading-relaxed">{message}</p>
+          <div className="flex gap-3">
+            <button onClick={onCancel} className="flex-1 py-3.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-2xl font-bold transition-colors border border-slate-700">
+              Annulla
+            </button>
+            <button onClick={onConfirm} className={`flex-1 py-3.5 rounded-2xl font-bold transition-all text-white ${danger ? 'bg-red-500 hover:bg-red-600 shadow-lg shadow-red-500/20' : 'bg-amber-500 hover:bg-amber-600 shadow-lg shadow-amber-500/20'}`}>
+              Conferma
+            </button>
+          </div>
+        </motion.div>
+      </div>
+    )}
+  </AnimatePresence>
+);
 
 const Admin = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -17,6 +44,8 @@ const Admin = () => {
   const [sortBy, setSortBy] = useState('lastLogin');
   const [sortDir, setSortDir] = useState('desc');
   const [expandedUser, setExpandedUser] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [confirmModal, setConfirmModal] = useState({ open: false, title: '', message: '', onConfirm: null, danger: true });
   const navigate = useNavigate();
 
   const totalLessons = 4;
@@ -31,6 +60,13 @@ const Admin = () => {
     return `${Math.floor(diff / 86400)} giorni fa`;
   };
 
+  const getNextModule = (completedList) => {
+    for (let i = 1; i <= totalLessons; i++) {
+      if (!completedList.includes(i)) return i;
+    }
+    return null;
+  };
+
   const handleSort = (col) => {
     if (sortBy === col) setSortDir(d => d === 'asc' ? 'desc' : 'asc');
     else { setSortBy(col); setSortDir('asc'); }
@@ -39,16 +75,24 @@ const Admin = () => {
   const hasActiveFilters = statusFilter !== 'all' || hospitalFilter !== 'all' || searchTerm !== '';
   const resetFilters = () => { setStatusFilter('all'); setHospitalFilter('all'); setSearchParams(''); };
 
+  const openConfirm = (title, message, onConfirm, danger = true) => {
+    setConfirmModal({ open: true, title, message, onConfirm, danger });
+  };
+  const closeConfirm = () => setConfirmModal(m => ({ ...m, open: false }));
+
   const loadStats = () => {
     const globalUsers = JSON.parse(localStorage.getItem('lemo_all_users')) || {};
-    
+
     let usersArray = [];
     let hospitalsMap = {};
     let dropOffMap = { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0 };
     let completedCount = 0;
     let activeTodayCount = 0;
     let totalLogins = 0;
-    
+    let adultiCount = 0;
+    let pediatriaCount = 0;
+    let totalProgressSum = 0;
+
     const todayStr = new Date().toISOString().split('T')[0];
 
     Object.values(globalUsers).forEach(user => {
@@ -59,6 +103,10 @@ const Admin = () => {
       if (completedModules === totalLessons) completedCount++;
       if (user.lastLogin && user.lastLogin.startsWith(todayStr)) activeTodayCount++;
       totalLogins += (user.loginCount || 1);
+      totalProgressSum += completedModules;
+
+      if (user.patientType === 'adulti') adultiCount++;
+      else if (user.patientType === 'pediatria') pediatriaCount++;
 
       const hosp = user.hospital || 'Sconosciuto';
       hospitalsMap[hosp] = (hospitalsMap[hosp] || 0) + 1;
@@ -91,7 +139,7 @@ const Admin = () => {
         loginsByDay[day] = (loginsByDay[day] || 0) + 1;
       }
     });
-    const activityData = Array.from({length: 7}).map((_, i) => {
+    const activityData = Array.from({ length: 7 }).map((_, i) => {
       const d = new Date();
       d.setDate(d.getDate() - (6 - i));
       const dayKey = d.toISOString().split('T')[0];
@@ -101,54 +149,125 @@ const Admin = () => {
       };
     });
 
+    const count = usersArray.length;
     setStats({
-      totalUsers: usersArray.length,
+      totalUsers: count,
       completed: completedCount,
       activeToday: activeTodayCount,
       totalLogins: totalLogins,
-      completionRate: usersArray.length > 0 ? Math.round((completedCount / usersArray.length) * 100) : 0,
+      completionRate: count > 0 ? Math.round((completedCount / count) * 100) : 0,
+      avgProgress: count > 0 ? Math.round((totalProgressSum / (count * totalLessons)) * 100) : 0,
+      avgLogins: count > 0 ? Math.round((totalLogins / count) * 10) / 10 : 0,
+      adultiCount,
+      pediatriaCount,
       hospitals: hospitalsData,
       completionRates: completionRatesData,
-      activityData: activityData
+      activityData,
     });
   };
 
   const handleLogin = (e) => {
     e.preventDefault();
     if (password === 'lemons2026') {
-      audio.playSuccess();
       setIsAuthenticated(true);
       loadStats();
     } else {
-      audio.playError();
       alert('Password errata!');
     }
   };
 
   const deleteUser = (userName) => {
-    if (!window.confirm(`Eliminare definitivamente la sessione di "${userName}"? L'operazione non è reversibile.`)) return;
-    audio.playClick();
-    const globalUsers = JSON.parse(localStorage.getItem('lemo_all_users')) || {};
-    delete globalUsers[userName];
-    localStorage.setItem('lemo_all_users', JSON.stringify(globalUsers));
-    localStorage.removeItem(`lemo_progress_${userName}`);
-    setExpandedUser(null);
-    loadStats();
+    openConfirm(
+      'Elimina Sessione',
+      `Eliminare definitivamente "${userName}"? Tutti i dati e il progresso verranno persi. Operazione irreversibile.`,
+      () => {
+        const globalUsers = JSON.parse(localStorage.getItem('lemo_all_users')) || {};
+        delete globalUsers[userName];
+        localStorage.setItem('lemo_all_users', JSON.stringify(globalUsers));
+        localStorage.removeItem(`lemo_progress_${userName}`);
+        setExpandedUser(null);
+        loadStats();
+        closeConfirm();
+      },
+      true
+    );
+  };
+
+  const resetProgress = (userName) => {
+    openConfirm(
+      'Azzera Progresso',
+      `Azzerare il progresso formativo di "${userName}"? L'utente verrà riportato al Modulo 1 ma manterrà il suo account.`,
+      () => {
+        localStorage.removeItem(`lemo_progress_${userName}`);
+        const globalUsers = JSON.parse(localStorage.getItem('lemo_all_users')) || {};
+        if (globalUsers[userName]) {
+          globalUsers[userName].completedModulesList = [];
+          localStorage.setItem('lemo_all_users', JSON.stringify(globalUsers));
+        }
+        loadStats();
+        closeConfirm();
+      },
+      false
+    );
+  };
+
+  const unlockAll = (userName) => {
+    openConfirm(
+      'Sblocca Tutti i Moduli',
+      `Sbloccare l'intero percorso formativo per "${userName}"? Tutti i 4 moduli verranno segnati come completati.`,
+      () => {
+        const allModules = [1, 2, 3, 4];
+        localStorage.setItem(`lemo_progress_${userName}`, JSON.stringify(allModules));
+        const globalUsers = JSON.parse(localStorage.getItem('lemo_all_users')) || {};
+        if (globalUsers[userName]) {
+          globalUsers[userName].completedModulesList = allModules;
+          localStorage.setItem('lemo_all_users', JSON.stringify(globalUsers));
+        }
+        loadStats();
+        closeConfirm();
+      },
+      false
+    );
   };
 
   const exportCSV = () => {
-    audio.playClick();
-    const headers = ['Operatore', 'Ospedale', 'Reparto', 'Profilo', 'Modalità', 'Progresso %', 'Moduli Completati', 'Login Totali', 'Primo Accesso', 'Ultimo Accesso'];
-    const csvContent = [
-      headers.join(','),
-      ...filteredUsers.map(u => [
-        `"${u.name || ''}"`, `"${u.hospital || ''}"`, `"${u.department || ''}"`,
-        `"${u.patientType === 'pediatria' ? 'Pediatria' : 'Adulti'}"`, `"${u.mode || ''}"`,
-        `"${u.percentage || 0}%"`, `"${u.progressCount || 0}/${totalLessons}"`, `"${u.loginCount || 1}"`,
-        `"${new Date(u.firstLogin || u.lastLogin || Date.now()).toLocaleDateString('it-IT')}"`,
-        `"${new Date(u.lastLogin || Date.now()).toLocaleString('it-IT')}"`
-      ].join(','))
-    ].join('\n');
+    const SEP = ';';
+    const BOM = '﻿';
+    const escapeCell = (val) => `"${String(val ?? '').replace(/"/g, '""')}"`;
+
+    const headers = ['Operatore', 'Ospedale', 'Reparto', 'Profilo Paziente', 'Modalità', 'Progresso %', 'Moduli Completati', 'Prossimo Modulo', 'Login Totali', 'Media Login', 'Primo Accesso', 'Ultimo Accesso'];
+
+    const rows = filteredUsers.map(u => {
+      const nextMod = getNextModule(u.completedModulesList || []);
+      return [
+        u.name || '',
+        u.hospital || '',
+        u.department || '',
+        u.patientType === 'pediatria' ? 'Pediatria' : 'Adulti',
+        u.mode === 'full' ? 'Libera' : 'Guidata',
+        `${u.percentage || 0}%`,
+        `${u.progressCount || 0}/${totalLessons}`,
+        nextMod ? `Modulo ${nextMod} — ${MODULE_NAMES[nextMod]}` : 'Completato ✓',
+        u.loginCount || 1,
+        stats?.avgLogins || 0,
+        new Date(u.firstLogin || u.lastLogin || Date.now()).toLocaleDateString('it-IT'),
+        new Date(u.lastLogin || Date.now()).toLocaleString('it-IT'),
+      ].map(escapeCell).join(SEP);
+    });
+
+    const summary = [
+      '',
+      ['RIEPILOGO', '', '', '', '', '', '', '', '', '', '', ''].map(escapeCell).join(SEP),
+      ['Totale operatori', allUsersList.length, '', '', '', '', '', '', '', '', '', ''].map(escapeCell).join(SEP),
+      ['Certificati rilasciati', stats?.completed || 0, '', '', '', '', '', '', '', '', '', ''].map(escapeCell).join(SEP),
+      ['Tasso completamento', `${stats?.completionRate || 0}%`, '', '', '', '', '', '', '', '', '', ''].map(escapeCell).join(SEP),
+      ['Progresso medio', `${stats?.avgProgress || 0}%`, '', '', '', '', '', '', '', '', '', ''].map(escapeCell).join(SEP),
+      ['Profilo Adulti', stats?.adultiCount || 0, '', '', '', '', '', '', '', '', '', ''].map(escapeCell).join(SEP),
+      ['Profilo Pediatria', stats?.pediatriaCount || 0, '', '', '', '', '', '', '', '', '', ''].map(escapeCell).join(SEP),
+      [`Report generato il`, new Date().toLocaleString('it-IT'), '', '', '', '', '', '', '', '', '', ''].map(escapeCell).join(SEP),
+    ];
+
+    const csvContent = BOM + [headers.map(escapeCell).join(SEP), ...rows, ...summary].join('\r\n');
 
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement('a');
@@ -163,8 +282,8 @@ const Admin = () => {
   const filteredUsers = allUsersList
     .filter(u => {
       const matchesSearch = (u.name || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
-                            (u.hospital || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
-                            (u.department || '').toLowerCase().includes(searchTerm.toLowerCase());
+        (u.hospital || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (u.department || '').toLowerCase().includes(searchTerm.toLowerCase());
       let matchesStatus = true;
       if (statusFilter === 'completed') matchesStatus = u.percentage === 100;
       if (statusFilter === 'in_progress') matchesStatus = u.percentage < 100 && u.percentage > 0;
@@ -180,6 +299,11 @@ const Admin = () => {
       else { va = new Date(a.lastLogin || 0); vb = new Date(b.lastLogin || 0); }
       return sortDir === 'asc' ? va - vb : vb - va;
     });
+
+  const totalPages = Math.ceil(filteredUsers.length / ITEMS_PER_PAGE);
+  const paginatedUsers = filteredUsers.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
+
+  useEffect(() => { setCurrentPage(1); }, [searchTerm, statusFilter, hospitalFilter, sortBy, sortDir]);
 
   if (!isAuthenticated) {
     return (
@@ -199,13 +323,22 @@ const Admin = () => {
     );
   }
 
-  const COLORS = ['#FF8731', '#10B981', '#3B82F6', '#8B5CF6', '#F43F5E', '#0ea5e9'];
+  const COLORS = ['#FF8731', '#10B981', '#3B82F6', '#8B5CF6', '#F43F5E', '#0ea5e9', '#f59e0b', '#ec4899'];
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-200 p-6 md:p-10 font-sans overflow-x-hidden">
+      <ConfirmModal
+        open={confirmModal.open}
+        title={confirmModal.title}
+        message={confirmModal.message}
+        onConfirm={confirmModal.onConfirm}
+        onCancel={closeConfirm}
+        danger={confirmModal.danger}
+      />
+
       <div className="max-w-[1400px] mx-auto">
-        
-        {/* Header Principale */}
+
+        {/* Header */}
         <header className="flex flex-col md:flex-row items-start md:items-center justify-between mb-10 gap-6 bg-slate-900 p-8 rounded-[2rem] border border-slate-800 shadow-2xl">
           <div className="flex items-center gap-6">
             <div className="w-16 h-16 rounded-2xl flex items-center justify-center relative">
@@ -220,7 +353,7 @@ const Admin = () => {
             </div>
           </div>
           <div className="flex items-center gap-4 w-full md:w-auto">
-            <button onClick={() => { audio.playClick(); loadStats(); }} className="px-4 py-3 bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white rounded-xl font-bold transition-all flex items-center justify-center gap-2 border border-slate-700">
+            <button onClick={loadStats} className="px-4 py-3 bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white rounded-xl font-bold transition-all flex items-center justify-center gap-2 border border-slate-700">
               <RefreshCw className="w-4 h-4" /> Aggiorna
             </button>
             <button onClick={exportCSV} className="flex-1 md:flex-none px-6 py-3 bg-indigo-500 hover:bg-indigo-600 text-white rounded-xl font-bold transition-all flex items-center justify-center gap-2 shadow-lg shadow-indigo-500/20">
@@ -232,8 +365,8 @@ const Admin = () => {
           </div>
         </header>
 
-        {/* Top KPIs - Espansi */}
-        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4 mb-8">
+        {/* KPI Row 1 */}
+        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4 mb-4">
           <div className="bg-slate-900 border border-slate-800 p-6 rounded-3xl flex flex-col justify-between">
             <Users className="w-6 h-6 text-blue-400 mb-4" />
             <div>
@@ -248,7 +381,7 @@ const Admin = () => {
               <p className="text-slate-500 font-bold text-[10px] uppercase tracking-widest">Certificati Rilasciati</p>
               <div className="flex items-end gap-2">
                 <p className="text-3xl font-black font-serif text-white">{stats?.completed || 0}</p>
-                <p className="text-emerald-400 text-sm font-bold mb-1">({stats?.completionRate || 0} %)</p>
+                <p className="text-emerald-400 text-sm font-bold mb-1">({stats?.completionRate || 0}%)</p>
               </div>
             </div>
           </div>
@@ -275,19 +408,67 @@ const Admin = () => {
           </div>
         </div>
 
-        {/* QR Code Accesso Globale */}
+        {/* KPI Row 2 — nuovi */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
+          <div className="bg-slate-900 border border-slate-800 p-6 rounded-3xl flex flex-col justify-between relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-24 h-24 bg-blue-500/10 rounded-full blur-xl"></div>
+            <UserRound className="w-6 h-6 text-blue-400 mb-4 relative z-10" />
+            <div className="relative z-10">
+              <p className="text-slate-500 font-bold text-[10px] uppercase tracking-widest">Profilo Adulti</p>
+              <div className="flex items-end gap-2">
+                <p className="text-3xl font-black font-serif text-white">{stats?.adultiCount || 0}</p>
+                <p className="text-blue-400 text-sm font-bold mb-1">
+                  ({stats?.totalUsers > 0 ? Math.round(((stats?.adultiCount || 0) / stats.totalUsers) * 100) : 0}%)
+                </p>
+              </div>
+            </div>
+          </div>
+          <div className="bg-slate-900 border border-slate-800 p-6 rounded-3xl flex flex-col justify-between relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-24 h-24 bg-violet-500/10 rounded-full blur-xl"></div>
+            <Baby className="w-6 h-6 text-violet-400 mb-4 relative z-10" />
+            <div className="relative z-10">
+              <p className="text-slate-500 font-bold text-[10px] uppercase tracking-widest">Profilo Pediatria</p>
+              <div className="flex items-end gap-2">
+                <p className="text-3xl font-black font-serif text-white">{stats?.pediatriaCount || 0}</p>
+                <p className="text-violet-400 text-sm font-bold mb-1">
+                  ({stats?.totalUsers > 0 ? Math.round(((stats?.pediatriaCount || 0) / stats.totalUsers) * 100) : 0}%)
+                </p>
+              </div>
+            </div>
+          </div>
+          <div className="bg-slate-900 border border-slate-800 p-6 rounded-3xl flex flex-col justify-between relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-24 h-24 bg-[#FF8731]/10 rounded-full blur-xl"></div>
+            <Star className="w-6 h-6 text-[#FF8731] mb-4 relative z-10" />
+            <div className="relative z-10">
+              <p className="text-slate-500 font-bold text-[10px] uppercase tracking-widest">Progresso Medio</p>
+              <div className="flex items-end gap-2">
+                <p className="text-3xl font-black font-serif text-white">{stats?.avgProgress || 0}%</p>
+              </div>
+              <div className="h-1.5 bg-slate-800 rounded-full mt-2 overflow-hidden">
+                <div className="h-full bg-[#FF8731] rounded-full" style={{ width: `${stats?.avgProgress || 0}%` }}></div>
+              </div>
+            </div>
+          </div>
+          <div className="bg-slate-900 border border-slate-800 p-6 rounded-3xl flex flex-col justify-between">
+            <History className="w-6 h-6 text-slate-400 mb-4" />
+            <div>
+              <p className="text-slate-500 font-bold text-[10px] uppercase tracking-widest">Media Accessi / Utente</p>
+              <p className="text-3xl font-black font-serif text-white">{stats?.avgLogins || 0}</p>
+            </div>
+          </div>
+        </div>
+
+        {/* QR Code */}
         <div className="bg-slate-900 border border-slate-800 p-8 md:p-10 rounded-[2.5rem] shadow-2xl mb-10 flex flex-col lg:flex-row items-center gap-10 overflow-hidden relative group">
           <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-[#8756FA] rounded-full blur-[120px] opacity-10 pointer-events-none group-hover:opacity-20 transition-opacity duration-700"></div>
-          
           <div className="flex-1 relative z-10 text-center lg:text-left">
             <h3 className="text-3xl font-black font-serif text-white mb-4">Codice di Accesso Universale</h3>
             <p className="text-slate-400 font-medium text-lg mb-8 leading-relaxed max-w-2xl mx-auto lg:mx-0">
-              Stampa o mostra questo QR Code. Permette agli operatori di accedere immediatamente alla piattaforma dal proprio smartphone. 
+              Stampa o mostra questo QR Code. Permette agli operatori di accedere immediatamente alla piattaforma dal proprio smartphone.
               <span className="block mt-2 text-emerald-400 font-bold">Il sistema riconoscerà in automatico i dispositivi già registrati, saltando il form di login.</span>
             </p>
             <button
               onClick={() => {
-                audio.playClick();
                 const canvas = document.querySelector('#qr-canvas canvas') || document.querySelector('canvas');
                 const dataUrl = canvas?.toDataURL('image/png') || '';
                 const win = window.open('', '_blank', 'width=400,height=500');
@@ -299,7 +480,6 @@ const Admin = () => {
               Stampa QR Code
             </button>
           </div>
-          
           <div id="qr-canvas" className="bg-white p-6 rounded-[2.5rem] shadow-[0_0_40px_rgba(0,0,0,0.3)] shrink-0 relative z-10 border border-slate-200 group-hover:rotate-3 transition-transform duration-500">
             <QRCodeCanvas value={window.location.origin} size={220} level="H" includeMargin={false} />
             <div className="mt-4 text-center">
@@ -310,8 +490,6 @@ const Admin = () => {
 
         {/* Charts Row */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-10">
-          
-          {/* Trend Accessi */}
           <div className="bg-slate-900 border border-slate-800 p-8 rounded-[2rem] shadow-xl lg:col-span-2">
             <h3 className="text-lg font-bold text-white mb-6 flex items-center gap-2">
               <Activity className="w-5 h-5 text-indigo-400" /> Trend Accessi (Ultimi 7 gg)
@@ -321,13 +499,13 @@ const Admin = () => {
                 <AreaChart data={stats?.activityData || []}>
                   <defs>
                     <linearGradient id="colorAccessi" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#6366f1" stopOpacity={0.3}/>
-                      <stop offset="95%" stopColor="#6366f1" stopOpacity={0}/>
+                      <stop offset="5%" stopColor="#6366f1" stopOpacity={0.3} />
+                      <stop offset="95%" stopColor="#6366f1" stopOpacity={0} />
                     </linearGradient>
                   </defs>
                   <CartesianGrid strokeDasharray="3 3" stroke="#131A33" vertical={false} />
-                  <XAxis dataKey="name" stroke="#64748b" tick={{fill: '#94a3b8', fontSize: 12, fontWeight: 'bold'}} axisLine={false} tickLine={false} />
-                  <YAxis stroke="#64748b" tick={{fill: '#94a3b8', fontSize: 12, fontWeight: 'bold'}} axisLine={false} tickLine={false} />
+                  <XAxis dataKey="name" stroke="#64748b" tick={{ fill: '#94a3b8', fontSize: 12, fontWeight: 'bold' }} axisLine={false} tickLine={false} />
+                  <YAxis stroke="#64748b" tick={{ fill: '#94a3b8', fontSize: 12, fontWeight: 'bold' }} axisLine={false} tickLine={false} allowDecimals={false} />
                   <RechartsTooltip contentStyle={{ backgroundColor: '#03091B', borderColor: '#131A33', borderRadius: '1rem', color: '#fff' }} />
                   <Area type="monotone" dataKey="accessi" stroke="#6366f1" strokeWidth={3} fillOpacity={1} fill="url(#colorAccessi)" />
                 </AreaChart>
@@ -335,7 +513,6 @@ const Admin = () => {
             </div>
           </div>
 
-          {/* Distribuzione Ospedali */}
           <div className="bg-slate-900 border border-slate-800 p-8 rounded-[2rem] shadow-xl">
             <h3 className="text-lg font-bold text-white mb-6 flex items-center gap-2">
               <Building2 className="w-5 h-5 text-[#FF8731]" /> Quote per Struttura
@@ -346,22 +523,22 @@ const Admin = () => {
                   <Pie data={stats?.hospitals || []} cx="50%" cy="50%" innerRadius={60} outerRadius={80} paddingAngle={5} dataKey="value">
                     {(stats?.hospitals || []).map((entry, index) => <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />)}
                   </Pie>
-                  <RechartsTooltip contentStyle={{ backgroundColor: '#03091B', borderColor: '#131A33', borderRadius: '1rem', color: '#fff', fontWeight: 'bold' }} itemStyle={{color: '#fff'}} />
+                  <RechartsTooltip contentStyle={{ backgroundColor: '#03091B', borderColor: '#131A33', borderRadius: '1rem', color: '#fff', fontWeight: 'bold' }} itemStyle={{ color: '#fff' }} />
                 </PieChart>
               </ResponsiveContainer>
             </div>
-            <div className="flex flex-wrap justify-center gap-4 mt-2">
+            <div className="flex flex-wrap justify-center gap-x-4 gap-y-2 mt-2">
               {(stats?.hospitals || []).map((h, i) => (
                 <div key={i} className="flex items-center gap-2">
                   <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: COLORS[i % COLORS.length] }}></div>
-                  <span className="text-xs font-bold text-slate-300">{h.name}</span>
+                  <span className="text-xs font-bold text-slate-300">{h.name} <span className="text-slate-500">({h.value})</span></span>
                 </div>
               ))}
             </div>
           </div>
         </div>
 
-        {/* Chart Imbuto Conversioni */}
+        {/* Drop-off funnel */}
         <div className="bg-slate-900 border border-slate-800 p-8 rounded-[2rem] shadow-xl mb-10">
           <h3 className="text-lg font-bold text-white mb-8 flex items-center gap-2">
             <Target className="w-5 h-5 text-emerald-400" /> Imbuto di Completamento (Drop-off)
@@ -370,10 +547,10 @@ const Admin = () => {
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={stats?.completionRates || []} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#131A33" vertical={false} />
-                <XAxis dataKey="name" stroke="#64748b" tick={{fill: '#94a3b8', fontWeight: 'bold', fontSize: 12}} axisLine={false} tickLine={false} />
-                <YAxis stroke="#64748b" tick={{fill: '#94a3b8', fontWeight: 'bold'}} axisLine={false} tickLine={false} />
-                <RechartsTooltip cursor={{fill: '#131A33'}} contentStyle={{ backgroundColor: '#03091B', borderColor: '#131A33', borderRadius: '1rem', color: '#fff', fontWeight:'bold' }} />
-                <Bar dataKey="utenti" fill="#10B981" radius={[8, 8, 0, 0]}>
+                <XAxis dataKey="name" stroke="#64748b" tick={{ fill: '#94a3b8', fontWeight: 'bold', fontSize: 12 }} axisLine={false} tickLine={false} />
+                <YAxis stroke="#64748b" tick={{ fill: '#94a3b8', fontWeight: 'bold' }} axisLine={false} tickLine={false} allowDecimals={false} />
+                <RechartsTooltip cursor={{ fill: '#131A33' }} contentStyle={{ backgroundColor: '#03091B', borderColor: '#131A33', borderRadius: '1rem', color: '#fff', fontWeight: 'bold' }} />
+                <Bar dataKey="utenti" radius={[8, 8, 0, 0]}>
                   {(stats?.completionRates || []).map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={index === 4 ? '#FF8731' : '#10B981'} />
                   ))}
@@ -383,7 +560,7 @@ const Admin = () => {
           </div>
         </div>
 
-        {/* Tabella Dettagliata Operatori - Super Potenziata */}
+        {/* Tabella Operatori */}
         <div className="bg-slate-900 border border-slate-800 rounded-[2.5rem] shadow-2xl overflow-hidden mb-20">
           <div className="p-8 border-b border-slate-800 bg-slate-900/50 backdrop-blur-xl">
             <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
@@ -393,6 +570,7 @@ const Admin = () => {
                   {filteredUsers.length === allUsersList.length
                     ? `${allUsersList.length} operatori totali`
                     : `${filteredUsers.length} di ${allUsersList.length} operatori`}
+                  {totalPages > 1 && <span className="text-slate-600">· Pagina {currentPage}/{totalPages}</span>}
                   {hasActiveFilters && (
                     <button onClick={resetFilters} className="inline-flex items-center gap-1 text-[#FF8731] hover:text-[#FF9E54] font-bold text-xs transition-colors">
                       <X className="w-3 h-3" /> Azzera filtri
@@ -416,7 +594,7 @@ const Admin = () => {
                 >
                   <option value="all">Tutti gli stati</option>
                   <option value="completed">Solo Certificati (100%)</option>
-                  <option value="in_progress">In Corso (1-99%)</option>
+                  <option value="in_progress">In Corso (1–99%)</option>
                   <option value="not_started">Non Iniziato (0%)</option>
                 </select>
                 <div className="relative w-full sm:w-72">
@@ -432,12 +610,12 @@ const Admin = () => {
               </div>
             </div>
           </div>
-          
+
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
                 <tr className="bg-slate-950 text-slate-400 text-[10px] uppercase tracking-widest font-black border-b border-slate-800">
-                  {[['name','Operatore'],['hospital','Struttura'],['','Profilo'],['percentage','Formazione'],['loginCount','Attività']].map(([col, label]) => (
+                  {[['name', 'Operatore'], ['hospital', 'Struttura'], ['', 'Profilo'], ['percentage', 'Formazione'], ['loginCount', 'Attività']].map(([col, label]) => (
                     <th key={label} className="px-8 py-5">
                       {col ? (
                         <button onClick={() => handleSort(col)} className="flex items-center gap-1.5 font-black uppercase tracking-widest text-[10px] text-slate-400 hover:text-white transition-colors">
@@ -450,105 +628,160 @@ const Admin = () => {
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-800/50">
-                {filteredUsers.length > 0 ? filteredUsers.map((u, i) => (
-                  <React.Fragment key={i}>
-                    <tr className={`transition-colors cursor-pointer hover:bg-slate-800/30 ${expandedUser === i ? 'bg-slate-800/50' : ''}`} onClick={() => setExpandedUser(expandedUser === i ? null : i)}>
-                      <td className="px-8 py-6">
-                        <div className="flex items-center gap-4">
-                          <div className="w-12 h-12 rounded-2xl bg-slate-800 border border-slate-700 flex items-center justify-center font-black text-[#FF8731] shadow-inner text-lg">
-                            {u.firstName?.[0]}{u.lastName?.[0] || u.name?.[0]}
-                          </div>
-                          <div>
-                            <div className="font-bold text-white text-base flex items-center gap-2">
-                              {u.name}
-                              {u.firstLogin && u.firstLogin.startsWith(todayStr) && (
-                                <span className="text-[9px] font-black px-1.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 uppercase tracking-wider">Nuovo</span>
-                              )}
+                {paginatedUsers.length > 0 ? paginatedUsers.map((u, i) => {
+                  const globalIndex = (currentPage - 1) * ITEMS_PER_PAGE + i;
+                  const nextMod = getNextModule(u.completedModulesList || []);
+                  return (
+                    <React.Fragment key={globalIndex}>
+                      <tr
+                        className={`transition-colors cursor-pointer hover:bg-slate-800/30 ${expandedUser === globalIndex ? 'bg-slate-800/50' : ''}`}
+                        onClick={() => setExpandedUser(expandedUser === globalIndex ? null : globalIndex)}
+                      >
+                        <td className="px-8 py-6">
+                          <div className="flex items-center gap-4">
+                            <div className="w-12 h-12 rounded-2xl bg-slate-800 border border-slate-700 flex items-center justify-center font-black text-[#FF8731] shadow-inner text-lg">
+                              {u.firstName?.[0]}{u.lastName?.[0] || u.name?.[0]}
                             </div>
-                            <div className="text-xs font-bold px-2 py-0.5 mt-1 rounded-md inline-block bg-slate-800 text-slate-400">
-                              {u.mode === 'full' ? 'Modalità Libera' : 'Percorso Guidato'}
-                            </div>
-                          </div>
-                        </div>
-                      </td>
-                      <td className="px-8 py-6">
-                        <div className="font-bold text-slate-200 text-sm">{u.hospital}</div>
-                        <div className="text-xs text-slate-500 font-medium flex items-center gap-1 mt-1"><Building2 className="w-3 h-3"/> {u.department}</div>
-                      </td>
-                      <td className="px-8 py-6">
-                        {u.patientType === 'pediatria'
-                          ? <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-violet-500/10 border border-violet-500/20 text-violet-400 text-xs font-bold"><Baby className="w-3 h-3"/>Pediatria</span>
-                          : <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-bold"><UserRound className="w-3 h-3"/>Adulti</span>
-                        }
-                      </td>
-                      <td className="px-8 py-6">
-                        <div className="flex flex-col gap-2">
-                          <div className="flex items-center justify-between text-xs font-bold">
-                            <span className={u.percentage === 100 ? 'text-emerald-400' : 'text-slate-300'}>{u.progressCount || 0} / {totalLessons} Moduli</span>
-                            <span className={u.percentage === 100 ? 'text-emerald-400' : 'text-[#FF8731]'}>{u.percentage || 0} %</span>
-                          </div>
-                          <div className="h-2 bg-slate-800 rounded-full overflow-hidden w-full max-w-[150px]">
-                            <div className={`h-full rounded-full transition-all duration-1000 ${u.percentage === 100 ? 'bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.5)]' : 'bg-[#FF8731]'}`} style={{ width: `${u.percentage || 0}%` }}></div>
-                          </div>
-                        </div>
-                      </td>
-                      <td className="px-8 py-6 text-center">
-                        <div className="flex flex-col items-center gap-1.5">
-                          <div className="inline-flex items-center gap-1.5 bg-slate-800 px-3 py-1 rounded-lg text-xs font-bold text-white border border-slate-700">
-                            <History className="w-3.5 h-3.5 text-slate-400" />
-                            {u.loginCount || 1} Accessi
-                          </div>
-                          <span className="text-[10px] text-slate-500 font-medium">{timeAgo(u.lastLogin)}</span>
-                        </div>
-                      </td>
-                      <td className="px-8 py-6 text-right">
-                         {expandedUser === i ? <ChevronUp className="w-6 h-6 text-slate-400 inline-block" /> : <ChevronDown className="w-6 h-6 text-slate-400 inline-block" />}
-                      </td>
-                    </tr>
-                    
-                    {/* Riga Espansa Dettagli */}
-                    <AnimatePresence>
-                      {expandedUser === i && (
-                        <tr className="bg-slate-900/80 border-b-0">
-                          <td colSpan="5" className="p-0">
-                            <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="px-8 py-6 border-l-4 border-[#FF8731] ml-4 my-2 rounded-r-2xl bg-slate-800/30 overflow-hidden">
-                              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                                <div>
-                                  <p className="text-[10px] uppercase tracking-widest text-slate-500 font-bold mb-2">Cronologia Accessi</p>
-                                  <div className="space-y-2 text-sm font-medium text-slate-300">
-                                    <div className="flex justify-between"><span className="text-slate-500">Primo Login:</span> <span>{new Date(u.firstLogin || u.lastLogin || Date.now()).toLocaleDateString('it-IT')}</span></div>
-                                    <div className="flex justify-between"><span className="text-slate-500">Ultimo Login:</span> <span className="text-white font-bold">{new Date(u.lastLogin || Date.now()).toLocaleString('it-IT')}</span></div>
-                                  </div>
-                                  <button
-                                    onClick={(e) => { e.stopPropagation(); deleteUser(u.name); }}
-                                    className="mt-4 flex items-center gap-2 px-4 py-2 bg-red-500/10 hover:bg-red-500/20 border border-red-500/20 hover:border-red-500/40 text-red-400 hover:text-red-300 rounded-xl text-xs font-bold transition-all duration-200"
-                                  >
-                                    <Trash2 className="w-3.5 h-3.5" /> Elimina sessione
-                                  </button>
-                                </div>
-                                <div className="md:col-span-2">
-                                  <p className="text-[10px] uppercase tracking-widest text-slate-500 font-bold mb-3">Moduli Completati</p>
-                                  <div className="flex flex-wrap gap-2">
-                                    {[1, 2, 3, 4].map(mod => {
-                                      const done = (u.completedModulesList || []).includes(mod);
-                                      return (
-                                        <div key={mod} className={`px-3 py-1.5 rounded-lg text-xs font-bold border flex items-center gap-2 ${done ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400' : 'bg-slate-800 border-slate-700 text-slate-600'}`}>
-                                          {done ? <CheckCircle className="w-3 h-3" /> : <Lock className="w-3 h-3" />} Modulo {mod}
-                                        </div>
-                                      );
-                                    })}
-                                  </div>
-                                </div>
+                            <div>
+                              <div className="font-bold text-white text-base flex items-center gap-2">
+                                {u.name}
+                                {u.firstLogin && u.firstLogin.startsWith(todayStr) && (
+                                  <span className="text-[9px] font-black px-1.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 uppercase tracking-wider">Nuovo</span>
+                                )}
                               </div>
-                            </motion.div>
-                          </td>
-                        </tr>
-                      )}
-                    </AnimatePresence>
-                  </React.Fragment>
-                )) : (
+                              <div className="text-xs font-bold px-2 py-0.5 mt-1 rounded-md inline-block bg-slate-800 text-slate-400">
+                                {u.mode === 'full' ? 'Modalità Libera' : 'Percorso Guidato'}
+                              </div>
+                            </div>
+                          </div>
+                        </td>
+                        <td className="px-8 py-6">
+                          <div className="font-bold text-slate-200 text-sm">{u.hospital}</div>
+                          <div className="text-xs text-slate-500 font-medium flex items-center gap-1 mt-1"><Building2 className="w-3 h-3" /> {u.department}</div>
+                        </td>
+                        <td className="px-8 py-6">
+                          {u.patientType === 'pediatria'
+                            ? <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-violet-500/10 border border-violet-500/20 text-violet-400 text-xs font-bold"><Baby className="w-3 h-3" />Pediatria</span>
+                            : <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-bold"><UserRound className="w-3 h-3" />Adulti</span>
+                          }
+                        </td>
+                        <td className="px-8 py-6">
+                          <div className="flex flex-col gap-2">
+                            <div className="flex items-center justify-between text-xs font-bold">
+                              <span className={u.percentage === 100 ? 'text-emerald-400' : 'text-slate-300'}>{u.progressCount || 0} / {totalLessons} Moduli</span>
+                              <span className={u.percentage === 100 ? 'text-emerald-400' : 'text-[#FF8731]'}>{u.percentage || 0}%</span>
+                            </div>
+                            <div className="h-2 bg-slate-800 rounded-full overflow-hidden w-full max-w-[150px]">
+                              <div className={`h-full rounded-full transition-all duration-1000 ${u.percentage === 100 ? 'bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.5)]' : 'bg-[#FF8731]'}`} style={{ width: `${u.percentage || 0}%` }}></div>
+                            </div>
+                          </div>
+                        </td>
+                        <td className="px-8 py-6 text-center">
+                          <div className="flex flex-col items-center gap-1.5">
+                            <div className="inline-flex items-center gap-1.5 bg-slate-800 px-3 py-1 rounded-lg text-xs font-bold text-white border border-slate-700">
+                              <History className="w-3.5 h-3.5 text-slate-400" />
+                              {u.loginCount || 1} Accessi
+                            </div>
+                            <span className="text-[10px] text-slate-500 font-medium">{timeAgo(u.lastLogin)}</span>
+                          </div>
+                        </td>
+                        <td className="px-8 py-6 text-right">
+                          {expandedUser === globalIndex ? <ChevronUp className="w-6 h-6 text-slate-400 inline-block" /> : <ChevronDown className="w-6 h-6 text-slate-400 inline-block" />}
+                        </td>
+                      </tr>
+
+                      <AnimatePresence>
+                        {expandedUser === globalIndex && (
+                          <tr className="bg-slate-900/80 border-b-0">
+                            <td colSpan="6" className="p-0">
+                              <motion.div
+                                initial={{ height: 0, opacity: 0 }}
+                                animate={{ height: 'auto', opacity: 1 }}
+                                exit={{ height: 0, opacity: 0 }}
+                                className="px-8 py-6 border-l-4 border-[#FF8731] ml-4 my-2 rounded-r-2xl bg-slate-800/30 overflow-hidden"
+                              >
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                  {/* Colonna sinistra: accessi + azioni */}
+                                  <div>
+                                    <p className="text-[10px] uppercase tracking-widest text-slate-500 font-bold mb-3">Cronologia Accessi</p>
+                                    <div className="space-y-2 text-sm font-medium text-slate-300 mb-5">
+                                      <div className="flex justify-between"><span className="text-slate-500">Primo Login:</span> <span>{new Date(u.firstLogin || u.lastLogin || Date.now()).toLocaleDateString('it-IT')}</span></div>
+                                      <div className="flex justify-between"><span className="text-slate-500">Ultimo Login:</span> <span className="text-white font-bold">{new Date(u.lastLogin || Date.now()).toLocaleString('it-IT')}</span></div>
+                                      <div className="flex justify-between"><span className="text-slate-500">Accessi totali:</span> <span className="text-white font-bold">{u.loginCount || 1}</span></div>
+                                    </div>
+
+                                    <p className="text-[10px] uppercase tracking-widest text-slate-500 font-bold mb-3">Azioni Rapide</p>
+                                    <div className="flex flex-wrap gap-2">
+                                      <button
+                                        onClick={(e) => { e.stopPropagation(); resetProgress(u.name); }}
+                                        className="flex items-center gap-2 px-4 py-2.5 bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/20 hover:border-amber-500/40 text-amber-400 hover:text-amber-300 rounded-xl text-xs font-bold transition-all duration-200"
+                                      >
+                                        <RotateCcw className="w-3.5 h-3.5" /> Azzera Progresso
+                                      </button>
+                                      <button
+                                        onClick={(e) => { e.stopPropagation(); unlockAll(u.name); }}
+                                        className="flex items-center gap-2 px-4 py-2.5 bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/20 hover:border-emerald-500/40 text-emerald-400 hover:text-emerald-300 rounded-xl text-xs font-bold transition-all duration-200"
+                                      >
+                                        <Unlock className="w-3.5 h-3.5" /> Sblocca Tutto
+                                      </button>
+                                      <button
+                                        onClick={(e) => { e.stopPropagation(); deleteUser(u.name); }}
+                                        className="flex items-center gap-2 px-4 py-2.5 bg-red-500/10 hover:bg-red-500/20 border border-red-500/20 hover:border-red-500/40 text-red-400 hover:text-red-300 rounded-xl text-xs font-bold transition-all duration-200"
+                                      >
+                                        <Trash2 className="w-3.5 h-3.5" /> Elimina Sessione
+                                      </button>
+                                    </div>
+                                  </div>
+
+                                  {/* Colonna destra: moduli + dove è fermo */}
+                                  <div>
+                                    <p className="text-[10px] uppercase tracking-widest text-slate-500 font-bold mb-3">Percorso Formativo</p>
+
+                                    {/* Dove è fermo */}
+                                    <div className={`mb-4 px-4 py-3 rounded-2xl border flex items-center gap-3 ${nextMod
+                                      ? 'bg-[#FF8731]/5 border-[#FF8731]/20'
+                                      : 'bg-emerald-500/5 border-emerald-500/20'
+                                    }`}>
+                                      <MapPin className={`w-4 h-4 shrink-0 ${nextMod ? 'text-[#FF8731]' : 'text-emerald-400'}`} />
+                                      <div>
+                                        <span className={`text-[10px] font-black uppercase tracking-widest ${nextMod ? 'text-[#FF8731]/70' : 'text-emerald-400/70'}`}>
+                                          {nextMod ? 'Prossimo da completare' : 'Stato'}
+                                        </span>
+                                        <p className={`text-sm font-bold ${nextMod ? 'text-white' : 'text-emerald-400'}`}>
+                                          {nextMod ? `Modulo ${nextMod} — ${MODULE_NAMES[nextMod]}` : 'Percorso completato ✓'}
+                                        </p>
+                                      </div>
+                                    </div>
+
+                                    <div className="flex flex-wrap gap-2">
+                                      {[1, 2, 3, 4].map(mod => {
+                                        const done = (u.completedModulesList || []).includes(mod);
+                                        const isNext = nextMod === mod;
+                                        return (
+                                          <div key={mod} className={`px-3 py-2 rounded-xl text-xs font-bold border flex items-center gap-2 ${done
+                                            ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400'
+                                            : isNext
+                                              ? 'bg-[#FF8731]/10 border-[#FF8731]/30 text-[#FF8731]'
+                                              : 'bg-slate-800 border-slate-700 text-slate-600'
+                                          }`}>
+                                            {done ? <CheckCircle className="w-3 h-3" /> : isNext ? <MapPin className="w-3 h-3" /> : <Lock className="w-3 h-3" />}
+                                            <span>{MODULE_NAMES[mod]}</span>
+                                          </div>
+                                        );
+                                      })}
+                                    </div>
+                                  </div>
+                                </div>
+                              </motion.div>
+                            </td>
+                          </tr>
+                        )}
+                      </AnimatePresence>
+                    </React.Fragment>
+                  );
+                }) : (
                   <tr>
-                    <td colSpan="5" className="px-8 py-16 text-center">
+                    <td colSpan="6" className="px-8 py-16 text-center">
                       <div className="inline-flex flex-col items-center">
                         <Search className="w-12 h-12 text-slate-700 mb-4" />
                         <p className="text-slate-400 font-bold text-lg">Nessun operatore trovato.</p>
@@ -560,6 +793,43 @@ const Admin = () => {
               </tbody>
             </table>
           </div>
+
+          {/* Paginazione */}
+          {totalPages > 1 && (
+            <div className="p-6 border-t border-slate-800 flex items-center justify-between gap-4">
+              <span className="text-sm text-slate-500 font-medium">
+                {(currentPage - 1) * ITEMS_PER_PAGE + 1}–{Math.min(currentPage * ITEMS_PER_PAGE, filteredUsers.length)} di {filteredUsers.length} operatori
+              </span>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                  disabled={currentPage === 1}
+                  className="p-2 rounded-xl bg-slate-800 border border-slate-700 text-slate-300 hover:text-white hover:bg-slate-700 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+                >
+                  <ChevronLeft className="w-5 h-5" />
+                </button>
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
+                  <button
+                    key={page}
+                    onClick={() => setCurrentPage(page)}
+                    className={`w-9 h-9 rounded-xl text-sm font-bold transition-all ${page === currentPage
+                      ? 'bg-[#FF8731] text-white shadow-lg shadow-[#FF8731]/20'
+                      : 'bg-slate-800 border border-slate-700 text-slate-400 hover:text-white hover:bg-slate-700'
+                    }`}
+                  >
+                    {page}
+                  </button>
+                ))}
+                <button
+                  onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                  disabled={currentPage === totalPages}
+                  className="p-2 rounded-xl bg-slate-800 border border-slate-700 text-slate-300 hover:text-white hover:bg-slate-700 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+                >
+                  <ChevronRight className="w-5 h-5" />
+                </button>
+              </div>
+            </div>
+          )}
         </div>
 
       </div>
