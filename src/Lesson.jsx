@@ -50,12 +50,19 @@ const Lesson = ({ lesson, mode, onComplete, autoplay = false }) => {
 
   const enterFullscreen = () => {
     const video = playerRef.current;
+    const container = videoContainerRef.current;
     if (!video) return;
-    if (video.requestFullscreen) video.requestFullscreen();
-    else if (video.webkitRequestFullscreen) video.webkitRequestFullscreen();
-    else if (video.webkitEnterFullscreen) video.webkitEnterFullscreen();
-    else if (video.mozRequestFullScreen) video.mozRequestFullScreen();
-    else if (video.msRequestFullscreen) video.msRequestFullscreen();
+    // Try video element first (required for iOS Safari)
+    if (video.webkitEnterFullscreen) {
+      video.webkitEnterFullscreen();
+      return;
+    }
+    // For all other browsers use the container div
+    const el = container || video;
+    if (el.requestFullscreen) el.requestFullscreen();
+    else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
+    else if (el.mozRequestFullScreen) el.mozRequestFullScreen();
+    else if (el.msRequestFullscreen) el.msRequestFullscreen();
   };
 
   const handleTimeUpdate = () => {
@@ -146,22 +153,13 @@ const Lesson = ({ lesson, mode, onComplete, autoplay = false }) => {
             <video
               ref={playerRef}
               src={lesson.videoUrl}
-              controls={hasWatched || mode === 'full'}
+              controls
               controlsList="nodownload noremoteplayback"
               onContextMenu={(e) => e.preventDefault()}
-              disablePictureInPicture
               onTimeUpdate={handleTimeUpdate}
               onEnded={handleEnded}
               onRateChange={() => { if (!hasWatched && mode === 'guided' && playerRef.current) { playerRef.current.playbackRate = 1; } }}
-              className="w-full h-auto block pointer-events-auto"
-              onClick={() => {
-                if (!hasWatched && mode === 'guided') {                  if (playerRef.current.paused) {
-                    playerRef.current.play();
-                  } else {
-                    playerRef.current.pause();
-                  }
-                }
-              }}
+              className="w-full h-auto block"
             />
             {!hasWatched && mode === 'guided' && (
               <motion.div initial={{ y: -20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} className="absolute top-4 left-4 lg:top-5 lg:left-5 2xl:top-6 2xl:left-6 bg-black/60 backdrop-blur-xl border border-white/10 text-white text-[10px] lg:text-xs px-3 py-1.5 lg:px-4 lg:py-2 rounded-full font-bold flex items-center gap-2 lg:gap-3 pointer-events-none z-20 shadow-lg">
