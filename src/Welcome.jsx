@@ -82,8 +82,12 @@ const HospitalSearch = ({ value, onChange, placeholder }) => {
         { headers: { 'Accept-Language': 'it', 'User-Agent': 'LemoTraining/1.0' } }
       );
       const data = await res.json();
-      setResults(data);
-      setOpen(data.length > 0);
+      const filtered = data.filter(item =>
+        (item.class === 'amenity' && item.type === 'hospital') ||
+        item.class === 'healthcare'
+      );
+      setResults(filtered);
+      setOpen(filtered.length > 0);
     } catch {
       setResults([]);
     } finally {
