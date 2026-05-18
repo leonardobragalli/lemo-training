@@ -53,16 +53,12 @@ const Lesson = ({ lesson, mode, onComplete, autoplay = false }) => {
   }, [autoplay]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const enterFullscreen = () => {
-    const container = videoContainerRef.current;
-    const video = playerRef.current;
-    if (!container || !video) return;
-    // Tutti i browser moderni incluso Safari: fullscreen sul container div
-    if (container.requestFullscreen) { container.requestFullscreen().catch(() => {}); return; }
-    if (container.webkitRequestFullscreen) { container.webkitRequestFullscreen(); return; }
-    if (container.mozRequestFullScreen) { container.mozRequestFullScreen(); return; }
-    if (container.msRequestFullscreen) { container.msRequestFullscreen(); return; }
-    // iOS Safari fallback: fullscreen solo sul video element
-    if (video.webkitEnterFullscreen) { video.play(); video.webkitEnterFullscreen(); }
+    const el = videoContainerRef.current;
+    if (!el) return;
+    if (el.requestFullscreen) el.requestFullscreen().catch(() => {});
+    else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
+    else if (el.mozRequestFullScreen) el.mozRequestFullScreen();
+    else if (el.msRequestFullscreen) el.msRequestFullscreen();
   };
 
   const handleTimeUpdate = () => {
@@ -149,14 +145,14 @@ const Lesson = ({ lesson, mode, onComplete, autoplay = false }) => {
             <video
               ref={playerRef}
               src={lesson.videoUrl}
-              controls
+              controls={hasWatched || mode === 'full'}
               controlsList="nodownload noremoteplayback"
               onContextMenu={(e) => e.preventDefault()}
               onTimeUpdate={handleTimeUpdate}
               onEnded={handleEnded}
               onRateChange={() => { if (!hasWatched && mode === 'guided' && playerRef.current) { playerRef.current.playbackRate = 1; } }}
               onClick={() => { if (!hasWatched && mode === 'guided') { playerRef.current?.paused ? playerRef.current.play() : playerRef.current?.pause(); } }}
-              className={`w-full h-auto block cursor-pointer ${!hasWatched && mode === 'guided' ? 'video-restricted' : ''}`}
+              className="w-full h-auto block cursor-pointer"
             />
             {/* Mandatory view badge — solo se non completato */}
             {!hasWatched && mode === 'guided' && (
@@ -165,20 +161,20 @@ const Lesson = ({ lesson, mode, onComplete, autoplay = false }) => {
                 <span className="tracking-wide uppercase">{l.mandatoryView}</span>
               </motion.div>
             )}
-            {/* Custom bottom bar: progress + fullscreen — solo se non completato */}
-            {!hasWatched && mode === 'guided' && (
-              <div className="absolute bottom-0 left-0 right-0 z-20 px-3 pb-3 pt-6 bg-gradient-to-t from-black/70 to-transparent flex items-center gap-3">
+            {/* Custom bottom bar: progress + fullscreen */}
+            <div className="absolute bottom-0 left-0 right-0 z-20 px-3 pb-3 pt-6 bg-gradient-to-t from-black/70 to-transparent flex items-center gap-3">
+              {(!hasWatched && mode === 'guided') && (
                 <div className="flex-1 h-1.5 bg-white/20 rounded-full overflow-hidden">
                   <div className="h-full bg-gradient-to-r from-[#8756FA] to-[#FF8731] rounded-full transition-all duration-200" style={{ width: `${progress * 100}%` }} />
                 </div>
-                <button
-                  onClick={(e) => { e.stopPropagation(); enterFullscreen(); }}
-                  className="w-8 h-8 bg-white/10 backdrop-blur-md border border-white/20 rounded-full flex items-center justify-center text-white hover:bg-white/30 transition-all duration-200 shrink-0"
-                >
-                  <Maximize className="w-3.5 h-3.5" />
-                </button>
-              </div>
-            )}
+              )}
+              <button
+                onClick={(e) => { e.stopPropagation(); enterFullscreen(); }}
+                className="ml-auto w-8 h-8 bg-white/10 backdrop-blur-md border border-white/20 rounded-full flex items-center justify-center text-white hover:bg-white/30 transition-all duration-200 shrink-0"
+              >
+                <Maximize className="w-3.5 h-3.5" />
+              </button>
+            </div>
           </div>
 
           {/* Desktop: area below video, same bg as sidebar */}
