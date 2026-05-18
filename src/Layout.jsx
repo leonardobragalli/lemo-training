@@ -192,7 +192,7 @@ const Layout = () => {
       </main>
 
       {/* Bottom Nav Mobile */}
-      <div className="md:hidden fixed bottom-6 left-4 right-4 z-50">
+      <div className="md:hidden fixed bottom-3 left-4 right-4 z-50">
         <div className={`backdrop-blur-[40px] border flex justify-around items-center p-2 rounded-[2.5rem] transition-colors duration-500 ${isDarkMode ? 'bg-[#03091B]/60 border-white/20 shadow-[0_30px_60px_rgba(0,0,0,0.8),inset_0_2px_10px_rgba(255,255,255,0.1)]' : 'bg-white/70 border-black/10 shadow-[0_20px_40px_rgba(0,0,0,0.1),inset_0_2px_10px_rgba(255,255,255,0.4)]'}`}>
           {navItems.map((item) => (
             <NavLink
