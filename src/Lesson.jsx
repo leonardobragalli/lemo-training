@@ -55,14 +55,12 @@ const Lesson = ({ lesson, mode, onComplete, autoplay = false }) => {
   const enterFullscreen = () => {
     const video = playerRef.current;
     if (!video) return;
-    // Safari richiede che il video stia girando E che la chiamata sia sincrona
-    // rispetto al gesto utente — mai dentro .then() o setTimeout
-    if (video.webkitEnterFullscreen) {
-      video.play(); // sincrono, non await
-      video.webkitEnterFullscreen();
-      return;
-    }
+    // requestFullscreen: Chrome, Firefox, Safari 15+ desktop
     if (video.requestFullscreen) { video.requestFullscreen().catch(() => {}); return; }
+    // webkitRequestFullscreen: Safari desktop older
+    if (video.webkitRequestFullscreen) { video.webkitRequestFullscreen(); return; }
+    // webkitEnterFullscreen: iOS Safari only (richiede video in play)
+    if (video.webkitEnterFullscreen) { video.play(); video.webkitEnterFullscreen(); return; }
     if (video.mozRequestFullScreen) { video.mozRequestFullScreen(); return; }
     if (video.msRequestFullscreen) { video.msRequestFullscreen(); return; }
   };
