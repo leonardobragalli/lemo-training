@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { Stethoscope, ArrowRight, ShieldCheck, Sparkles, Type, SquareUser, Building2, Globe, Check } from 'lucide-react';
+import { Stethoscope, ArrowRight, ShieldCheck, Sparkles, Type, SquareUser, Building2, ChevronDown, Check } from 'lucide-react';
 import { motion, AnimatePresence, useMotionValue, useTransform, useSpring } from 'framer-motion';
 import { useLang } from './LanguageContext';
 import { audio } from './utils/audio';
@@ -30,11 +30,11 @@ const LangPicker = () => {
         whileHover={{ scale: 1.03 }}
         whileTap={{ scale: 0.97 }}
         onClick={() => { audio.playClick(); setOpen(o => !o); }}
-        className="flex items-center gap-2 pl-3 pr-4 py-2 rounded-full bg-[#03091B]/40 hover:bg-[#03091B]/55 backdrop-blur-2xl border border-white/15 text-white text-[13px] font-semibold transition-colors duration-200 shadow-[0_8px_24px_-12px_rgba(3,9,27,0.4)]"
+        className="flex items-center gap-2 pl-3 pr-3 py-2 rounded-full bg-white/20 hover:bg-white/30 backdrop-blur-2xl border border-white/30 text-white text-[13px] font-semibold transition-all duration-200 shadow-[0_4px_16px_-4px_rgba(3,9,27,0.25)]"
       >
-        <Globe className="w-3.5 h-3.5 text-slate-300" />
         <span className="text-base leading-none">{current.flag}</span>
-        <span className="hidden sm:inline">{current.label}</span>
+        <span className="hidden sm:inline text-[#03091B]/80 font-bold">{current.label}</span>
+        <ChevronDown className={`w-3.5 h-3.5 text-[#03091B]/60 transition-transform duration-200 ${open ? 'rotate-180' : ''}`} />
       </motion.button>
       <AnimatePresence>
         {open && (
@@ -311,9 +311,9 @@ const Welcome = () => {
           className="justify-self-center"
         >
           <img
-            src="/images/logos/logo esteso png.png"
+            src="/images/logos/logo esteso bianco png.png"
             alt="Lemons in the room"
-            className="h-10 sm:h-12 w-auto object-contain drop-shadow-[0_8px_20px_rgba(255,135,49,0.30)]"
+            className="h-10 sm:h-12 w-auto object-contain drop-shadow-[0_2px_12px_rgba(3,9,27,0.35)] drop-shadow-[0_8px_32px_rgba(3,9,27,0.20)]"
           />
         </motion.div>
         <motion.div
