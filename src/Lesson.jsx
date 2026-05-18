@@ -53,16 +53,16 @@ const Lesson = ({ lesson, mode, onComplete, autoplay = false }) => {
   }, [autoplay]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const enterFullscreen = () => {
+    const container = videoContainerRef.current;
     const video = playerRef.current;
-    if (!video) return;
-    // requestFullscreen: Chrome, Firefox, Safari 15+ desktop
-    if (video.requestFullscreen) { video.requestFullscreen().catch(() => {}); return; }
-    // webkitRequestFullscreen: Safari desktop older
-    if (video.webkitRequestFullscreen) { video.webkitRequestFullscreen(); return; }
-    // webkitEnterFullscreen: iOS Safari only (richiede video in play)
-    if (video.webkitEnterFullscreen) { video.play(); video.webkitEnterFullscreen(); return; }
-    if (video.mozRequestFullScreen) { video.mozRequestFullScreen(); return; }
-    if (video.msRequestFullscreen) { video.msRequestFullscreen(); return; }
+    if (!container || !video) return;
+    // Tutti i browser moderni incluso Safari: fullscreen sul container div
+    if (container.requestFullscreen) { container.requestFullscreen().catch(() => {}); return; }
+    if (container.webkitRequestFullscreen) { container.webkitRequestFullscreen(); return; }
+    if (container.mozRequestFullScreen) { container.mozRequestFullScreen(); return; }
+    if (container.msRequestFullscreen) { container.msRequestFullscreen(); return; }
+    // iOS Safari fallback: fullscreen solo sul video element
+    if (video.webkitEnterFullscreen) { video.play(); video.webkitEnterFullscreen(); }
   };
 
   const handleTimeUpdate = () => {
@@ -145,7 +145,7 @@ const Lesson = ({ lesson, mode, onComplete, autoplay = false }) => {
         
         {/* Video Player Section - Spatial Glass Screen */}
         <div className="lg:w-[60%] xl:w-2/3 relative flex flex-col">
-          <div ref={videoContainerRef} className="w-full relative shadow-2xl shrink-0 bg-black overflow-hidden">
+          <div ref={videoContainerRef} className="video-container w-full relative shadow-2xl shrink-0 bg-black overflow-hidden">
             <video
               ref={playerRef}
               src={lesson.videoUrl}
