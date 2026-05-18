@@ -55,20 +55,16 @@ const Lesson = ({ lesson, mode, onComplete, autoplay = false }) => {
   const enterFullscreen = () => {
     const video = playerRef.current;
     if (!video) return;
-    const doFs = () => {
-      // Safari (desktop + iOS): usa webkitEnterFullscreen sul video element
-      if (video.webkitEnterFullscreen) { video.webkitEnterFullscreen(); return; }
-      // Chrome, Firefox, Edge
-      if (video.requestFullscreen) { video.requestFullscreen().catch(() => {}); return; }
-      if (video.mozRequestFullScreen) { video.mozRequestFullScreen(); return; }
-      if (video.msRequestFullscreen) { video.msRequestFullscreen(); return; }
-    };
-    // Il video deve stare girando per webkitEnterFullscreen
-    if (video.paused) {
-      video.play().then(doFs).catch(doFs);
-    } else {
-      doFs();
+    // Safari richiede che il video stia girando E che la chiamata sia sincrona
+    // rispetto al gesto utente — mai dentro .then() o setTimeout
+    if (video.webkitEnterFullscreen) {
+      video.play(); // sincrono, non await
+      video.webkitEnterFullscreen();
+      return;
     }
+    if (video.requestFullscreen) { video.requestFullscreen().catch(() => {}); return; }
+    if (video.mozRequestFullScreen) { video.mozRequestFullScreen(); return; }
+    if (video.msRequestFullscreen) { video.msRequestFullscreen(); return; }
   };
 
   const handleTimeUpdate = () => {
