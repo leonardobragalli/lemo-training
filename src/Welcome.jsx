@@ -77,22 +77,18 @@ const HospitalSearch = ({ value, onChange, placeholder }) => {
     if (!q || q.length < 3) { setResults([]); setOpen(false); return; }
     setLoading(true);
     try {
-      const esc = q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-      // Italy bbox: 35.4,6.6,47.1,18.6 — Spain mainland+Balearics: 36,-9.3,43.8,4.3
-      const oq = `[out:json][timeout:20];
-(
-  node["amenity"="hospital"]["name"~"${esc}",i](35.4,6.6,47.1,18.6);
-  way["amenity"="hospital"]["name"~"${esc}",i](35.4,6.6,47.1,18.6);
-  relation["amenity"="hospital"]["name"~"${esc}",i](35.4,6.6,47.1,18.6);
-  node["amenity"="hospital"]["name"~"${esc}",i](36,-9.3,43.8,4.3);
-  way["amenity"="hospital"]["name"~"${esc}",i](36,-9.3,43.8,4.3);
-  relation["amenity"="hospital"]["name"~"${esc}",i](36,-9.3,43.8,4.3);
-);
-out center 8;`;
-      const res = await fetch('https://overpass-api.de/api/interpreter', { method: 'POST', body: oq });
+      const res = await fetch(
+        `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(q)}&countrycode=it,es&format=json&limit=10&addressdetails=1`,
+        { headers: { 'Accept-Language': 'it', 'User-Agent': 'LemoTraining/1.0' } }
+      );
       const data = await res.json();
-      setResults(data.elements || []);
-      setOpen((data.elements || []).length > 0);
+      const isHospital = (item) =>
+        (item.class === 'amenity' && ['hospital', 'clinic', 'doctors'].includes(item.type)) ||
+        item.class === 'healthcare' ||
+        (item.class === 'building' && item.type === 'hospital');
+      const sorted = [...data].sort((a, b) => (isHospital(b) ? 1 : 0) - (isHospital(a) ? 1 : 0));
+      setResults(sorted.slice(0, 6));
+      setOpen(sorted.length > 0);
     } catch {
       setResults([]);
     } finally {
@@ -110,7 +106,7 @@ out center 8;`;
   };
 
   const handleSelect = (item) => {
-    const name = item.tags?.name || '';
+    const name = item.name || item.display_name.split(',')[0].trim();
     setQuery(name);
     onChange(name);
     setOpen(false);
@@ -141,12 +137,10 @@ out center 8;`;
             className="absolute top-full left-0 right-0 mt-2 bg-[#03091B]/95 backdrop-blur-xl border border-white/10 rounded-[1.5rem] overflow-hidden shadow-2xl z-50 max-h-[240px] overflow-y-auto"
           >
             {results.map((item, i) => {
-              const name = item.tags?.name || '';
-              const city = item.tags?.['addr:city'] || item.tags?.['addr:municipality'] || '';
-              const province = item.tags?.['addr:province'] || '';
-              const sub = [city, province].filter(Boolean).join(', ');
+              const name = item.name || item.display_name.split(',')[0].trim();
+              const sub = item.display_name.split(',').slice(1, 3).join(',').trim();
               return (
-                <li key={item.id || i}>
+                <li key={item.place_id || i}>
                   <button
                     type="button"
                     onMouseDown={() => handleSelect(item)}
