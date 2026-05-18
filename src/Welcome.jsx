@@ -33,7 +33,7 @@ const WelcomeLangPicker = () => {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 8, scale: 0.95 }}
             transition={{ duration: 0.15 }}
-            className="absolute top-full mt-2 right-0 bg-[#03091B]/90 backdrop-blur-xl border border-white/10 rounded-[1.5rem] overflow-hidden shadow-xl z-50 min-w-[140px]"
+            className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 bg-[#03091B]/90 backdrop-blur-xl border border-white/10 rounded-[1.5rem] overflow-hidden shadow-xl z-50 min-w-[140px]"
           >
             {LANGUAGES.map(l => (
               <button
