@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { Stethoscope, ArrowRight, ShieldCheck, Sparkles, Type, SquareUser, Building2 } from 'lucide-react';
+import { Stethoscope, ArrowRight, ShieldCheck, Sparkles, Type, SquareUser, Building2, Loader2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLang } from './LanguageContext';
 import { audio } from './utils/audio';
@@ -55,6 +55,99 @@ const WelcomeLangPicker = () => {
 const capitalize = (str) => {
   if (!str) return '';
   return str.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()).join(' ');
+};
+
+const HospitalSearch = ({ value, onChange, placeholder }) => {
+  const [query, setQuery] = useState(value || '');
+  const [results, setResults] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [open, setOpen] = useState(false);
+  const debounceRef = useRef(null);
+  const containerRef = useRef(null);
+
+  useEffect(() => {
+    const handleClick = (e) => {
+      if (containerRef.current && !containerRef.current.contains(e.target)) setOpen(false);
+    };
+    document.addEventListener('mousedown', handleClick);
+    return () => document.removeEventListener('mousedown', handleClick);
+  }, []);
+
+  const search = useCallback(async (q) => {
+    if (!q || q.length < 3) { setResults([]); setOpen(false); return; }
+    setLoading(true);
+    try {
+      const res = await fetch(
+        `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(q)}&countrycode=it,es&format=json&limit=6&addressdetails=1`,
+        { headers: { 'Accept-Language': 'it', 'User-Agent': 'LemoTraining/1.0' } }
+      );
+      const data = await res.json();
+      setResults(data);
+      setOpen(data.length > 0);
+    } catch {
+      setResults([]);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  const handleChange = (e) => {
+    const raw = e.target.value;
+    const val = capitalize(raw);
+    setQuery(val);
+    onChange(val);
+    clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(() => search(raw), 350);
+  };
+
+  const handleSelect = (item) => {
+    const name = item.name || item.display_name.split(',')[0].trim();
+    setQuery(name);
+    onChange(name);
+    setOpen(false);
+    setResults([]);
+  };
+
+  return (
+    <div ref={containerRef} className="relative group">
+      <Building2 className="absolute left-5 2xl:left-6 top-1/2 -translate-y-1/2 h-4 w-4 2xl:h-5 2xl:w-5 text-slate-400 group-focus-within:text-white transition-colors duration-300 z-10 pointer-events-none" />
+      {loading && <Loader2 className="absolute right-5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 animate-spin z-10 pointer-events-none" />}
+      <input
+        type="text"
+        required
+        autoComplete="off"
+        className="block w-full pl-12 2xl:pl-14 pr-12 py-4 2xl:py-5 bg-black/40 border border-white/10 focus:bg-[#FF8731]/10 rounded-[2rem] text-white focus:ring-2 focus:ring-[#FF8731]/50 focus:border-[#FF8731] transition-all duration-300 shadow-[inset_0_2px_10px_rgba(0,0,0,0.5)] focus:shadow-[0_0_25px_rgba(255,135,49,0.3),inset_0_2px_10px_rgba(0,0,0,0.5)] outline-none font-bold text-base 2xl:text-lg placeholder-slate-500"
+        placeholder={placeholder}
+        value={query}
+        onChange={handleChange}
+        onFocus={() => results.length > 0 && setOpen(true)}
+      />
+      <AnimatePresence>
+        {open && results.length > 0 && (
+          <motion.ul
+            initial={{ opacity: 0, y: 4, scale: 0.98 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 4, scale: 0.98 }}
+            transition={{ duration: 0.15 }}
+            className="absolute top-full left-0 right-0 mt-2 bg-[#03091B]/95 backdrop-blur-xl border border-white/10 rounded-[1.5rem] overflow-hidden shadow-2xl z-50 max-h-[240px] overflow-y-auto"
+          >
+            {results.map((item, i) => (
+              <li key={item.place_id || i}>
+                <button
+                  type="button"
+                  onMouseDown={() => handleSelect(item)}
+                  className="flex flex-col px-5 py-3 w-full text-left hover:bg-white/5 transition-colors border-b border-white/5 last:border-0"
+                >
+                  <span className="text-white font-bold text-sm truncate">{item.name || item.display_name.split(',')[0].trim()}</span>
+                  <span className="text-slate-400 text-xs truncate mt-0.5">{item.display_name.split(',').slice(1, 3).join(',').trim()}</span>
+                </button>
+              </li>
+            ))}
+          </motion.ul>
+        )}
+      </AnimatePresence>
+    </div>
+  );
 };
 
 const Welcome = () => {
@@ -253,10 +346,7 @@ const Welcome = () => {
             
             <motion.div variants={itemVariants} className="space-y-1.5 2xl:space-y-2">
               <label className="text-[11px] 2xl:text-[13px] font-bold text-white uppercase ml-2 tracking-widest drop-shadow-md">{w.hospital}</label>
-              <div className="relative group">
-                <Building2 className="absolute left-5 2xl:left-6 top-1/2 -translate-y-1/2 h-4 w-4 2xl:h-5 2xl:w-5 text-slate-400 group-focus-within:text-white transition-colors duration-300 z-10" />
-                <input type="text" required className="block w-full pl-12 2xl:pl-14 pr-6 py-4 2xl:py-5 bg-black/40 border border-white/10 focus:bg-[#FF8731]/10 rounded-[2rem] text-white focus:ring-2 focus:ring-[#FF8731]/50 focus:border-[#FF8731] transition-all duration-300 shadow-[inset_0_2px_10px_rgba(0,0,0,0.5)] focus:shadow-[0_0_25px_rgba(255,135,49,0.3),inset_0_2px_10px_rgba(0,0,0,0.5)] outline-none font-bold text-base 2xl:text-lg placeholder-slate-500" placeholder={w.placeholderHospital} value={hospital} onChange={(e) => setHospital(capitalize(e.target.value))} />
-              </div>
+              <HospitalSearch value={hospital} onChange={setHospital} placeholder={w.placeholderHospital} />
             </motion.div>
             
             <motion.div variants={itemVariants} className="space-y-1.5 2xl:space-y-2">
