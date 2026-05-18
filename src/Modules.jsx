@@ -57,7 +57,7 @@ const Modules = () => {
       }, 600);
       setTimeout(() => {
         setAutoplayId(autoopen);
-      }, 1800);
+      }, 1000);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
