@@ -252,12 +252,9 @@ const Welcome = () => {
   const itemVariants = { hidden: { y: 30, opacity: 0 }, visible: { y: 0, opacity: 1, transition: { type: "spring", stiffness: 100, damping: 20 } } };
 
   return (
-    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="min-h-[100dvh] flex flex-col md:flex-row font-sans overflow-y-auto md:overflow-hidden relative">
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="min-h-[100dvh] flex flex-col md:flex-row font-sans overflow-y-auto md:overflow-hidden relative bg-cover bg-center bg-[url('/images/bg-clouds.png')]">
 
-      {/* Background Layer Fixed for Mobile/Safari */}
-      <div className="fixed inset-0 bg-cover bg-center z-0 bg-[url('/images/bg-clouds.png')] pointer-events-none"></div>
-
-      {/* Background Ambience - Removed dark overlay so clouds pop */}
+      {/* Background Ambience */}
       <div className="fixed inset-0 opacity-[0.03] pointer-events-none bg-[url('https://grainy-gradients.vercel.app/noise.svg')] z-0"></div>
 
       {/* Lato Sinistro - Lemons Brand Experience */}
