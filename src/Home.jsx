@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { Award, ArrowRight, Target, Sparkles } from 'lucide-react';
+import { Award, ArrowRight, Target } from 'lucide-react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import html2pdf from 'html2pdf.js';
 
@@ -76,7 +76,7 @@ const Home = () => {
         {/* Hero Header */}
         <div className="mb-6 lg:mb-8 2xl:mb-12 relative z-10 bg-[#03091B]/20 dark:bg-[#03091B]/40 backdrop-blur-[40px] p-5 lg:p-6 2xl:p-12 rounded-[1.5rem] lg:rounded-[2rem] 2xl:rounded-[3.5rem] border-t border-l border-white/20 border-r border-b border-white/5 shadow-[0_20px_60px_-10px_rgba(0,0,0,0.3)] w-full flex flex-col justify-center">
           <motion.div initial={{ scale: 0, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ type: "spring", stiffness: 200, damping: 20 }} className="inline-flex items-center gap-2 px-3 py-1.5 2xl:px-4 2xl:py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 mb-2 2xl:mb-4 shadow-xl shadow-black/5 w-fit">
-            <Sparkles className="w-3 h-3 2xl:w-4 2xl:h-4 text-[#FF8731]" />
+            <img src="/images/logos/logo bianco panna png.png" className="h-3.5 2xl:h-5 w-auto object-contain" alt="Lemons" />
             <span className="text-[9px] lg:text-[10px] 2xl:text-sm font-bold tracking-widest uppercase text-white drop-shadow-md">{h.badge}</span>
           </motion.div>
           

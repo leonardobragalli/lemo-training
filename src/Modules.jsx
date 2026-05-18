@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { Play, Lock, CheckCircle, ChevronDown, ChevronUp, Clock, Sparkles } from 'lucide-react';
+import { Play, Lock, CheckCircle, ChevronDown, ChevronUp, Clock } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Lesson from './Lesson';
 import { useLang } from './LanguageContext';
@@ -70,7 +70,7 @@ const Modules = () => {
       {/* Hero Header */}
       <div className="mb-8 lg:mb-10 2xl:mb-20 relative z-10">
         <motion.div initial={{ scale: 0, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ type: "spring", stiffness: 200, damping: 20 }} className="inline-flex items-center gap-2 px-3 py-1.5 2xl:px-4 2xl:py-2 rounded-full bg-white/10 dark:bg-white/5 backdrop-blur-md border border-white/20 mb-4 2xl:mb-6 shadow-xl shadow-black/5">
-          <Sparkles className="w-3 h-3 2xl:w-4 2xl:h-4 text-[#8756FA]" />
+          <img src="/images/logos/logo bianco panna png.png" className="h-3.5 2xl:h-5 w-auto object-contain" alt="Lemons" />
           <span className="text-xs 2xl:text-sm font-bold tracking-widest uppercase bg-clip-text text-transparent bg-gradient-to-r from-[#8756FA] to-[#FF8731]">{m.badge}</span>
         </motion.div>
         
