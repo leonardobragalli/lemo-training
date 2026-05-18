@@ -153,7 +153,7 @@ export const translations = {
   },
 
   en: {
-    nav: { home: 'Home', modules: 'Modules', support: 'Support', visitSite: 'Visit Website', logout: 'Log Out' },
+    nav: { home: 'Home', modules: 'Training', support: 'Support', visitSite: 'Visit Website', logout: 'Log Out' },
     welcome: {
       tagline: 'The training\n',
       taglineAccent: 'that welcomes',
@@ -163,7 +163,7 @@ export const translations = {
       title: 'Sign In',
       description: 'Enter your operational credentials to unlock an immersive training experience',
       firstName: 'First Name', lastName: 'Last Name', hospital: 'Hospital', department: 'Department',
-      patientProfile: 'Patient Profile', pediatria: 'Pediatrics', adulti: 'Adults',
+      patientProfile: 'Patient Profile', pediatria: 'Pediatric', adulti: 'Adult',
       placeholderFirst: 'John', placeholderLast: 'Smith', placeholderHospital: 'e.g. City Hospital', placeholderDept: 'e.g. Oncology',
       submit: 'Start Training',
     },
@@ -171,7 +171,7 @@ export const translations = {
       badge: 'Lemons Hub',
       greeting: 'Hello,',
       guest: 'Guest',
-      subtitle: 'Welcome to your simulation environment. Here you will find everything you need to prepare.',
+      subtitle: 'Welcome to the Lemons world. Here you will find everything you need to prepare.',
       modulesOf: 'of',
       modulesCompleted: 'Modules Completed',
       statusDone: 'Status: Operational',
@@ -296,7 +296,7 @@ export const translations = {
   },
 
   es: {
-    nav: { home: 'Inicio', modules: 'Módulos', support: 'Soporte', visitSite: 'Visitar Sitio', logout: 'Cerrar Sesión' },
+    nav: { home: 'Inicio', modules: 'Formación', support: 'Soporte', visitSite: 'Visitar Sitio', logout: 'Cerrar Sesión' },
     welcome: {
       tagline: 'El entrenamiento\n',
       taglineAccent: 'que acoge',
@@ -306,7 +306,7 @@ export const translations = {
       title: 'Acceder',
       description: 'Ingresa tus credenciales operativas para desbloquear una experiencia de entrenamiento inmersiva',
       firstName: 'Nombre', lastName: 'Apellido', hospital: 'Hospital', department: 'Departamento',
-      patientProfile: 'Perfil del Paciente', pediatria: 'Pediatría', adulti: 'Adultos',
+      patientProfile: 'Perfil del Paciente', pediatria: 'Pediátrico', adulti: 'Adulto',
       placeholderFirst: 'Juan', placeholderLast: 'García', placeholderHospital: 'Ej. Hospital Central', placeholderDept: 'Ej. Oncología',
       submit: 'Iniciar Entrenamiento',
     },
@@ -314,7 +314,7 @@ export const translations = {
       badge: 'Lemons Hub',
       greeting: 'Hola,',
       guest: 'Invitado',
-      subtitle: 'Bienvenido a tu entorno de simulación. Aquí encontrarás todo lo necesario para prepararte.',
+      subtitle: 'Bienvenido al mundo Lemons. Aquí encontrarás todo lo necesario para prepararte.',
       modulesOf: 'de',
       modulesCompleted: 'Módulos Completados',
       statusDone: 'Estado: Operativo',

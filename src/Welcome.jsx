@@ -1,10 +1,56 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Stethoscope, ArrowRight, ShieldCheck, Sparkles, Type, SquareUser, Building2 } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useLang } from './LanguageContext';
 import { audio } from './utils/audio';
 import { supabase } from './utils/supabase';
+
+const LANGUAGES = [
+  { code: 'it', label: 'Italiano', flag: '🇮🇹' },
+  { code: 'en', label: 'English',  flag: '🇬🇧' },
+  { code: 'es', label: 'Español',  flag: '🇪🇸' },
+];
+
+const WelcomeLangPicker = () => {
+  const { lang, switchLang } = useLang();
+  const [open, setOpen] = useState(false);
+  const current = LANGUAGES.find(l => l.code === lang);
+
+  return (
+    <div className="relative">
+      <button
+        onClick={() => { audio.playClick(); setOpen(o => !o); }}
+        className="flex items-center gap-2 px-3 py-2 rounded-2xl bg-black/20 backdrop-blur-md border border-white/20 text-white font-bold text-sm transition-all hover:bg-black/30"
+      >
+        <span className="text-base leading-none">{current.flag}</span>
+        <span>{current.label}</span>
+      </button>
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            initial={{ opacity: 0, y: 8, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 8, scale: 0.95 }}
+            transition={{ duration: 0.15 }}
+            className="absolute top-full mt-2 right-0 bg-[#03091B]/90 backdrop-blur-xl border border-white/10 rounded-[1.5rem] overflow-hidden shadow-xl z-50 min-w-[140px]"
+          >
+            {LANGUAGES.map(l => (
+              <button
+                key={l.code}
+                onClick={() => { audio.playClick(); switchLang(l.code); setOpen(false); }}
+                className={`flex items-center gap-3 px-4 py-3 w-full text-left font-bold text-sm transition-all duration-200 ${lang === l.code ? 'text-white bg-white/10' : 'text-slate-300 hover:text-white hover:bg-white/5'}`}
+              >
+                <span className="text-base">{l.flag}</span>
+                <span>{l.label}</span>
+              </button>
+            ))}
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+};
 
 const capitalize = (str) => {
   if (!str) return '';
@@ -116,7 +162,12 @@ const Welcome = () => {
 
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="min-h-[100dvh] flex flex-col md:flex-row font-sans overflow-y-auto md:overflow-hidden relative bg-[#03091B]">
-      
+
+      {/* Language Picker */}
+      <div className="fixed top-5 right-5 z-50">
+        <WelcomeLangPicker />
+      </div>
+
       {/* Background Layer Fixed for Mobile/Safari */}
       <div className="fixed inset-0 bg-cover bg-center z-0 bg-[url('/images/bg-clouds.png')] pointer-events-none"></div>
 
