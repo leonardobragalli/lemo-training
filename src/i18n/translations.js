@@ -1,7 +1,7 @@
 export const translations = {
   it: {
     // Layout
-    nav: { home: 'Home', modules: 'Moduli', support: 'Supporto', visitSite: 'Visita il Sito', logout: 'Chiudi Sessione' },
+    nav: { home: 'Home', modules: 'Formazione', support: 'Supporto', visitSite: 'Visita il Sito', logout: 'Chiudi Sessione' },
 
     // Welcome
     welcome: {
@@ -23,7 +23,7 @@ export const translations = {
       badge: 'Lemons Hub',
       greeting: 'Ciao,',
       guest: 'Ospite',
-      subtitle: 'Benvenuto nel tuo ambiente di simulazione. Qui troverai tutto il necessario per prepararti.',
+      subtitle: 'Benvenuto nel mondo Lemons. Qui troverai tutto il necessario per prepararti.',
       modulesOf: 'di',
       modulesCompleted: 'Moduli Completati',
       statusDone: 'Status: Operativo',

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { Play, Award, ArrowRight, Zap, Target, Sparkles } from 'lucide-react';
+import { Award, ArrowRight, Target, Sparkles } from 'lucide-react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import html2pdf from 'html2pdf.js';
 
@@ -97,7 +97,7 @@ const Home = () => {
           {/* Main Progress Dashboard - Epic Glassmorphism */}
           <motion.div
             variants={item}
-            className="lg:col-span-8 group relative h-full bg-[#03091B]/20 dark:bg-[#03091B]/40 backdrop-blur-[40px] rounded-[2rem] 2xl:rounded-[3.5rem] p-8 lg:p-10 2xl:p-14 shadow-[0_20px_60px_-10px_rgba(0,0,0,0.3)] border-t border-l border-white/20 border-r border-b border-white/5 flex flex-col md:flex-row items-center gap-8 lg:gap-10 2xl:gap-12"
+            className="lg:col-span-12 group relative h-full bg-[#03091B]/20 dark:bg-[#03091B]/40 backdrop-blur-[40px] rounded-[2rem] 2xl:rounded-[3.5rem] p-8 lg:p-10 2xl:p-14 shadow-[0_20px_60px_-10px_rgba(0,0,0,0.3)] border-t border-l border-white/20 border-r border-b border-white/5 flex flex-col md:flex-row items-center gap-8 lg:gap-10 2xl:gap-12"
           >
 
             <div className="contents">
@@ -217,48 +217,6 @@ const Home = () => {
             </div>
           </motion.div>
 
-          {/* Action Cards Grid */}
-          <motion.div variants={container} className="lg:col-span-4 flex flex-col gap-6 2xl:gap-6">
-            
-            {/* Card 1 */}
-            <motion.div 
-              variants={item}
-              whileHover={{ y: -5, scale: 1.02 }}
-              onClick={() => handleNav(`/modules?mode=${mode}`)} 
-              className="flex-1 bg-gradient-to-br from-[#8756FA] to-[#6A35E8] rounded-[2rem] 2xl:rounded-[2.5rem] p-6 lg:p-8 2xl:p-10 cursor-pointer relative overflow-hidden group shadow-[0_20px_40px_-10px_rgba(135,86,250,0.6)] hover:shadow-[0_30px_60px_-10px_rgba(135,86,250,0.8)] border-t border-l border-white/30 border-r border-b border-white/10"
-            >
-              <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.1] mix-blend-overlay"></div>
-              <div className="absolute -right-10 -top-10 w-32 h-32 2xl:w-40 2xl:h-40 bg-white/20 rounded-full blur-[40px] group-hover:scale-150 transition-transform duration-700"></div>
-              
-              <div className="w-12 h-12 2xl:w-16 2xl:h-16 bg-white/20 backdrop-blur-md rounded-[1rem] 2xl:rounded-2xl flex items-center justify-center mb-4 2xl:mb-6 border border-white/30 text-white shadow-inner group-hover:rotate-12 transition-transform duration-500">
-                <Play className="w-6 h-6 2xl:w-8 2xl:h-8 fill-current drop-shadow-md" />
-              </div>
-              <h3 className="text-2xl lg:text-[1.75rem] 2xl:text-3xl font-black font-serif text-white mb-2 relative z-10 tracking-tight drop-shadow-sm leading-tight whitespace-pre-line">{h.exploreTitle}</h3>
-              <div className="absolute bottom-6 right-6 2xl:bottom-8 2xl:right-8 w-10 h-10 2xl:w-12 2xl:h-12 rounded-full bg-white/10 flex items-center justify-center backdrop-blur-md border border-white/20 group-hover:bg-white group-hover:text-[#8756FA] text-white transition-all duration-300">
-                <ArrowRight className="w-4 h-4 2xl:w-5 2xl:h-5 -rotate-45 group-hover:rotate-0 transition-transform duration-300" />
-              </div>
-            </motion.div>
-            
-            {/* Card 2 - Aggiornata con gradiente colorato */}
-            <motion.div 
-              variants={item}
-              whileHover={{ y: -5, scale: 1.02 }}
-              onClick={() => handleNav(`/support?mode=${mode}`)} 
-              className="flex-1 bg-gradient-to-br from-[#FF8731] to-[#E65C00] rounded-[2rem] 2xl:rounded-[2.5rem] p-6 lg:p-8 2xl:p-10 cursor-pointer relative overflow-hidden group shadow-[0_20px_40px_-10px_rgba(255,135,49,0.6)] hover:shadow-[0_30px_60px_-10px_rgba(255,135,49,0.8)] border-t border-l border-white/30 border-r border-b border-white/10"
-            >
-              <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.1] mix-blend-overlay"></div>
-              <div className="absolute -right-10 -bottom-10 w-32 h-32 2xl:w-40 2xl:h-40 bg-white/20 rounded-full blur-[40px] group-hover:scale-150 transition-transform duration-700"></div>
-              
-              <div className="w-12 h-12 2xl:w-16 2xl:h-16 bg-white/20 backdrop-blur-md rounded-[1rem] 2xl:rounded-2xl flex items-center justify-center mb-4 2xl:mb-6 border border-white/30 text-white shadow-inner group-hover:-rotate-12 transition-transform duration-500">
-                <Zap className="w-6 h-6 2xl:w-8 2xl:h-8 drop-shadow-md fill-current" />
-              </div>
-              <h3 className="text-2xl lg:text-[1.75rem] 2xl:text-3xl font-black font-serif text-white mb-2 relative z-10 tracking-tight drop-shadow-md leading-tight whitespace-pre-line">{h.supportTitle}</h3>
-              <div className="absolute bottom-6 right-6 2xl:bottom-8 2xl:right-8 w-10 h-10 2xl:w-12 2xl:h-12 rounded-full bg-white/10 flex items-center justify-center text-white backdrop-blur-md border border-white/20 group-hover:bg-white group-hover:text-[#FF8731] transition-all duration-300 shadow-inner">
-                <ArrowRight className="w-4 h-4 2xl:w-5 2xl:h-5 -rotate-45 group-hover:rotate-0 transition-transform duration-300" />
-              </div>
-            </motion.div>
-
-          </motion.div>
 
         </motion.div>
       </div>
