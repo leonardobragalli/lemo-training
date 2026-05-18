@@ -8,8 +8,10 @@ import { useLang } from './LanguageContext';
 const Modules = () => {
   const [searchParams] = useSearchParams();
   const mode = searchParams.get('mode') || 'guided';
+  const autoopen = parseInt(searchParams.get('autoopen') || '0');
   const [completedLessons, setCompletedLessons] = useState([]);
   const [expandedId, setExpandedId] = useState(null);
+  const [autoplayId, setAutoplayId] = useState(null);
 
   const [user, setUser] = useState(null);
   const patientType = user?.patientType || 'adulti';
@@ -44,6 +46,10 @@ const Modules = () => {
     if (savedUser) {
       setUser(savedUser);
       setCompletedLessons(JSON.parse(localStorage.getItem(`lemo_progress_${savedUser.name}`)) || []);
+    }
+    if (autoopen >= 1 && autoopen <= 4) {
+      setExpandedId(autoopen);
+      setAutoplayId(autoopen);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -153,14 +159,15 @@ const Modules = () => {
                     className="overflow-hidden bg-[#FFF5EE]/30 dark:bg-black/30"
                   >
                     <div className="relative z-10 w-full border-t border-white/30 dark:border-white/5">
-                      <Lesson 
-                        lesson={lesson} 
-                        mode={mode} 
+                      <Lesson
+                        lesson={lesson}
+                        mode={mode}
+                        autoplay={autoplayId === lesson.id}
                         onComplete={(id) => {
                           if (!completedLessons.includes(id)) {
                             setCompletedLessons([...completedLessons, id]);
                           }
-                        }} 
+                        }}
                       />
                     </div>
                   </motion.div>

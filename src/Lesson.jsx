@@ -6,7 +6,7 @@ import { audio } from './utils/audio';
 import { useLang } from './LanguageContext';
 import { supabase } from './utils/supabase';
 
-const Lesson = ({ lesson, mode, onComplete }) => {
+const Lesson = ({ lesson, mode, onComplete, autoplay = false }) => {
   const { t } = useLang();
   const l = t.lesson;
   const [hasWatched, setHasWatched] = useState(false);
@@ -32,13 +32,20 @@ const Lesson = ({ lesson, mode, onComplete }) => {
     if (fetchedUser) {
       const p = JSON.parse(localStorage.getItem(`lemo_progress_${fetchedUser.name}`)) || [];
       if (p.includes(parseInt(lesson.id))) {
-        // Safe to set state during render/hydration phase like this, or we disable the warning
         setHasWatched(true);
         setQuizPassed(true);
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [lesson.id]);
+
+  useEffect(() => {
+    if (!autoplay || !playerRef.current) return;
+    const timer = setTimeout(() => {
+      playerRef.current?.play().catch(() => {});
+    }, 2000);
+    return () => clearTimeout(timer);
+  }, [autoplay]);
 
   const handleTimeUpdate = () => {
     if (!playerRef.current || hasWatched) return;
