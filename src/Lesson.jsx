@@ -42,7 +42,12 @@ const Lesson = ({ lesson, mode, onComplete, autoplay = false }) => {
   useEffect(() => {
     if (!autoplay || !playerRef.current) return;
     const timer = setTimeout(() => {
-      playerRef.current?.play().catch(() => {});
+      const el = playerRef.current;
+      if (!el) return;
+      el.play().catch(() => {});
+      if (el.requestFullscreen) el.requestFullscreen();
+      else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
+      else if (el.webkitEnterFullscreen) el.webkitEnterFullscreen();
     }, 2000);
     return () => clearTimeout(timer);
   }, [autoplay]);
@@ -166,7 +171,7 @@ const Lesson = ({ lesson, mode, onComplete, autoplay = false }) => {
                 else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
                 else if (el.webkitEnterFullscreen) el.webkitEnterFullscreen();
               }}
-              className="absolute bottom-4 right-4 z-20 w-9 h-9 bg-black/60 backdrop-blur-xl border border-white/10 rounded-full flex items-center justify-center text-white hover:bg-white/20 transition-all duration-200 shadow-lg opacity-0 group-hover:opacity-100"
+              className="absolute bottom-4 right-4 z-20 w-9 h-9 bg-black/60 backdrop-blur-xl border border-white/10 rounded-full flex items-center justify-center text-white hover:bg-white/20 transition-all duration-200 shadow-lg"
             >
               <Maximize className="w-4 h-4" />
             </button>
