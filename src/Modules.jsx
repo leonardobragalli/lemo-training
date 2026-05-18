@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Play, Lock, CheckCircle, ChevronDown, ChevronUp, Clock } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -12,6 +12,7 @@ const Modules = () => {
   const [completedLessons, setCompletedLessons] = useState([]);
   const [expandedId, setExpandedId] = useState(null);
   const [autoplayId, setAutoplayId] = useState(null);
+  const cardRefs = useRef({});
 
   const [user, setUser] = useState(null);
   const patientType = user?.patientType || 'adulti';
@@ -49,7 +50,14 @@ const Modules = () => {
     }
     if (autoopen >= 1 && autoopen <= 4) {
       setExpandedId(autoopen);
-      setAutoplayId(autoopen);
+      // Scroll to card after animations settle, then trigger autoplay
+      setTimeout(() => {
+        const el = cardRefs.current[autoopen];
+        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 600);
+      setTimeout(() => {
+        setAutoplayId(autoopen);
+      }, 1800);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -100,8 +108,9 @@ const Modules = () => {
           const isExpanded = expandedId === lesson.id;
 
           return (
-            <motion.div 
+            <motion.div
               variants={item} key={lesson.id}
+              ref={el => cardRefs.current[lesson.id] = el}
               className={`group relative overflow-hidden bg-white/40 dark:bg-[#03091B]/40 backdrop-blur-3xl transition-all duration-700 rounded-[2rem] 2xl:rounded-[3rem] border ${
                 unlocked ? 'border-white/50 dark:border-white/10 hover:border-[#8756FA]/30 shadow-[0_20px_40px_-10px_rgba(0,0,0,0.05)] hover:shadow-[0_30px_80px_-15px_rgba(135,86,250,0.15)] z-10' : 'border-white/20 dark:border-white/5 opacity-60 shadow-none z-0'
               }`}
