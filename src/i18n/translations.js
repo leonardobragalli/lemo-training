@@ -116,7 +116,7 @@ export const translations = {
 
     // Support
     support: {
-      badge: 'Lemons Hub',
+      badge: 'Support Center',
       titleMain: 'Supporto',
       titleAccent: 'Operativo',
       subtitle: 'Assistenza immediata e risoluzione problemi per il personale medico.',
@@ -258,7 +258,7 @@ export const translations = {
       wrongAnswer: 'Wrong answer, try again!',
     },
     support: {
-      badge: 'Lemons Hub',
+      badge: 'Support Center',
       titleMain: 'Operational',
       titleAccent: 'Support',
       subtitle: 'Immediate assistance and troubleshooting for medical staff.',
@@ -401,7 +401,7 @@ export const translations = {
       wrongAnswer: '¡Respuesta incorrecta, inténtalo de nuevo!',
     },
     support: {
-      badge: 'Lemons Hub',
+      badge: 'Support Center',
       titleMain: 'Soporte',
       titleAccent: 'Operativo',
       subtitle: 'Asistencia inmediata y resolución de problemas para el personal médico.',
