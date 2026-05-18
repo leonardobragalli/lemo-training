@@ -278,7 +278,7 @@ const Home = () => {
             
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
               <div style={{ display: 'flex', alignItems: 'center' }}>
-                <img src="/images/logos/logo esteso nero png.png" alt="Lemons in the Room" style={{ height: '70px', width: 'auto', objectFit: 'contain' }} />
+                <img src="/images/logos/logo esteso nero png.png" alt="Lemons in the room" style={{ height: '70px', width: 'auto', objectFit: 'contain' }} />
               </div>
               <div style={{ textAlign: 'right', marginTop: '10px' }}>
                 <p style={{ margin: 0, fontSize: '11px', color: '#94a3b8', letterSpacing: '2px', textTransform: 'uppercase', fontWeight: 'bold' }}>Codice Attestato</p>
@@ -305,7 +305,7 @@ const Home = () => {
 
               <div>
                 <p style={{ margin: '0 auto', fontSize: '18px', color: '#475569', lineHeight: '1.5', maxWidth: '800px' }}>
-                  Per aver completato con successo l'intero percorso formativo e aver dimostrato piena competenza tecnica, operativa e procedurale nell'utilizzo dell'ecosistema <strong>Lemons in the Room</strong> presso la struttura <strong>{user?.hospital || 'Struttura Ospedaliera'}</strong> ({user?.department || 'Reparto'}).
+                  Per aver completato con successo l'intero percorso formativo e aver dimostrato piena competenza tecnica, operativa e procedurale nell'utilizzo dell'ecosistema <strong>Lemons in the room</strong> presso la struttura <strong>{user?.hospital || 'Struttura Ospedaliera'}</strong> ({user?.department || 'Reparto'}).
                 </p>
               </div>
             </div>

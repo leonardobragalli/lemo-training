@@ -336,7 +336,7 @@ const Admin = () => {
         <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="bg-slate-900 border border-slate-800 p-10 rounded-[2rem] shadow-2xl relative z-10 w-full max-w-md text-center">
           <img src="/images/logos/logo bianco panna png.png" alt="Lemons Logo" className="w-16 h-16 mx-auto mb-6 object-contain" />
           <h1 className="text-3xl font-black font-serif text-white mb-2">Area Riservata</h1>
-          <p className="text-slate-400 mb-8">Accesso esclusivo al team Lemons in the Room.</p>
+          <p className="text-slate-400 mb-8">Accesso esclusivo al team Lemons in the room.</p>
           <form onSubmit={handleLogin} className="space-y-4">
             <input type="password" placeholder="Password Direzionale" value={password} onChange={(e) => setPassword(e.target.value)} className="w-full bg-slate-800 border border-slate-700 text-white px-6 py-4 rounded-xl text-center tracking-widest font-mono focus:border-red-500 focus:outline-none transition-colors" />
             <button type="submit" className="w-full bg-red-500 hover:bg-red-600 text-white font-bold py-4 rounded-xl shadow-lg shadow-red-500/20 transition-colors">Sblocca God Mode</button>
@@ -371,7 +371,7 @@ const Admin = () => {
             <div>
               <h1 className="text-4xl font-black font-serif text-white tracking-tight flex items-center gap-3">
                 <ShieldAlert className="w-8 h-8 text-[#FF8731]" />
-                Lemons in the Room God Mode
+                Lemons in the room God Mode
               </h1>
               <p className="text-slate-400 mt-1 font-medium text-sm">Monitoraggio in tempo reale dei dati operativi globali.</p>
             </div>
@@ -496,7 +496,7 @@ const Admin = () => {
                 const canvas = document.querySelector('#qr-canvas canvas') || document.querySelector('canvas');
                 const dataUrl = canvas?.toDataURL('image/png') || '';
                 const win = window.open('', '_blank', 'width=400,height=500');
-                win.document.write(`<!DOCTYPE html><html><head><title>QR Code - Lemons in the Room</title><style>body{margin:0;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;background:#fff;font-family:sans-serif;}img{width:280px;height:280px;}p{margin-top:16px;font-size:11px;font-weight:900;letter-spacing:.2em;text-transform:uppercase;color:#888;}</style></head><body><img src="${dataUrl}" /><p>Scan to Enter</p><script>window.onload=()=>{window.print();window.onafterprint=()=>window.close();}<\/script></body></html>`);
+                win.document.write(`<!DOCTYPE html><html><head><title>QR Code - Lemons in the room</title><style>body{margin:0;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;background:#fff;font-family:sans-serif;}img{width:280px;height:280px;}p{margin-top:16px;font-size:11px;font-weight:900;letter-spacing:.2em;text-transform:uppercase;color:#888;}</style></head><body><img src="${dataUrl}" /><p>Scan to Enter</p><script>window.onload=()=>{window.print();window.onafterprint=()=>window.close();}<\/script></body></html>`);
                 win.document.close();
               }}
               className="px-8 py-4 bg-gradient-to-r from-[#8756FA] to-[#6A35E8] hover:from-[#9C73FA] hover:to-[#8756FA] text-white font-black rounded-2xl transition-all shadow-[0_15px_30px_-10px_rgba(135,86,250,0.5)] hover:scale-105 active:scale-95"
