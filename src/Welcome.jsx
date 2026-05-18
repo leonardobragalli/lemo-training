@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { Stethoscope, ArrowRight, ShieldCheck, Sparkles, Type, SquareUser, Building2 } from 'lucide-react';
+import { Stethoscope, ArrowRight, ShieldCheck, Type, SquareUser, Building2, Globe, Check } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLang } from './LanguageContext';
 import { audio } from './utils/audio';
@@ -12,37 +12,48 @@ const LANGUAGES = [
   { code: 'es', label: 'Español',  flag: '🇪🇸' },
 ];
 
-const WelcomeLangPicker = () => {
+const LangPicker = () => {
   const { lang, switchLang } = useLang();
   const [open, setOpen] = useState(false);
+  const ref = useRef(null);
   const current = LANGUAGES.find(l => l.code === lang);
 
+  useEffect(() => {
+    const onClick = (e) => { if (ref.current && !ref.current.contains(e.target)) setOpen(false); };
+    document.addEventListener('mousedown', onClick);
+    return () => document.removeEventListener('mousedown', onClick);
+  }, []);
+
   return (
-    <div className="relative">
-      <button
+    <div ref={ref} className="relative">
+      <motion.button
+        whileHover={{ scale: 1.03 }}
+        whileTap={{ scale: 0.97 }}
         onClick={() => { audio.playClick(); setOpen(o => !o); }}
-        className="flex items-center gap-2 px-3 py-2 rounded-2xl bg-black/20 backdrop-blur-md border border-white/20 text-white font-bold text-sm transition-all hover:bg-black/30"
+        className="flex items-center gap-2 pl-3 pr-4 py-2 rounded-full bg-[#03091B]/40 hover:bg-[#03091B]/55 backdrop-blur-2xl border border-white/15 text-white text-[13px] font-semibold transition-colors duration-200 shadow-[0_8px_24px_-12px_rgba(3,9,27,0.4)]"
       >
+        <Globe className="w-3.5 h-3.5 text-slate-300" />
         <span className="text-base leading-none">{current.flag}</span>
-        <span>{current.label}</span>
-      </button>
+        <span className="hidden sm:inline">{current.label}</span>
+      </motion.button>
       <AnimatePresence>
         {open && (
           <motion.div
-            initial={{ opacity: 0, y: 8, scale: 0.95 }}
+            initial={{ opacity: 0, y: -4, scale: 0.96 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 8, scale: 0.95 }}
-            transition={{ duration: 0.15 }}
-            className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 bg-[#03091B]/90 backdrop-blur-xl border border-white/10 rounded-[1.5rem] overflow-hidden shadow-xl z-50 min-w-[140px]"
+            exit={{ opacity: 0, y: -4, scale: 0.96 }}
+            transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+            className="absolute top-full right-0 mt-2 min-w-[180px] bg-[#03091B]/95 backdrop-blur-2xl border border-white/10 rounded-2xl overflow-hidden shadow-[0_20px_60px_-10px_rgba(0,0,0,0.8)] z-50"
           >
             {LANGUAGES.map(l => (
               <button
                 key={l.code}
                 onClick={() => { audio.playClick(); switchLang(l.code); setOpen(false); }}
-                className={`flex items-center gap-3 px-4 py-3 w-full text-left font-bold text-sm transition-all duration-200 ${lang === l.code ? 'text-white bg-white/10' : 'text-slate-300 hover:text-white hover:bg-white/5'}`}
+                className={`flex items-center gap-3 px-4 py-3 w-full text-left text-sm font-semibold transition-colors ${lang === l.code ? 'text-white bg-white/[0.06]' : 'text-slate-300 hover:text-white hover:bg-white/[0.04]'}`}
               >
-                <span className="text-base">{l.flag}</span>
-                <span>{l.label}</span>
+                <span className="text-base leading-none">{l.flag}</span>
+                <span className="flex-1">{l.label}</span>
+                {lang === l.code && <Check className="w-3.5 h-3.5 text-[#FF8731]" />}
               </button>
             ))}
           </motion.div>
@@ -54,7 +65,7 @@ const WelcomeLangPicker = () => {
 
 const capitalize = (str) => {
   if (!str) return '';
-  return str.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()).join(' ');
+  return str.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' ');
 };
 
 let hospitalsCache = null;
@@ -65,6 +76,25 @@ const loadHospitals = async () => {
   return hospitalsCache;
 };
 
+const Field = ({ icon: Icon, label, placeholder, value, onChange, accent = '#8756FA' }) => (
+  <div className="space-y-2">
+    <label className="block text-[10.5px] font-bold text-slate-400 uppercase ml-1 tracking-[0.18em]">{label}</label>
+    <div className="relative group">
+      <Icon className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-500 group-focus-within:text-white transition-colors duration-300 z-10" />
+      <input
+        type="text"
+        required
+        autoComplete="off"
+        value={value}
+        onChange={(e) => onChange(capitalize(e.target.value))}
+        placeholder={placeholder}
+        style={{ '--accent': accent }}
+        className="block w-full pl-11 pr-4 h-12 bg-white/[0.03] hover:bg-white/[0.05] focus:bg-white/[0.06] border border-white/[0.08] focus:border-[var(--accent)]/60 rounded-2xl text-white text-[15px] font-semibold placeholder-slate-600 outline-none transition-all duration-300 shadow-[inset_0_1px_2px_rgba(0,0,0,0.4)] focus:shadow-[0_0_0_3px_var(--accent)/0.15,inset_0_1px_2px_rgba(0,0,0,0.4)]"
+      />
+    </div>
+  </div>
+);
+
 const HospitalSearch = ({ value, onChange, placeholder }) => {
   const [query, setQuery] = useState(value || '');
   const [results, setResults] = useState([]);
@@ -73,21 +103,17 @@ const HospitalSearch = ({ value, onChange, placeholder }) => {
   const containerRef = useRef(null);
 
   useEffect(() => {
-    loadHospitals(); // preload in background
-    const handleClick = (e) => {
-      if (containerRef.current && !containerRef.current.contains(e.target)) setOpen(false);
-    };
-    document.addEventListener('mousedown', handleClick);
-    return () => document.removeEventListener('mousedown', handleClick);
+    loadHospitals();
+    const onClick = (e) => { if (containerRef.current && !containerRef.current.contains(e.target)) setOpen(false); };
+    document.addEventListener('mousedown', onClick);
+    return () => document.removeEventListener('mousedown', onClick);
   }, []);
 
   const search = useCallback(async (q) => {
     if (!q || q.length < 2) { setResults([]); setOpen(false); return; }
     const list = await loadHospitals();
     const lower = q.toLowerCase();
-    const matches = list
-      .filter(h => h.name.toLowerCase().includes(lower))
-      .slice(0, 7);
+    const matches = list.filter(h => h.name.toLowerCase().includes(lower)).slice(0, 7);
     setResults(matches);
     setOpen(matches.length > 0);
   }, []);
@@ -109,12 +135,12 @@ const HospitalSearch = ({ value, onChange, placeholder }) => {
 
   return (
     <div ref={containerRef} className="relative group">
-      <Building2 className="absolute left-5 2xl:left-6 top-1/2 -translate-y-1/2 h-4 w-4 2xl:h-5 2xl:w-5 text-slate-400 group-focus-within:text-white transition-colors duration-300 z-10 pointer-events-none" />
+      <Building2 className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-500 group-focus-within:text-white transition-colors duration-300 z-10 pointer-events-none" />
       <input
         type="text"
         required
         autoComplete="off"
-        className="block w-full pl-12 2xl:pl-14 pr-6 py-4 2xl:py-5 bg-black/40 border border-white/10 focus:bg-[#FF8731]/10 rounded-[2rem] text-white focus:ring-2 focus:ring-[#FF8731]/50 focus:border-[#FF8731] transition-all duration-300 shadow-[inset_0_2px_10px_rgba(0,0,0,0.5)] focus:shadow-[0_0_25px_rgba(255,135,49,0.3),inset_0_2px_10px_rgba(0,0,0,0.5)] outline-none font-bold text-base 2xl:text-lg placeholder-slate-500"
+        className="block w-full pl-11 pr-4 h-12 bg-white/[0.03] hover:bg-white/[0.05] focus:bg-white/[0.06] border border-white/[0.08] focus:border-[#FF8731]/60 rounded-2xl text-white text-[15px] font-semibold placeholder-slate-600 outline-none transition-all duration-300 shadow-[inset_0_1px_2px_rgba(0,0,0,0.4)] focus:shadow-[0_0_0_3px_rgba(255,135,49,0.15),inset_0_1px_2px_rgba(0,0,0,0.4)]"
         placeholder={placeholder}
         value={query}
         onChange={handleChange}
@@ -127,23 +153,49 @@ const HospitalSearch = ({ value, onChange, placeholder }) => {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 4, scale: 0.98 }}
             transition={{ duration: 0.15 }}
-            className="absolute top-full left-0 right-0 mt-2 bg-[#03091B]/95 backdrop-blur-xl border border-white/10 rounded-[1.5rem] overflow-hidden shadow-2xl z-50 max-h-[240px] overflow-y-auto"
+            className="absolute top-full left-0 right-0 mt-2 bg-[#03091B]/95 backdrop-blur-2xl border border-white/10 rounded-2xl overflow-hidden shadow-[0_20px_60px_-10px_rgba(0,0,0,0.8)] z-50 max-h-[240px] overflow-y-auto"
           >
             {results.map((item, i) => (
               <li key={i}>
                 <button
                   type="button"
                   onMouseDown={() => handleSelect(item)}
-                  className="flex flex-col px-5 py-3 w-full text-left hover:bg-white/5 transition-colors border-b border-white/5 last:border-0"
+                  className="flex flex-col px-4 py-3 w-full text-left hover:bg-white/[0.04] transition-colors border-b border-white/5 last:border-0"
                 >
-                  <span className="text-white font-bold text-sm truncate">{item.name}</span>
-                  {item.city && <span className="text-slate-400 text-xs truncate mt-0.5">{item.city}</span>}
+                  <span className="text-white font-semibold text-[13px] truncate">{item.name}</span>
+                  {item.city && <span className="text-slate-500 text-[11px] truncate mt-0.5 font-medium">{item.city}</span>}
                 </button>
               </li>
             ))}
           </motion.ul>
         )}
       </AnimatePresence>
+    </div>
+  );
+};
+
+const BrandPanel = ({ t }) => {
+  const w = t.welcome;
+  return (
+    <div className="hidden lg:flex relative flex-col justify-center items-start text-left lg:pr-8 xl:pr-12 py-2">
+      <motion.h1
+        initial={{ y: 30, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ delay: 0.15, duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
+        className="font-serif font-black text-[#03091B] leading-[1.02] tracking-[-0.035em] text-[44px] sm:text-[56px] lg:text-[64px] xl:text-[76px]"
+        style={{ WebkitFontSmoothing: 'antialiased', textShadow: '0 2px 24px rgba(255,255,255,0.45)' }}
+      >
+        {w.tagline}<br/>
+        <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#FF8731] to-[#FF9E54]">{w.taglineAccent}</span>
+      </motion.h1>
+      <motion.p
+        initial={{ y: 20, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ delay: 0.3, duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
+        className="mt-4 lg:mt-6 text-[#03091B]/70 text-[15px] lg:text-[17px] leading-relaxed max-w-[440px] font-bold whitespace-pre-line"
+      >
+        {w.subtitle}
+      </motion.p>
     </div>
   );
 };
@@ -158,74 +210,30 @@ const Welcome = () => {
   const [patientType, setPatientType] = useState('');
   const { t } = useLang();
   const w = t.welcome;
-
   const mode = searchParams.get('mode') || 'guided';
 
   useEffect(() => {
     const savedUser = JSON.parse(localStorage.getItem('lemo_user'));
-    
-    // Auto-login: if a user is already in localStorage, skip to home immediately
-    if (savedUser && mode !== 'full') {
-      navigate(`/home?mode=${mode}`);
-      return;
-    }
-
+    if (savedUser && mode !== 'full') { navigate(`/home?mode=${mode}`); return; }
     if (mode === 'full') navigate(`/home?mode=full`);
   }, [mode, navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!firstName.trim() || !lastName.trim() || !hospital.trim() || !department.trim() || !patientType) return;
-
     audio.playClick();
     const fullName = `${firstName} ${lastName}`;
-
-    // --- DEMO CHEAT CODE ---
     const isDemoAccount = (firstName.toLowerCase().trim() === 'mario' && lastName.toLowerCase().trim() === 'rossi') || firstName.toLowerCase().trim() === 'demo';
-    if (isDemoAccount) {
-      localStorage.setItem(`lemo_progress_${fullName}`, JSON.stringify([1, 2, 3, 4]));
-    }
-
+    if (isDemoAccount) localStorage.setItem(`lemo_progress_${fullName}`, JSON.stringify([1, 2, 3, 4]));
     const userData = { name: fullName, firstName, lastName, hospital, department, patientType, mode };
     localStorage.setItem('lemo_user', JSON.stringify(userData));
-
-    // Supabase upsert
     const now = new Date().toISOString();
-    const { data: existing } = await supabase
-      .from('users')
-      .select('id, login_count, first_login, completed_modules')
-      .eq('name', fullName)
-      .maybeSingle();
-
+    const { data: existing } = await supabase.from('users').select('id, login_count, first_login, completed_modules').eq('name', fullName).maybeSingle();
     if (existing) {
-      await supabase.from('users').update({
-        first_name: firstName,
-        last_name: lastName,
-        hospital,
-        department,
-        patient_type: patientType,
-        mode,
-        login_count: (existing.login_count || 1) + 1,
-        last_login: now,
-        completed_modules: isDemoAccount ? [1, 2, 3, 4] : (existing.completed_modules || []),
-      }).eq('name', fullName);
+      await supabase.from('users').update({ first_name: firstName, last_name: lastName, hospital, department, patient_type: patientType, mode, login_count: (existing.login_count || 1) + 1, last_login: now, completed_modules: isDemoAccount ? [1, 2, 3, 4] : (existing.completed_modules || []) }).eq('name', fullName);
     } else {
-      await supabase.from('users').insert({
-        name: fullName,
-        first_name: firstName,
-        last_name: lastName,
-        hospital,
-        department,
-        patient_type: patientType,
-        mode,
-        login_count: 1,
-        first_login: now,
-        last_login: now,
-        completed_modules: isDemoAccount ? [1, 2, 3, 4] : [],
-      });
+      await supabase.from('users').insert({ name: fullName, first_name: firstName, last_name: lastName, hospital, department, patient_type: patientType, mode, login_count: 1, first_login: now, last_login: now, completed_modules: isDemoAccount ? [1, 2, 3, 4] : [] });
     }
-
-    // localStorage fallback (per compatibilità Admin locale)
     const allUsers = JSON.parse(localStorage.getItem('lemo_all_users')) || {};
     if (allUsers[fullName]) {
       allUsers[fullName].loginCount = (allUsers[fullName].loginCount || 1) + 1;
@@ -235,157 +243,166 @@ const Welcome = () => {
       allUsers[fullName].patientType = patientType;
       if (isDemoAccount) allUsers[fullName].completedModulesList = [1, 2, 3, 4];
     } else {
-      allUsers[fullName] = {
-        ...userData,
-        loginCount: 1,
-        firstLogin: now,
-        lastLogin: now,
-        completedModulesList: isDemoAccount ? [1, 2, 3, 4] : []
-      };
+      allUsers[fullName] = { ...userData, loginCount: 1, firstLogin: now, lastLogin: now, completedModulesList: isDemoAccount ? [1, 2, 3, 4] : [] };
     }
     localStorage.setItem('lemo_all_users', JSON.stringify(allUsers));
-
     navigate(`/home?mode=${mode}`);
   };
 
-  const containerVariants = { hidden: { opacity: 0 }, visible: { opacity: 1, transition: { staggerChildren: 0.1, delayChildren: 0.3 } } };
-  const itemVariants = { hidden: { y: 30, opacity: 0 }, visible: { y: 0, opacity: 1, transition: { type: "spring", stiffness: 100, damping: 20 } } };
+  const container = { hidden: { opacity: 0 }, visible: { opacity: 1, transition: { staggerChildren: 0.06, delayChildren: 0.25 } } };
+  const item = { hidden: { y: 16, opacity: 0 }, visible: { y: 0, opacity: 1, transition: { type: 'spring', stiffness: 110, damping: 20 } } };
+  const canSubmit = firstName.trim() && lastName.trim() && hospital.trim() && department.trim() && patientType;
 
   return (
-    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="min-h-[100dvh] flex flex-col md:flex-row font-sans overflow-y-auto md:overflow-hidden relative bg-cover bg-center bg-[url('/images/bg-clouds.png')]">
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="relative min-h-[100dvh] w-full font-sans text-white overflow-x-hidden">
 
-      {/* Background Ambience */}
-      <div className="fixed inset-0 opacity-[0.03] pointer-events-none bg-[url('https://grainy-gradients.vercel.app/noise.svg')] z-0"></div>
-
-      {/* Lato Sinistro - Lemons Brand Experience */}
-      <div className="hidden md:flex md:w-[50%] lg:w-[55%] pl-12 lg:pl-16 2xl:pl-20 pr-20 lg:pr-28 2xl:pr-36 py-16 2xl:py-24 flex-col justify-center items-end relative z-10">
-
-        <div className="relative z-10">
-          {/* Logo nel banner */}
-          <motion.div
-            initial={{ scale: 0, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ type: "spring", stiffness: 200, damping: 20 }}
-            className="mb-8 inline-flex bg-black/15 backdrop-blur-[40px] rounded-[2rem] p-5 border-t border-l border-white/20 border-r border-b border-white/5 shadow-[0_20px_60px_-10px_rgba(0,0,0,0.25)]"
-          >
-            <img src="/images/logo-character-photoroom.png" alt="Lemons in the room" className="h-36 2xl:h-44 object-contain drop-shadow-2xl" />
-          </motion.div>
-
-          <motion.h1 initial={{ y: 30, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.2, duration: 0.8, ease: [0.16, 1, 0.3, 1] }} className="text-5xl lg:text-[3.5rem] 2xl:text-[5rem] font-black font-serif text-[#03091B] mb-6 2xl:mb-8 leading-[1.1] tracking-tight drop-shadow-2xl pr-10 overflow-visible antialiased" style={{ WebkitFontSmoothing: 'antialiased', MozOsxFontSmoothing: 'grayscale' }}>
-            {w.tagline}<br/>
-            <span className="relative inline-block mt-2 overflow-visible">
-              <span className="relative z-10 text-transparent bg-clip-text bg-gradient-to-r from-[#FF8731] to-[#FF9E54] pr-4">{w.taglineAccent}</span>
-            </span>
-          </motion.h1>
-          <motion.p initial={{ y: 30, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.3, duration: 0.8, ease: [0.16, 1, 0.3, 1] }} className="text-[#03091B]/70 text-lg 2xl:text-2xl max-w-xl font-bold leading-relaxed whitespace-pre-line">
-            {w.subtitle}
-          </motion.p>
-        </div>
+      {/* Background */}
+      <div className="fixed inset-0 z-0 pointer-events-none">
+        <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: "url('/images/bg-clouds.png')" }} />
+        <div className="absolute inset-0 opacity-[0.035] mix-blend-overlay" style={{ backgroundImage: "url('https://grainy-gradients.vercel.app/noise.svg')" }} />
       </div>
 
-      {/* Lato Destro - Apple-like Floating Form */}
-      <div className="flex-1 flex items-center justify-center p-4 sm:p-12 relative z-10">
-
-        <motion.div variants={containerVariants} initial="hidden" animate="visible" className="w-full max-w-[420px] 2xl:max-w-[480px] relative z-10 bg-black/20 backdrop-blur-[40px] p-8 pt-4 md:p-8 md:px-10 2xl:p-10 rounded-[3.5rem] shadow-xl border-t border-l border-white/20 border-r border-b border-white/5 my-8 md:my-0 group/glass">
-
-          <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-transparent rounded-[3.5rem] pointer-events-none opacity-50 z-0"></div>
-
-          {/* MOBILE LOGO */}
-          <div className="md:hidden flex justify-center mb-8 relative z-10">
-            <img src="/images/logo-character-photoroom.png" alt="Lemons Logo" className="h-40 object-contain drop-shadow-[0_20px_20px_rgba(0,0,0,0.6)]" />
-          </div>
-
-          {/* Language Picker */}
-          <motion.div variants={itemVariants} className="mb-4 flex justify-center relative z-10">
-            <WelcomeLangPicker />
-          </motion.div>
-
-          {/* Security Protocol Badge - Moved here for better visibility on all devices */}
-          <motion.div variants={itemVariants} className="mb-6 2xl:mb-10 flex items-center justify-center gap-4 bg-white/10 backdrop-blur-3xl p-3 2xl:p-4 rounded-3xl border border-white/10 shadow-lg relative z-10 mx-auto w-fit">
-            <div className="w-10 h-10 2xl:w-12 2xl:h-12 bg-gradient-to-br from-[#FF8731]/20 to-[#FF8731]/5 rounded-xl flex items-center justify-center border border-[#FF8731]/20 shadow-inner shrink-0">
-              <ShieldCheck className="w-5 h-5 2xl:w-6 2xl:h-6 text-[#FF8731]" />
-            </div>
-            <div className="text-left">
-              <span className="block text-white text-xs 2xl:text-sm font-bold tracking-wide">{w.badge}</span>
-              <span className="block text-slate-300 text-[9px] 2xl:text-[10px] font-medium mt-0.5 flex items-center gap-1"><Sparkles className="w-3 h-3 text-[#FF8731]" /> {w.badgeSub}</span>
-            </div>
-          </motion.div>
-
-          <motion.div variants={itemVariants} className="mb-4 2xl:mb-8 text-center relative z-10">
-            <h2 
-              className="text-5xl 2xl:text-[4rem] font-black font-serif text-[#FF8731] mb-2 2xl:mb-4 tracking-tighter"
-              style={{ textShadow: '0 0 40px rgba(255, 135, 49, 0.8), 0 4px 10px rgba(0,0,0,0.8), 0 1px 1px rgba(255,255,255,0.4)' }}
-            >
-              {w.title}
-            </h2>
-            <p className="text-slate-300 font-medium text-base 2xl:text-lg leading-relaxed mt-2 2xl:mt-4">{w.description}</p>
-          </motion.div>
-
-          <form onSubmit={handleSubmit} className="space-y-4 2xl:space-y-6 relative z-10 text-left">
-            <div className="grid grid-cols-2 gap-4 2xl:gap-5">
-              <motion.div variants={itemVariants} className="space-y-1.5 2xl:space-y-2">
-                <label className="text-[11px] 2xl:text-[13px] font-bold text-white uppercase ml-2 tracking-widest drop-shadow-md">{w.firstName}</label>
-                <div className="relative group">
-                  <Type className="absolute left-5 2xl:left-6 top-1/2 -translate-y-1/2 h-4 w-4 2xl:h-5 2xl:w-5 text-slate-400 group-focus-within:text-white transition-colors duration-300 z-10" />
-                  <input type="text" required className="block w-full pl-12 2xl:pl-14 pr-6 py-4 2xl:py-5 bg-black/40 border border-white/10 focus:bg-[#8756FA]/10 rounded-[2rem] text-white focus:ring-2 focus:ring-[#8756FA]/50 focus:border-[#8756FA] transition-all duration-300 shadow-[inset_0_2px_10px_rgba(0,0,0,0.5)] focus:shadow-[0_0_25px_rgba(135,86,250,0.4),inset_0_2px_10px_rgba(0,0,0,0.5)] outline-none font-bold text-base 2xl:text-lg placeholder-slate-500" placeholder={w.placeholderFirst} value={firstName} onChange={(e) => setFirstName(capitalize(e.target.value))} />
-                </div>
-              </motion.div>
-              <motion.div variants={itemVariants} className="space-y-1.5 2xl:space-y-2">
-                <label className="text-[11px] 2xl:text-[13px] font-bold text-white uppercase ml-2 tracking-widest drop-shadow-md">{w.lastName}</label>
-                <div className="relative group">
-                  <SquareUser className="absolute left-5 2xl:left-6 top-1/2 -translate-y-1/2 h-4 w-4 2xl:h-5 2xl:w-5 text-slate-400 group-focus-within:text-white transition-colors duration-300 z-10" />
-                  <input type="text" required className="block w-full pl-12 2xl:pl-14 pr-6 py-4 2xl:py-5 bg-black/40 border border-white/10 focus:bg-[#8756FA]/10 rounded-[2rem] text-white focus:ring-2 focus:ring-[#8756FA]/50 focus:border-[#8756FA] transition-all duration-300 shadow-[inset_0_2px_10px_rgba(0,0,0,0.5)] focus:shadow-[0_0_25px_rgba(135,86,250,0.4),inset_0_2px_10px_rgba(0,0,0,0.5)] outline-none font-bold text-base 2xl:text-lg placeholder-slate-500" placeholder={w.placeholderLast} value={lastName} onChange={(e) => setLastName(capitalize(e.target.value))} />
-                </div>
-              </motion.div>
-            </div>
-            
-            <motion.div variants={itemVariants} className="space-y-1.5 2xl:space-y-2">
-              <label className="text-[11px] 2xl:text-[13px] font-bold text-white uppercase ml-2 tracking-widest drop-shadow-md">{w.hospital}</label>
-              <HospitalSearch value={hospital} onChange={setHospital} placeholder={w.placeholderHospital} />
-            </motion.div>
-            
-            <motion.div variants={itemVariants} className="space-y-1.5 2xl:space-y-2">
-              <label className="text-[11px] 2xl:text-[13px] font-bold text-white uppercase ml-2 tracking-widest drop-shadow-md">{w.department}</label>
-              <div className="relative group">
-                <Stethoscope className="absolute left-5 2xl:left-6 top-1/2 -translate-y-1/2 h-4 w-4 2xl:h-5 2xl:w-5 text-slate-400 group-focus-within:text-white transition-colors duration-300 z-10" />
-                <input type="text" required className="block w-full pl-12 2xl:pl-14 pr-6 py-4 2xl:py-5 bg-black/40 border border-white/10 focus:bg-[#FF8731]/10 rounded-[2rem] text-white focus:ring-2 focus:ring-[#FF8731]/50 focus:border-[#FF8731] transition-all duration-300 shadow-[inset_0_2px_10px_rgba(0,0,0,0.5)] focus:shadow-[0_0_25px_rgba(255,135,49,0.3),inset_0_2px_10px_rgba(0,0,0,0.5)] outline-none font-bold text-base 2xl:text-lg placeholder-slate-500" placeholder={w.placeholderDept} value={department} onChange={(e) => setDepartment(capitalize(e.target.value))} />
-              </div>
-            </motion.div>
-
-            <motion.div variants={itemVariants} className="space-y-2 2xl:space-y-2 pt-2 2xl:pt-4">
-              <label className="text-[11px] 2xl:text-[13px] font-bold text-white uppercase ml-2 tracking-widest drop-shadow-md block text-left">{w.patientProfile}</label>
-              <div className="grid grid-cols-2 gap-4 2xl:gap-5">
-                <label className={`relative overflow-hidden flex flex-col items-center justify-center pb-3 2xl:pb-4 aspect-square border rounded-full cursor-pointer transition-all duration-500 group ${patientType === 'pediatria' ? 'border-[#8756FA] ring-2 ring-[#8756FA] shadow-[0_0_30px_rgba(135,86,250,0.5)] scale-[1.03]' : 'border-white/10 hover:border-white/30 hover:bg-white/5'}`}>
-                  <input type="radio" name="patientType" value="pediatria" className="hidden" onChange={(e) => setPatientType(e.target.value)} />
-                  <img src="/images/profilo-pediatria.png" alt="Profilo Pediatria" className={`absolute inset-0 w-full h-full object-cover transition-all duration-500 ${patientType === 'pediatria' ? 'opacity-100 scale-105' : 'opacity-40 grayscale group-hover:opacity-60 group-hover:grayscale-0'}`} />
-                  <div className={`absolute inset-0 transition-colors duration-500 ${patientType === 'pediatria' ? 'bg-gradient-to-t from-[#03091B] via-[#8756FA]/60 to-transparent' : 'bg-gradient-to-t from-[#03091B] via-black/50 to-transparent group-hover:from-[#03091B]/90'}`}></div>
-                  <span className={`relative z-10 font-black text-lg 2xl:text-xl tracking-tight transition-colors mt-auto ${patientType === 'pediatria' ? 'text-white drop-shadow-[0_2px_10px_rgba(0,0,0,1)]' : 'text-slate-300 drop-shadow-md group-hover:text-white'}`}>{w.pediatria}</span>
-                </label>
-                
-                <label className={`relative overflow-hidden flex flex-col items-center justify-center pb-3 2xl:pb-4 aspect-square border rounded-full cursor-pointer transition-all duration-500 group ${patientType === 'adulti' ? 'border-[#FF8731] ring-2 ring-[#FF8731] shadow-[0_0_30px_rgba(255,135,49,0.5)] scale-[1.03]' : 'border-white/10 hover:border-white/30 hover:bg-white/5'}`}>
-                  <input type="radio" name="patientType" value="adulti" className="hidden" onChange={(e) => setPatientType(e.target.value)} />
-                  <img src="/images/profilo-adulti.png" alt="Profilo Adulti" className={`absolute inset-0 w-full h-full object-cover transition-all duration-500 ${patientType === 'adulti' ? 'opacity-100 scale-105' : 'opacity-40 grayscale group-hover:opacity-60 group-hover:grayscale-0'}`} />
-                  <div className={`absolute inset-0 transition-colors duration-500 ${patientType === 'adulti' ? 'bg-gradient-to-t from-[#03091B] via-[#FF8731]/60 to-transparent' : 'bg-gradient-to-t from-[#03091B] via-black/50 to-transparent group-hover:from-[#03091B]/90'}`}></div>
-                  <span className={`relative z-10 font-black text-lg 2xl:text-xl tracking-tight transition-colors mt-auto ${patientType === 'adulti' ? 'text-white drop-shadow-[0_2px_10px_rgba(0,0,0,1)]' : 'text-slate-300 drop-shadow-md group-hover:text-white'}`}>{w.adulti}</span>
-                </label>
-              </div>
-            </motion.div>
-
-            <motion.button 
-              variants={itemVariants}
-              whileHover={{ scale: 1.03 }}
-              whileTap={{ scale: 0.97 }}
-              type="submit" 
-              className="w-full py-4 2xl:py-6 mt-6 2xl:mt-10 bg-gradient-to-r from-[#8756FA] to-[#FF8731] text-white font-black rounded-[2.5rem] shadow-[0_15px_40px_-10px_rgba(135,86,250,0.8)] hover:shadow-[0_20px_60px_-10px_rgba(255,135,49,1)] transition-all flex items-center justify-center overflow-hidden relative group"
-            >
-              <div className="absolute inset-0 bg-white/30 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700 ease-in-out skew-x-12"></div>
-              <span className="relative z-10 flex items-center gap-3 text-xl 2xl:text-2xl tracking-wide drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]">{w.submit} <ArrowRight className="w-6 h-6 2xl:w-7 2xl:h-7" /></span>
-            </motion.button>
-          </form>
-          
+      {/* Header */}
+      <header className="relative z-20 grid grid-cols-3 items-center px-5 sm:px-8 lg:px-12 pt-5 sm:pt-8">
+        <div />
+        <motion.div
+          initial={{ opacity: 0, y: -8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+          className="justify-self-center"
+        >
+          <img
+            src="/images/logos/logo esteso png.png"
+            alt="Lemons in the room"
+            className="h-10 sm:h-12 w-auto object-contain drop-shadow-[0_8px_20px_rgba(255,135,49,0.30)]"
+          />
         </motion.div>
-      </div>
+        <motion.div initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.5 }} className="justify-self-end">
+          <LangPicker />
+        </motion.div>
+      </header>
+
+      {/* Main */}
+      <main className="relative z-10 flex items-center justify-center px-4 sm:px-6 lg:px-12 py-8 sm:py-10 lg:py-14 min-h-[calc(100dvh-80px)]">
+        <motion.div
+          variants={container}
+          initial="hidden"
+          animate="visible"
+          className="w-full max-w-[1180px] grid grid-cols-1 lg:grid-cols-[1.05fr_1fr] gap-6 lg:gap-8 items-stretch"
+        >
+          <BrandPanel t={t} />
+
+          {/* Form panel */}
+          <motion.section
+            variants={item}
+            className="relative overflow-hidden rounded-[2rem] lg:rounded-[2.5rem] bg-[#03091B]/55 backdrop-blur-[40px] border border-white/[0.12] shadow-[0_30px_80px_-20px_rgba(3,9,27,0.6)] p-6 sm:p-8 lg:p-10"
+          >
+            <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/25 to-transparent pointer-events-none" />
+            <div className="absolute -top-24 left-1/2 -translate-x-1/2 w-[300px] h-[300px] rounded-full bg-[#FF8731] opacity-[0.10] blur-[80px] pointer-events-none" />
+
+            {/* Mobile logo */}
+            <div className="lg:hidden flex justify-center mb-6 relative z-10">
+              <img src="/images/logo-character-photoroom.png" alt="Lemons" className="h-32 object-contain drop-shadow-[0_20px_20px_rgba(0,0,0,0.6)]" />
+            </div>
+
+            {/* Heading */}
+            <motion.div variants={item} className="relative z-10 mb-6 lg:mb-8 flex flex-col items-center">
+              <span className="inline-flex items-center gap-2 pl-1 pr-3 py-1 rounded-full bg-[#FF8731]/12 border border-[#FF8731]/30 mb-4">
+                <img src="/images/logos/logo png.png" alt="" aria-hidden="true" className="w-4 h-4 object-contain" />
+                <span className="text-[10px] font-black tracking-[0.18em] uppercase text-[#FF9E54]">{w.badge}</span>
+              </span>
+              <h2 className="font-serif font-black text-white text-[42px] sm:text-[52px] leading-[1] tracking-[-0.035em] text-center">
+                {w.title}
+              </h2>
+              <p className="mt-3 text-slate-300 text-[14px] sm:text-[15px] font-medium leading-relaxed max-w-[360px] text-center">
+                {w.description}
+              </p>
+            </motion.div>
+
+            {/* Form */}
+            <form onSubmit={handleSubmit} className="relative z-10 space-y-4">
+              <motion.div variants={item} className="grid grid-cols-2 gap-3">
+                <Field icon={Type} label={w.firstName} placeholder={w.placeholderFirst} value={firstName} onChange={setFirstName} accent="#8756FA" />
+                <Field icon={SquareUser} label={w.lastName} placeholder={w.placeholderLast} value={lastName} onChange={setLastName} accent="#8756FA" />
+              </motion.div>
+
+              <motion.div variants={item} className="space-y-2">
+                <label className="block text-[10.5px] font-bold text-slate-400 uppercase ml-1 tracking-[0.18em]">{w.hospital}</label>
+                <HospitalSearch value={hospital} onChange={setHospital} placeholder={w.placeholderHospital} />
+              </motion.div>
+
+              <motion.div variants={item}>
+                <Field icon={Stethoscope} label={w.department} placeholder={w.placeholderDept} value={department} onChange={setDepartment} accent="#FF8731" />
+              </motion.div>
+
+              {/* Patient profile */}
+              <motion.div variants={item} className="pt-1">
+                <label className="block text-[10.5px] font-bold text-slate-400 uppercase ml-1 tracking-[0.18em] mb-3">{w.patientProfile}</label>
+                <div className="grid grid-cols-2 gap-3 sm:gap-4">
+                  {[
+                    { id: 'pediatria', label: w.pediatria, accent: '#8756FA', img: '/images/profilo-pediatria.png' },
+                    { id: 'adulti',    label: w.adulti,    accent: '#FF8731', img: '/images/profilo-adulti.png'    },
+                  ].map(p => {
+                    const sel = patientType === p.id;
+                    return (
+                      <motion.label
+                        key={p.id}
+                        whileHover={{ scale: sel ? 1.03 : 1.02 }}
+                        whileTap={{ scale: 0.97 }}
+                        className="relative aspect-square rounded-full overflow-hidden cursor-pointer"
+                        style={{
+                          border: sel ? `2px solid ${p.accent}` : '1px solid rgba(255,255,255,0.10)',
+                          boxShadow: sel ? `0 0 0 4px ${p.accent}25, 0 12px 40px -10px ${p.accent}99` : '0 8px 24px -10px rgba(0,0,0,0.6)',
+                        }}
+                      >
+                        <input type="radio" name="patientType" value={p.id} className="hidden" onChange={(e) => { audio.playClick(); setPatientType(e.target.value); }} />
+                        <img src={p.img} alt={p.label} className={`absolute inset-0 w-full h-full object-cover transition-all duration-500 ${sel ? 'opacity-100 scale-105' : 'opacity-40 grayscale'}`} />
+                        <div
+                          className="absolute inset-0 transition-opacity duration-500"
+                          style={{ background: sel ? `linear-gradient(to top, #03091B 5%, ${p.accent}aa 55%, transparent 100%)` : 'linear-gradient(to top, #03091B 5%, rgba(3,9,27,0.55) 55%, transparent 100%)' }}
+                        />
+                        <span
+                          className={`absolute left-0 right-0 bottom-4 sm:bottom-5 text-center font-serif font-black tracking-tight transition-colors duration-300 ${sel ? 'text-white' : 'text-slate-200'}`}
+                          style={{ fontSize: 'clamp(15px, 4vw, 19px)', textShadow: '0 2px 12px rgba(0,0,0,0.9)' }}
+                        >
+                          {p.label}
+                        </span>
+                      </motion.label>
+                    );
+                  })}
+                </div>
+              </motion.div>
+
+              {/* CTA */}
+              <motion.div variants={item} className="pt-3">
+                <motion.button
+                  type="submit"
+                  whileHover={canSubmit ? { scale: 1.015, y: -1 } : {}}
+                  whileTap={canSubmit ? { scale: 0.98 } : {}}
+                  transition={{ type: 'spring', stiffness: 400, damping: 22 }}
+                  disabled={!canSubmit}
+                  className="group relative w-full h-14 rounded-2xl overflow-hidden font-bold text-[16px] tracking-tight text-white transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                  style={{
+                    background: canSubmit ? 'linear-gradient(90deg, #8756FA 0%, #B385FF 50%, #FF8731 100%)' : 'rgba(255,255,255,0.06)',
+                    boxShadow: canSubmit ? '0 15px 40px -10px rgba(255,135,49,0.5), 0 8px 24px -8px rgba(135,86,250,0.5), inset 0 1px 0 rgba(255,255,255,0.3)' : 'none',
+                  }}
+                >
+                  {canSubmit && <span className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-[900ms] ease-out bg-gradient-to-r from-transparent via-white/30 to-transparent skew-x-12" />}
+                  <span className="relative z-10 flex items-center justify-center gap-2.5">
+                    {w.submit}
+                    <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-0.5" strokeWidth={2.5} />
+                  </span>
+                </motion.button>
+                <p className="text-center text-slate-400 text-[11px] mt-3 font-medium flex items-center justify-center gap-1.5">
+                  <ShieldCheck className="w-3 h-3 text-[#FF8731]" /> {w.badge}
+                </p>
+              </motion.div>
+            </form>
+          </motion.section>
+        </motion.div>
+      </main>
     </motion.div>
   );
 };
+
 export default Welcome;
