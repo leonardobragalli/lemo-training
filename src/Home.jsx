@@ -74,7 +74,7 @@ const Home = () => {
 
       <div className="max-w-[1200px] 2xl:max-w-7xl mx-auto relative z-10 mb-20 md:mb-0">
         {/* Hero Header */}
-        <div className="mb-4 lg:mb-8 2xl:mb-12 relative z-10 bg-[#03091B]/20 dark:bg-[#03091B]/40 backdrop-blur-[40px] p-4 lg:p-6 2xl:p-12 rounded-[1.5rem] lg:rounded-[2rem] 2xl:rounded-[3.5rem] border-t border-l border-white/20 border-r border-b border-white/5 shadow-[0_20px_60px_-10px_rgba(0,0,0,0.3)] w-full flex flex-col justify-center">
+        <div className="mb-6 lg:mb-8 2xl:mb-12 relative z-10 bg-[#03091B]/20 dark:bg-[#03091B]/40 backdrop-blur-[40px] p-5 lg:p-6 2xl:p-12 rounded-[1.5rem] lg:rounded-[2rem] 2xl:rounded-[3.5rem] border-t border-l border-white/20 border-r border-b border-white/5 shadow-[0_20px_60px_-10px_rgba(0,0,0,0.3)] w-full flex flex-col justify-center">
           <motion.div initial={{ scale: 0, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ type: "spring", stiffness: 200, damping: 20 }} className="inline-flex items-center gap-2 px-3 py-1.5 2xl:px-4 2xl:py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 mb-2 2xl:mb-4 shadow-xl shadow-black/5 w-fit">
             <Sparkles className="w-3 h-3 2xl:w-4 2xl:h-4 text-[#FF8731]" />
             <span className="text-[9px] lg:text-[10px] 2xl:text-sm font-bold tracking-widest uppercase text-white drop-shadow-md">{h.badge}</span>
@@ -97,13 +97,13 @@ const Home = () => {
           {/* Main Progress Dashboard - Epic Glassmorphism */}
           <motion.div
             variants={item}
-            className="lg:col-span-12 group relative h-full bg-[#03091B]/20 dark:bg-[#03091B]/40 backdrop-blur-[40px] rounded-[2rem] 2xl:rounded-[3.5rem] p-5 lg:p-10 2xl:p-14 shadow-[0_20px_60px_-10px_rgba(0,0,0,0.3)] border-t border-l border-white/20 border-r border-b border-white/5 flex flex-row md:flex-row items-center gap-5 lg:gap-10 2xl:gap-12"
+            className="lg:col-span-12 group relative h-full bg-[#03091B]/20 dark:bg-[#03091B]/40 backdrop-blur-[40px] rounded-[2rem] 2xl:rounded-[3.5rem] p-8 lg:p-10 2xl:p-14 shadow-[0_20px_60px_-10px_rgba(0,0,0,0.3)] border-t border-l border-white/20 border-r border-b border-white/5 flex flex-col md:flex-row items-center gap-8 lg:gap-10 2xl:gap-12"
           >
 
             <div className="contents">
 
               {/* Solid Matte 3D Skeuomorphic Progress Ring */}
-              <div className="relative w-32 h-32 md:w-56 lg:w-56 md:h-56 lg:h-56 2xl:w-64 2xl:h-64 shrink-0 flex items-center justify-center z-10">
+              <div className="relative w-48 h-48 lg:w-56 lg:h-56 2xl:w-64 2xl:h-64 shrink-0 flex items-center justify-center z-10">
                 <motion.div 
                   animate={{ rotateY: [0, 5, -5, 0], rotateX: [0, 5, -5, 0] }} 
                   transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
@@ -170,7 +170,7 @@ const Home = () => {
                       initial={{ scale: 0, opacity: 0 }} 
                       animate={{ scale: 1, opacity: 1 }} 
                       transition={{ delay: 0.2, type: "spring", stiffness: 120 }} 
-                      className="text-3xl md:text-4xl lg:text-5xl 2xl:text-6xl font-black font-serif text-white tracking-normal flex items-baseline"
+                      className="text-4xl lg:text-5xl 2xl:text-6xl font-black font-serif text-white tracking-normal flex items-baseline"
                       style={{ textShadow: '0 8px 16px rgba(0,0,0,0.9), 0 2px 4px rgba(0,0,0,0.6)' }}
                     >
                       {progressPercentage}
@@ -180,15 +180,15 @@ const Home = () => {
                 </motion.div>
               </div>
               
-              <div className="flex-1 text-left relative z-10">
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-xs 2xl:text-sm font-bold text-white mb-2 2xl:mb-4 border border-white/10 backdrop-blur-md shadow-inner">
+              <div className="flex-1 text-center md:text-left relative z-10">
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-xs 2xl:text-sm font-bold text-white mb-3 2xl:mb-4 border border-white/10 backdrop-blur-md shadow-inner">
                   <Target className="w-3 h-3 2xl:w-4 2xl:h-4 text-[#FF8731]" />
                   {completedCount} {h.modulesOf} {totalLessons} {h.modulesCompleted}
                 </div>
-                <h2 className="text-2xl md:text-3xl lg:text-4xl 2xl:text-5xl font-black font-serif text-white mb-2 md:mb-4 2xl:mb-6 leading-tight drop-shadow-sm">
+                <h2 className="text-3xl lg:text-4xl 2xl:text-5xl font-black font-serif text-white mb-4 2xl:mb-6 leading-tight drop-shadow-sm">
                   {hasFinishedAll ? h.statusDone : h.statusProgress}
                 </h2>
-                <p className="hidden md:block text-slate-300 text-base 2xl:text-lg mb-6 2xl:mb-8 leading-relaxed font-medium">
+                <p className="text-slate-300 text-base 2xl:text-lg mb-6 2xl:mb-8 leading-relaxed font-medium">
                   {hasFinishedAll ? h.descDone : h.descProgress}
                 </p>
 
@@ -196,7 +196,7 @@ const Home = () => {
                   <motion.button
                     whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}
                     onClick={() => handleNav(`/modules?mode=${mode}`)}
-                    className="w-full md:w-auto px-6 md:px-8 2xl:px-10 py-4 md:py-5 2xl:py-6 bg-gradient-to-r from-[#8756FA] to-[#FF8731] text-white rounded-[2rem] 2xl:rounded-[2.5rem] font-black text-base md:text-lg 2xl:text-xl flex items-center justify-center gap-3 2xl:gap-4 transition-all shadow-[0_15px_40px_-10px_rgba(135,86,250,0.8),inset_0_2px_4px_rgba(255,255,255,0.3)] hover:shadow-[0_20px_60px_-10px_rgba(255,135,49,1),inset_0_2px_4px_rgba(255,255,255,0.5)]"
+                    className="w-full md:w-auto px-8 2xl:px-10 py-5 2xl:py-6 bg-gradient-to-r from-[#8756FA] to-[#FF8731] text-white rounded-[2rem] 2xl:rounded-[2.5rem] font-black text-lg 2xl:text-xl flex items-center justify-center gap-3 2xl:gap-4 transition-all shadow-[0_15px_40px_-10px_rgba(135,86,250,0.8),inset_0_2px_4px_rgba(255,255,255,0.3)] hover:shadow-[0_20px_60px_-10px_rgba(255,135,49,1),inset_0_2px_4px_rgba(255,255,255,0.5)]"
                   >
                     <span className="relative z-10 drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]">{h.goModules}</span>
                     <div className="w-6 h-6 2xl:w-8 2xl:h-8 rounded-full bg-white/20 flex items-center justify-center relative z-10 transition-colors duration-300 border border-white/30 shadow-inner">
@@ -207,7 +207,7 @@ const Home = () => {
                   <motion.button
                     whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}
                     onClick={downloadCertificate}
-                    className="w-full md:w-auto px-6 md:px-8 2xl:px-10 py-4 md:py-5 2xl:py-6 bg-gradient-to-r from-[#FF8731] to-[#FF9E54] text-white rounded-[2rem] 2xl:rounded-[2.5rem] font-black text-base md:text-lg 2xl:text-xl flex items-center justify-center gap-3 2xl:gap-4 transition-all shadow-[0_15px_30px_rgba(255,135,49,0.5),inset_0_2px_10px_rgba(255,255,255,0.4)] hover:shadow-[0_20px_40px_rgba(255,135,49,0.8),inset_0_2px_10px_rgba(255,255,255,0.6)] border border-[#FF8731]/50"
+                    className="w-full md:w-auto px-8 2xl:px-10 py-5 2xl:py-6 bg-gradient-to-r from-[#FF8731] to-[#FF9E54] text-white rounded-[2rem] 2xl:rounded-[2.5rem] font-black text-lg 2xl:text-xl flex items-center justify-center gap-3 2xl:gap-4 transition-all shadow-[0_15px_30px_rgba(255,135,49,0.5),inset_0_2px_10px_rgba(255,255,255,0.4)] hover:shadow-[0_20px_40px_rgba(255,135,49,0.8),inset_0_2px_10px_rgba(255,255,255,0.6)] border border-[#FF8731]/50"
                   >
                     <Award className="w-6 h-6 2xl:w-7 2xl:h-7 relative z-10 drop-shadow-md" />
                     <span className="relative z-10 drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] tracking-wide">{h.getCert}</span>
