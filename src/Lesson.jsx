@@ -19,6 +19,7 @@ const Lesson = ({ lesson, mode, onComplete, autoplay = false }) => {
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
 
   const playerRef = useRef(null);
+  const videoContainerRef = useRef(null);
 
   const nextSlide = () => { 
     if (lesson && currentSlideIndex < lesson.slides.length - 1) { audio.playClick(); setCurrentSlideIndex(prev => prev + 1); } else audio.playError(); 
@@ -42,15 +43,20 @@ const Lesson = ({ lesson, mode, onComplete, autoplay = false }) => {
   useEffect(() => {
     if (!autoplay || !playerRef.current) return;
     const timer = setTimeout(() => {
-      const el = playerRef.current;
-      if (!el) return;
-      el.play().catch(() => {});
-      if (el.requestFullscreen) el.requestFullscreen();
-      else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
-      else if (el.webkitEnterFullscreen) el.webkitEnterFullscreen();
+      playerRef.current?.play().catch(() => {});
     }, 2000);
     return () => clearTimeout(timer);
   }, [autoplay]);
+
+  const enterFullscreen = () => {
+    const container = videoContainerRef.current;
+    const video = playerRef.current;
+    if (!container && !video) return;
+    const el = container || video;
+    if (el.requestFullscreen) el.requestFullscreen().catch(() => {});
+    else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
+    else if (video?.webkitEnterFullscreen) video.webkitEnterFullscreen();
+  };
 
   const handleTimeUpdate = () => {
     if (!playerRef.current || hasWatched) return;
@@ -136,7 +142,7 @@ const Lesson = ({ lesson, mode, onComplete, autoplay = false }) => {
         
         {/* Video Player Section - Spatial Glass Screen */}
         <div className="lg:w-[60%] xl:w-2/3 relative flex flex-col">
-          <div className="w-full relative group shadow-2xl shrink-0 bg-black/90 dark:bg-black overflow-hidden">
+          <div ref={videoContainerRef} className="w-full relative group shadow-2xl shrink-0 bg-black/90 dark:bg-black overflow-hidden">
             <video
               ref={playerRef}
               src={lesson.videoUrl}
@@ -164,13 +170,7 @@ const Lesson = ({ lesson, mode, onComplete, autoplay = false }) => {
               </motion.div>
             )}
             <button
-              onClick={() => {
-                const el = playerRef.current;
-                if (!el) return;
-                if (el.requestFullscreen) el.requestFullscreen();
-                else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
-                else if (el.webkitEnterFullscreen) el.webkitEnterFullscreen();
-              }}
+              onClick={(e) => { e.stopPropagation(); enterFullscreen(); }}
               className="absolute bottom-4 right-4 z-20 w-9 h-9 bg-black/60 backdrop-blur-xl border border-white/10 rounded-full flex items-center justify-center text-white hover:bg-white/20 transition-all duration-200 shadow-lg"
             >
               <Maximize className="w-4 h-4" />
