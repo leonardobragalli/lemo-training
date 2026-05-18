@@ -77,17 +77,22 @@ const HospitalSearch = ({ value, onChange, placeholder }) => {
     if (!q || q.length < 3) { setResults([]); setOpen(false); return; }
     setLoading(true);
     try {
-      const res = await fetch(
-        `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(q)}&countrycode=it,es&format=json&limit=6&addressdetails=1`,
-        { headers: { 'Accept-Language': 'it', 'User-Agent': 'LemoTraining/1.0' } }
-      );
+      const esc = q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      // Italy bbox: 35.4,6.6,47.1,18.6 — Spain mainland+Balearics: 36,-9.3,43.8,4.3
+      const oq = `[out:json][timeout:20];
+(
+  node["amenity"="hospital"]["name"~"${esc}",i](35.4,6.6,47.1,18.6);
+  way["amenity"="hospital"]["name"~"${esc}",i](35.4,6.6,47.1,18.6);
+  relation["amenity"="hospital"]["name"~"${esc}",i](35.4,6.6,47.1,18.6);
+  node["amenity"="hospital"]["name"~"${esc}",i](36,-9.3,43.8,4.3);
+  way["amenity"="hospital"]["name"~"${esc}",i](36,-9.3,43.8,4.3);
+  relation["amenity"="hospital"]["name"~"${esc}",i](36,-9.3,43.8,4.3);
+);
+out center 8;`;
+      const res = await fetch('https://overpass-api.de/api/interpreter', { method: 'POST', body: oq });
       const data = await res.json();
-      const filtered = data.filter(item =>
-        (item.class === 'amenity' && item.type === 'hospital') ||
-        item.class === 'healthcare'
-      );
-      setResults(filtered);
-      setOpen(filtered.length > 0);
+      setResults(data.elements || []);
+      setOpen((data.elements || []).length > 0);
     } catch {
       setResults([]);
     } finally {
@@ -105,7 +110,7 @@ const HospitalSearch = ({ value, onChange, placeholder }) => {
   };
 
   const handleSelect = (item) => {
-    const name = item.name || item.display_name.split(',')[0].trim();
+    const name = item.tags?.name || '';
     setQuery(name);
     onChange(name);
     setOpen(false);
@@ -135,18 +140,24 @@ const HospitalSearch = ({ value, onChange, placeholder }) => {
             transition={{ duration: 0.15 }}
             className="absolute top-full left-0 right-0 mt-2 bg-[#03091B]/95 backdrop-blur-xl border border-white/10 rounded-[1.5rem] overflow-hidden shadow-2xl z-50 max-h-[240px] overflow-y-auto"
           >
-            {results.map((item, i) => (
-              <li key={item.place_id || i}>
-                <button
-                  type="button"
-                  onMouseDown={() => handleSelect(item)}
-                  className="flex flex-col px-5 py-3 w-full text-left hover:bg-white/5 transition-colors border-b border-white/5 last:border-0"
-                >
-                  <span className="text-white font-bold text-sm truncate">{item.name || item.display_name.split(',')[0].trim()}</span>
-                  <span className="text-slate-400 text-xs truncate mt-0.5">{item.display_name.split(',').slice(1, 3).join(',').trim()}</span>
-                </button>
-              </li>
-            ))}
+            {results.map((item, i) => {
+              const name = item.tags?.name || '';
+              const city = item.tags?.['addr:city'] || item.tags?.['addr:municipality'] || '';
+              const province = item.tags?.['addr:province'] || '';
+              const sub = [city, province].filter(Boolean).join(', ');
+              return (
+                <li key={item.id || i}>
+                  <button
+                    type="button"
+                    onMouseDown={() => handleSelect(item)}
+                    className="flex flex-col px-5 py-3 w-full text-left hover:bg-white/5 transition-colors border-b border-white/5 last:border-0"
+                  >
+                    <span className="text-white font-bold text-sm truncate">{name}</span>
+                    {sub && <span className="text-slate-400 text-xs truncate mt-0.5">{sub}</span>}
+                  </button>
+                </li>
+              );
+            })}
           </motion.ul>
         )}
       </AnimatePresence>
