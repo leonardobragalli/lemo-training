@@ -13,6 +13,7 @@ const Lesson = ({ lesson, mode, onComplete, autoplay = false }) => {
   const [showQuiz, setShowQuiz] = useState(false);
   const [quizPassed, setQuizPassed] = useState(false);
   const [maxTime, setMaxTime] = useState(0);
+  const [progress, setProgress] = useState(0);
 
   // Stati per le Slide
   const [isSlideModalOpen, setIsSlideModalOpen] = useState(false);
@@ -43,44 +44,36 @@ const Lesson = ({ lesson, mode, onComplete, autoplay = false }) => {
   useEffect(() => {
     if (!autoplay || !playerRef.current) return;
     const timer = setTimeout(() => {
-      playerRef.current?.play().catch(() => {});
+      const video = playerRef.current;
+      if (!video) return;
+      video.play().catch(() => {});
+      setTimeout(() => enterFullscreen(), 300);
     }, 2000);
     return () => clearTimeout(timer);
-  }, [autoplay]);
+  }, [autoplay]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const enterFullscreen = () => {
     const video = playerRef.current;
-    const container = videoContainerRef.current;
     if (!video) return;
-    // Try video element first (required for iOS Safari)
-    if (video.webkitEnterFullscreen) {
-      video.webkitEnterFullscreen();
-      return;
-    }
-    // For all other browsers use the container div
-    const el = container || video;
-    if (el.requestFullscreen) el.requestFullscreen();
-    else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
-    else if (el.mozRequestFullScreen) el.mozRequestFullScreen();
-    else if (el.msRequestFullscreen) el.msRequestFullscreen();
+    if (video.webkitEnterFullscreen) { video.webkitEnterFullscreen(); return; }
+    if (video.requestFullscreen) { video.requestFullscreen(); return; }
+    if (video.webkitRequestFullscreen) { video.webkitRequestFullscreen(); return; }
+    if (video.mozRequestFullScreen) { video.mozRequestFullScreen(); return; }
+    if (video.msRequestFullscreen) { video.msRequestFullscreen(); return; }
   };
 
   const handleTimeUpdate = () => {
-    if (!playerRef.current || hasWatched) return;
-
+    if (!playerRef.current) return;
     const currentTime = playerRef.current.currentTime;
     const duration = playerRef.current.duration;
-
-    if (currentTime > maxTime) {
-      setMaxTime(currentTime);
-    }
-
-    if (currentTime > maxTime + 2 && !hasWatched) {
+    if (duration > 0) setProgress(currentTime / duration);
+    if (hasWatched) return;
+    if (currentTime > maxTime) setMaxTime(currentTime);
+    if (currentTime > maxTime + 2) {
       playerRef.current.currentTime = maxTime;
       audio.playError();
     }
-
-    if (duration > 0 && currentTime > duration * 0.95 && !showQuiz && !hasWatched) {
+    if (duration > 0 && currentTime > duration * 0.95 && !showQuiz) {
       setShowQuiz(true);
     }
   };
@@ -149,30 +142,36 @@ const Lesson = ({ lesson, mode, onComplete, autoplay = false }) => {
         
         {/* Video Player Section - Spatial Glass Screen */}
         <div className="lg:w-[60%] xl:w-2/3 relative flex flex-col">
-          <div ref={videoContainerRef} className="w-full relative group shadow-2xl shrink-0 bg-black/90 dark:bg-black overflow-hidden">
+          <div ref={videoContainerRef} className="w-full relative shadow-2xl shrink-0 bg-black overflow-hidden">
             <video
               ref={playerRef}
               src={lesson.videoUrl}
-              controls
-              controlsList="nodownload noremoteplayback"
               onContextMenu={(e) => e.preventDefault()}
               onTimeUpdate={handleTimeUpdate}
               onEnded={handleEnded}
               onRateChange={() => { if (!hasWatched && mode === 'guided' && playerRef.current) { playerRef.current.playbackRate = 1; } }}
-              className="w-full h-auto block"
+              onClick={() => { playerRef.current?.paused ? playerRef.current.play() : playerRef.current?.pause(); }}
+              className="w-full h-auto block cursor-pointer"
             />
+            {/* Mandatory view badge */}
             {!hasWatched && mode === 'guided' && (
-              <motion.div initial={{ y: -20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} className="absolute top-4 left-4 lg:top-5 lg:left-5 2xl:top-6 2xl:left-6 bg-black/60 backdrop-blur-xl border border-white/10 text-white text-[10px] lg:text-xs px-3 py-1.5 lg:px-4 lg:py-2 rounded-full font-bold flex items-center gap-2 lg:gap-3 pointer-events-none z-20 shadow-lg">
+              <motion.div initial={{ y: -20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} className="absolute top-4 left-4 lg:top-5 lg:left-5 bg-black/60 backdrop-blur-xl border border-white/10 text-white text-[10px] lg:text-xs px-3 py-1.5 lg:px-4 lg:py-2 rounded-full font-bold flex items-center gap-2 lg:gap-3 pointer-events-none z-20 shadow-lg">
                 <AlertTriangle className="w-3 h-3 lg:w-4 lg:h-4 text-[#FF8731]" />
                 <span className="tracking-wide uppercase">{l.mandatoryView}</span>
               </motion.div>
             )}
-            <button
-              onClick={(e) => { e.stopPropagation(); enterFullscreen(); }}
-              className="absolute bottom-4 right-4 z-20 w-9 h-9 bg-black/60 backdrop-blur-xl border border-white/10 rounded-full flex items-center justify-center text-white hover:bg-white/20 transition-all duration-200 shadow-lg"
-            >
-              <Maximize className="w-4 h-4" />
-            </button>
+            {/* Bottom bar: progress + fullscreen */}
+            <div className="absolute bottom-0 left-0 right-0 z-20 px-3 pb-3 pt-6 bg-gradient-to-t from-black/70 to-transparent flex items-center gap-3">
+              <div className="flex-1 h-1.5 bg-white/20 rounded-full overflow-hidden">
+                <div className="h-full bg-gradient-to-r from-[#8756FA] to-[#FF8731] rounded-full transition-all duration-200" style={{ width: `${progress * 100}%` }} />
+              </div>
+              <button
+                onClick={(e) => { e.stopPropagation(); enterFullscreen(); }}
+                className="w-8 h-8 bg-white/10 backdrop-blur-md border border-white/20 rounded-full flex items-center justify-center text-white hover:bg-white/30 transition-all duration-200 shrink-0"
+              >
+                <Maximize className="w-3.5 h-3.5" />
+              </button>
+            </div>
           </div>
 
           {/* Desktop: area below video, same bg as sidebar */}
