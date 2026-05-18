@@ -66,7 +66,7 @@ const Home = () => {
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="px-4 pt-8 pb-6 md:px-8 md:pt-12 lg:px-12 lg:pt-16 min-h-screen transition-colors duration-500 relative bg-[#03091B]">
       
       {/* Background Layer Fixed for Mobile/Safari */}
-      <div className="fixed inset-0 bg-cover bg-center z-0 bg-[url('/images/bg-mobile-nature.png')] md:bg-[url('/images/bg-pc.png')]"></div>
+      <div className="fixed inset-0 bg-cover bg-center z-0 bg-[url('/images/bg-mobile-nature.png')] md:bg-[url('/images/bg-pc.png')] pointer-events-none"></div>
 
       {/* Immersive 3D-like Background Elements */}
       <motion.div style={{ y: yParallax, rotate: rotateParallax }} className="fixed top-[10%] right-[5%] w-[40vw] h-[40vw] bg-gradient-to-tr from-[#FF8731]/30 to-transparent rounded-full blur-[100px] pointer-events-none mix-blend-screen z-0"></motion.div>

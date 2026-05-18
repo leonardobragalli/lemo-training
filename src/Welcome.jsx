@@ -118,7 +118,7 @@ const Welcome = () => {
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="min-h-[100dvh] flex flex-col md:flex-row font-sans overflow-y-auto md:overflow-hidden relative bg-[#03091B]">
       
       {/* Background Layer Fixed for Mobile/Safari */}
-      <div className="fixed inset-0 bg-cover bg-center z-0 bg-[url('/images/bg-clouds.png')]"></div>
+      <div className="fixed inset-0 bg-cover bg-center z-0 bg-[url('/images/bg-clouds.png')] pointer-events-none"></div>
 
       {/* Background Ambience - Removed dark overlay so clouds pop */}
       <div className="fixed inset-0 opacity-[0.03] pointer-events-none bg-[url('https://grainy-gradients.vercel.app/noise.svg')] z-0"></div>
