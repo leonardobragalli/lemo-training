@@ -191,7 +191,7 @@ const BrandPanel = () => (
       animate={{ y: 0, opacity: 1 }}
       transition={{ delay: 0.15, duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
       className="font-serif font-black text-[#03091B] leading-[1.02] tracking-[-0.035em] text-[44px] sm:text-[56px] lg:text-[64px] xl:text-[76px]"
-      style={{ WebkitFontSmoothing: 'antialiased', textWrap: 'balance', textShadow: '0 2px 24px rgba(255,255,255,0.45)' }}
+      style={{ WebkitFontSmoothing: 'antialiased', textWrap: 'balance', textShadow: '0 1px 0 rgba(255,255,255,0.9), 0 4px 24px rgba(255,255,255,0.6), 0 8px 40px rgba(255,255,255,0.3)' }}
     >
       Il training<br/>
       <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#FF8731] to-[#FF9E54]">che accoglie</span>
@@ -202,6 +202,7 @@ const BrandPanel = () => (
       animate={{ y: 0, opacity: 1 }}
       transition={{ delay: 0.3, duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
       className="mt-4 lg:mt-6 text-[#03091B]/70 text-[15px] lg:text-[17px] leading-relaxed max-w-[440px] font-bold"
+      style={{ textShadow: '0 1px 8px rgba(255,255,255,0.7), 0 4px 20px rgba(255,255,255,0.4)' }}
     >
       Preparati a vivere la realtà virtuale in reparto.<br/>Un percorso formativo semplice, intuitivo e sicuro.
     </motion.p>
