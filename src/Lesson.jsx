@@ -48,7 +48,7 @@ const Lesson = ({ lesson, mode, onComplete, autoplay = false }) => {
       if (!video) return;
       video.play().catch(() => {});
       setTimeout(() => enterFullscreen(), 300);
-    }, 2000);
+    }, 300);
     return () => clearTimeout(timer);
   }, [autoplay]); // eslint-disable-line react-hooks/exhaustive-deps
 
