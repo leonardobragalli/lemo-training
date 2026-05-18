@@ -188,7 +188,9 @@ const Home = () => {
                 <h2 className="text-3xl lg:text-4xl 2xl:text-5xl font-black font-serif text-white mb-4 2xl:mb-6 leading-tight drop-shadow-sm">
                   {hasFinishedAll ? h.statusDone : h.statusProgress}
                 </h2>
-                <p className="text-slate-300 text-base 2xl:text-lg mb-6 2xl:mb-8 leading-relaxed font-medium">
+
+                {/* Descrizione — solo desktop (prima del bottone) */}
+                <p className="hidden md:block text-slate-300 text-base 2xl:text-lg mb-6 2xl:mb-8 leading-relaxed font-medium">
                   {hasFinishedAll ? h.descDone : h.descProgress}
                 </p>
 
@@ -213,6 +215,11 @@ const Home = () => {
                     <span className="relative z-10 drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] tracking-wide">{h.getCert}</span>
                   </motion.button>
                 )}
+
+                {/* Descrizione — solo mobile (dopo il bottone) */}
+                <p className="md:hidden text-slate-300 text-base leading-relaxed font-medium mt-4">
+                  {hasFinishedAll ? h.descDone : h.descProgress}
+                </p>
               </div>
             </div>
           </motion.div>
