@@ -149,14 +149,14 @@ const Lesson = ({ lesson, mode, onComplete, autoplay = false }) => {
             <video
               ref={playerRef}
               src={lesson.videoUrl}
-              controls={hasWatched || mode === 'full'}
+              controls
               controlsList="nodownload noremoteplayback"
               onContextMenu={(e) => e.preventDefault()}
               onTimeUpdate={handleTimeUpdate}
               onEnded={handleEnded}
               onRateChange={() => { if (!hasWatched && mode === 'guided' && playerRef.current) { playerRef.current.playbackRate = 1; } }}
               onClick={() => { if (!hasWatched && mode === 'guided') { playerRef.current?.paused ? playerRef.current.play() : playerRef.current?.pause(); } }}
-              className="w-full h-auto block cursor-pointer"
+              className={`w-full h-auto block cursor-pointer ${!hasWatched && mode === 'guided' ? 'video-restricted' : ''}`}
             />
             {/* Mandatory view badge — solo se non completato */}
             {!hasWatched && mode === 'guided' && (

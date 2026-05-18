@@ -86,6 +86,16 @@ body.dark {
   display: none; /* Chrome, Safari and Opera */
 }
 
+/* Hide native controls in restricted video mode (guided, unwatched)
+   Controls attribute must still be present for Safari to allow fullscreen */
+.video-restricted::-webkit-media-controls,
+.video-restricted::-webkit-media-controls-enclosure,
+.video-restricted::-webkit-media-controls-panel {
+  display: none !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
 @supports (padding-bottom: env(safe-area-inset-bottom)) {
   .pb-safe {
     padding-bottom: env(safe-area-inset-bottom);
