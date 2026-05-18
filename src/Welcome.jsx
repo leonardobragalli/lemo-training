@@ -163,11 +163,6 @@ const Welcome = () => {
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="min-h-[100dvh] flex flex-col md:flex-row font-sans overflow-y-auto md:overflow-hidden relative bg-[#03091B]">
 
-      {/* Language Picker */}
-      <div className="fixed top-5 right-5 z-50">
-        <WelcomeLangPicker />
-      </div>
-
       {/* Background Layer Fixed for Mobile/Safari */}
       <div className="fixed inset-0 bg-cover bg-center z-0 bg-[url('/images/bg-clouds.png')] pointer-events-none"></div>
 
@@ -211,6 +206,11 @@ const Welcome = () => {
           <div className="md:hidden flex justify-center mb-8 relative z-10">
             <img src="/images/logo-character-photoroom.png" alt="Lemons Logo" className="h-40 object-contain drop-shadow-[0_20px_20px_rgba(0,0,0,0.6)]" />
           </div>
+
+          {/* Language Picker */}
+          <motion.div variants={itemVariants} className="mb-4 flex justify-center relative z-10">
+            <WelcomeLangPicker />
+          </motion.div>
 
           {/* Security Protocol Badge - Moved here for better visibility on all devices */}
           <motion.div variants={itemVariants} className="mb-6 2xl:mb-10 flex items-center justify-center gap-4 bg-white/10 backdrop-blur-3xl p-3 2xl:p-4 rounded-3xl border border-white/10 shadow-lg relative z-10 mx-auto w-fit">
