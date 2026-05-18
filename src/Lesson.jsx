@@ -49,13 +49,13 @@ const Lesson = ({ lesson, mode, onComplete, autoplay = false }) => {
   }, [autoplay]);
 
   const enterFullscreen = () => {
-    const container = videoContainerRef.current;
     const video = playerRef.current;
-    if (!container && !video) return;
-    const el = container || video;
-    if (el.requestFullscreen) el.requestFullscreen().catch(() => {});
-    else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
-    else if (video?.webkitEnterFullscreen) video.webkitEnterFullscreen();
+    if (!video) return;
+    if (video.requestFullscreen) video.requestFullscreen();
+    else if (video.webkitRequestFullscreen) video.webkitRequestFullscreen();
+    else if (video.webkitEnterFullscreen) video.webkitEnterFullscreen();
+    else if (video.mozRequestFullScreen) video.mozRequestFullScreen();
+    else if (video.msRequestFullscreen) video.msRequestFullscreen();
   };
 
   const handleTimeUpdate = () => {
