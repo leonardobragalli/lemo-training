@@ -55,11 +55,21 @@ const Lesson = ({ lesson, mode, onComplete, autoplay = false }) => {
   const enterFullscreen = () => {
     const video = playerRef.current;
     if (!video) return;
-    if (video.webkitEnterFullscreen) { video.webkitEnterFullscreen(); return; }
-    if (video.requestFullscreen) { video.requestFullscreen(); return; }
-    if (video.webkitRequestFullscreen) { video.webkitRequestFullscreen(); return; }
-    if (video.mozRequestFullScreen) { video.mozRequestFullScreen(); return; }
-    if (video.msRequestFullscreen) { video.msRequestFullscreen(); return; }
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+    if (isIOS && video.webkitEnterFullscreen) {
+      // iOS requires video to be playing before fullscreen
+      if (video.paused) {
+        video.play().then(() => video.webkitEnterFullscreen()).catch(() => video.webkitEnterFullscreen());
+      } else {
+        video.webkitEnterFullscreen();
+      }
+      return;
+    }
+    const el = video;
+    if (el.requestFullscreen) el.requestFullscreen().catch(() => {});
+    else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
+    else if (el.mozRequestFullScreen) el.mozRequestFullScreen();
+    else if (el.msRequestFullscreen) el.msRequestFullscreen();
   };
 
   const handleTimeUpdate = () => {
