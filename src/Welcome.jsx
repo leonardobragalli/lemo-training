@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { Stethoscope, ArrowRight, ShieldCheck, Sparkles, Type, SquareUser, Building2, Loader2 } from 'lucide-react';
+import { Stethoscope, ArrowRight, ShieldCheck, Sparkles, Type, SquareUser, Building2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLang } from './LanguageContext';
 import { audio } from './utils/audio';
@@ -57,15 +57,23 @@ const capitalize = (str) => {
   return str.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()).join(' ');
 };
 
+let hospitalsCache = null;
+const loadHospitals = async () => {
+  if (hospitalsCache) return hospitalsCache;
+  const res = await fetch('/hospitals.json');
+  hospitalsCache = await res.json();
+  return hospitalsCache;
+};
+
 const HospitalSearch = ({ value, onChange, placeholder }) => {
   const [query, setQuery] = useState(value || '');
   const [results, setResults] = useState([]);
-  const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
   const debounceRef = useRef(null);
   const containerRef = useRef(null);
 
   useEffect(() => {
+    loadHospitals(); // preload in background
     const handleClick = (e) => {
       if (containerRef.current && !containerRef.current.contains(e.target)) setOpen(false);
     };
@@ -74,41 +82,27 @@ const HospitalSearch = ({ value, onChange, placeholder }) => {
   }, []);
 
   const search = useCallback(async (q) => {
-    if (!q || q.length < 3) { setResults([]); setOpen(false); return; }
-    setLoading(true);
-    try {
-      const res = await fetch(
-        `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(q)}&countrycode=it,es&format=json&limit=10&addressdetails=1`,
-        { headers: { 'Accept-Language': 'it', 'User-Agent': 'LemoTraining/1.0' } }
-      );
-      const data = await res.json();
-      const isHospital = (item) =>
-        (item.class === 'amenity' && ['hospital', 'clinic', 'doctors'].includes(item.type)) ||
-        item.class === 'healthcare' ||
-        (item.class === 'building' && item.type === 'hospital');
-      const sorted = [...data].sort((a, b) => (isHospital(b) ? 1 : 0) - (isHospital(a) ? 1 : 0));
-      setResults(sorted.slice(0, 6));
-      setOpen(sorted.length > 0);
-    } catch {
-      setResults([]);
-    } finally {
-      setLoading(false);
-    }
+    if (!q || q.length < 2) { setResults([]); setOpen(false); return; }
+    const list = await loadHospitals();
+    const lower = q.toLowerCase();
+    const matches = list
+      .filter(h => h.name.toLowerCase().includes(lower))
+      .slice(0, 7);
+    setResults(matches);
+    setOpen(matches.length > 0);
   }, []);
 
   const handleChange = (e) => {
-    const raw = e.target.value;
-    const val = capitalize(raw);
+    const val = e.target.value;
     setQuery(val);
     onChange(val);
     clearTimeout(debounceRef.current);
-    debounceRef.current = setTimeout(() => search(raw), 350);
+    debounceRef.current = setTimeout(() => search(val), 150);
   };
 
   const handleSelect = (item) => {
-    const name = item.name || item.display_name.split(',')[0].trim();
-    setQuery(name);
-    onChange(name);
+    setQuery(item.name);
+    onChange(item.name);
     setOpen(false);
     setResults([]);
   };
@@ -116,12 +110,11 @@ const HospitalSearch = ({ value, onChange, placeholder }) => {
   return (
     <div ref={containerRef} className="relative group">
       <Building2 className="absolute left-5 2xl:left-6 top-1/2 -translate-y-1/2 h-4 w-4 2xl:h-5 2xl:w-5 text-slate-400 group-focus-within:text-white transition-colors duration-300 z-10 pointer-events-none" />
-      {loading && <Loader2 className="absolute right-5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 animate-spin z-10 pointer-events-none" />}
       <input
         type="text"
         required
         autoComplete="off"
-        className="block w-full pl-12 2xl:pl-14 pr-12 py-4 2xl:py-5 bg-black/40 border border-white/10 focus:bg-[#FF8731]/10 rounded-[2rem] text-white focus:ring-2 focus:ring-[#FF8731]/50 focus:border-[#FF8731] transition-all duration-300 shadow-[inset_0_2px_10px_rgba(0,0,0,0.5)] focus:shadow-[0_0_25px_rgba(255,135,49,0.3),inset_0_2px_10px_rgba(0,0,0,0.5)] outline-none font-bold text-base 2xl:text-lg placeholder-slate-500"
+        className="block w-full pl-12 2xl:pl-14 pr-6 py-4 2xl:py-5 bg-black/40 border border-white/10 focus:bg-[#FF8731]/10 rounded-[2rem] text-white focus:ring-2 focus:ring-[#FF8731]/50 focus:border-[#FF8731] transition-all duration-300 shadow-[inset_0_2px_10px_rgba(0,0,0,0.5)] focus:shadow-[0_0_25px_rgba(255,135,49,0.3),inset_0_2px_10px_rgba(0,0,0,0.5)] outline-none font-bold text-base 2xl:text-lg placeholder-slate-500"
         placeholder={placeholder}
         value={query}
         onChange={handleChange}
@@ -136,22 +129,18 @@ const HospitalSearch = ({ value, onChange, placeholder }) => {
             transition={{ duration: 0.15 }}
             className="absolute top-full left-0 right-0 mt-2 bg-[#03091B]/95 backdrop-blur-xl border border-white/10 rounded-[1.5rem] overflow-hidden shadow-2xl z-50 max-h-[240px] overflow-y-auto"
           >
-            {results.map((item, i) => {
-              const name = item.name || item.display_name.split(',')[0].trim();
-              const sub = item.display_name.split(',').slice(1, 3).join(',').trim();
-              return (
-                <li key={item.place_id || i}>
-                  <button
-                    type="button"
-                    onMouseDown={() => handleSelect(item)}
-                    className="flex flex-col px-5 py-3 w-full text-left hover:bg-white/5 transition-colors border-b border-white/5 last:border-0"
-                  >
-                    <span className="text-white font-bold text-sm truncate">{name}</span>
-                    {sub && <span className="text-slate-400 text-xs truncate mt-0.5">{sub}</span>}
-                  </button>
-                </li>
-              );
-            })}
+            {results.map((item, i) => (
+              <li key={i}>
+                <button
+                  type="button"
+                  onMouseDown={() => handleSelect(item)}
+                  className="flex flex-col px-5 py-3 w-full text-left hover:bg-white/5 transition-colors border-b border-white/5 last:border-0"
+                >
+                  <span className="text-white font-bold text-sm truncate">{item.name}</span>
+                  {item.city && <span className="text-slate-400 text-xs truncate mt-0.5">{item.city}</span>}
+                </button>
+              </li>
+            ))}
           </motion.ul>
         )}
       </AnimatePresence>
