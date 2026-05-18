@@ -209,7 +209,7 @@ const Layout = () => {
               {({ isActive }) => (
                 <>
                   <item.icon className={`w-6 h-6 mb-1 relative z-10 transition-transform duration-300 ${isActive ? 'drop-shadow-md scale-105' : 'group-hover:scale-110'}`} />
-                  <span className="text-[9px] font-black leading-none uppercase tracking-widest relative z-10 drop-shadow-sm">{item.label}</span>
+                  <span className="text-[8px] font-black leading-none uppercase tracking-wide relative z-10 drop-shadow-sm truncate max-w-full px-1">{item.label}</span>
                 </>
               )}
             </NavLink>
