@@ -7,9 +7,9 @@ import { audio } from './utils/audio';
 import { supabase } from './utils/supabase';
 
 const LANGUAGES = [
-  { code: 'it', label: 'Italiano', flag: '🇮🇹' },
-  { code: 'en', label: 'English',  flag: '🇬🇧' },
-  { code: 'es', label: 'Español',  flag: '🇪🇸' },
+  { code: 'it', label: 'Italiano', flag: 'https://flagcdn.com/w40/it.png' },
+  { code: 'en', label: 'English',  flag: 'https://flagcdn.com/w40/gb.png' },
+  { code: 'es', label: 'Español',  flag: 'https://flagcdn.com/w40/es.png' },
 ];
 
 const LangPicker = () => {
@@ -32,7 +32,7 @@ const LangPicker = () => {
         onClick={() => { audio.playClick(); setOpen(o => !o); }}
         className="flex items-center gap-2.5 pl-4 pr-4 py-3 rounded-full bg-white/70 hover:bg-white/90 backdrop-blur-xl border border-white/80 text-[#03091B] text-[15px] font-bold transition-all duration-200 shadow-[0_4px_20px_-4px_rgba(3,9,27,0.2)]"
       >
-        <span className="text-2xl leading-none">{current.flag}</span>
+        <img src={current.flag} alt={current.label} className="w-6 h-4 object-cover rounded-sm shadow-sm" />
         <span className="hidden sm:inline">{current.label}</span>
         <ChevronDown className={`w-4 h-4 text-[#03091B]/50 transition-transform duration-200 ${open ? 'rotate-180' : ''}`} />
       </motion.button>
@@ -51,7 +51,7 @@ const LangPicker = () => {
                 onClick={() => { audio.playClick(); switchLang(l.code); setOpen(false); }}
                 className={`flex items-center gap-3 px-4 py-3 w-full text-left text-sm font-semibold transition-colors ${lang === l.code ? 'text-white bg-white/[0.06]' : 'text-slate-300 hover:text-white hover:bg-white/[0.04]'}`}
               >
-                <span className="text-base leading-none">{l.flag}</span>
+                <img src={l.flag} alt={l.label} className="w-5 h-3.5 object-cover rounded-sm" />
                 <span className="flex-1">{l.label}</span>
                 {lang === l.code && <Check className="w-3.5 h-3.5 text-[#FF8731]" />}
               </button>
