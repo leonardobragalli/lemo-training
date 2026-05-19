@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { Award, ArrowRight, Target } from 'lucide-react';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { Award, ArrowRight, Target, X, Mail, ArrowRight as Send, Sparkles } from 'lucide-react';
+import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
 import html2pdf from 'html2pdf.js';
 
 import { audio } from './utils/audio';
 import { useLang } from './LanguageContext';
+import { supabase } from './utils/supabase';
 
 const Home = () => {
   const navigate = useNavigate();
@@ -27,6 +28,10 @@ const Home = () => {
   const [certificateCode] = useState(() => `LMR-${new Date().getFullYear()}-${Math.floor(Math.random() * 9000) + 1000}`);
   const [certificateDate] = useState(() => new Date().toLocaleDateString('it-IT'));
 
+  const [showNewsletter, setShowNewsletter] = useState(false);
+  const [newsletterEmail, setNewsletterEmail] = useState('');
+  const [newsletterStatus, setNewsletterStatus] = useState('idle'); // idle | loading | success | error
+
   useEffect(() => {
     const savedUser = JSON.parse(localStorage.getItem('lemo_user'));
     if (!savedUser && mode !== 'full') {
@@ -38,6 +43,27 @@ const Home = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [navigate, mode]);
+
+  useEffect(() => {
+    if (localStorage.getItem('lemo_newsletter_shown')) return;
+    const timer = setTimeout(() => setShowNewsletter(true), 4000);
+    return () => clearTimeout(timer);
+  }, []);
+
+  const handleNewsletterSubmit = async (e) => {
+    e.preventDefault();
+    if (!newsletterEmail.trim()) return;
+    setNewsletterStatus('loading');
+    await supabase.from('newsletter').upsert({ email: newsletterEmail.trim().toLowerCase() }, { onConflict: 'email' });
+    setNewsletterStatus('success');
+    localStorage.setItem('lemo_newsletter_shown', '1');
+    setTimeout(() => setShowNewsletter(false), 2500);
+  };
+
+  const closeNewsletter = () => {
+    setShowNewsletter(false);
+    localStorage.setItem('lemo_newsletter_shown', '1');
+  };
 
   const progressPercentage = Math.round((completedCount / totalLessons) * 100);
   const hasFinishedAll = completedCount === totalLessons;
@@ -227,6 +253,96 @@ const Home = () => {
 
         </motion.div>
       </div>
+
+      {/* Newsletter Popup */}
+      <AnimatePresence>
+        {showNewsletter && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-4 bg-black/40 backdrop-blur-sm"
+            onClick={(e) => { if (e.target === e.currentTarget) closeNewsletter(); }}
+          >
+            <motion.div
+              initial={{ opacity: 0, y: 60, scale: 0.95 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 40, scale: 0.95 }}
+              transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+              className="relative w-full max-w-md bg-[#03091B]/90 backdrop-blur-[40px] border border-white/[0.12] rounded-[2rem] p-8 shadow-[0_40px_80px_-20px_rgba(0,0,0,0.8)] overflow-hidden"
+            >
+              <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+              <div className="absolute -top-20 left-1/2 -translate-x-1/2 w-[280px] h-[280px] rounded-full bg-[#8756FA] opacity-[0.12] blur-[80px] pointer-events-none" />
+
+              <button
+                onClick={closeNewsletter}
+                className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 text-slate-400 hover:text-white transition-all"
+              >
+                <X className="w-4 h-4" />
+              </button>
+
+              {newsletterStatus === 'success' ? (
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  className="flex flex-col items-center text-center py-4"
+                >
+                  <div className="w-16 h-16 rounded-full bg-gradient-to-br from-[#8756FA] to-[#FF8731] flex items-center justify-center mb-4 shadow-[0_8px_32px_-8px_rgba(135,86,250,0.6)]">
+                    <Sparkles className="w-7 h-7 text-white" />
+                  </div>
+                  <h3 className="font-serif font-black text-white text-2xl mb-2">Grazie!</h3>
+                  <p className="text-slate-400 text-sm font-medium">Sei iscritto al mondo Lemons.</p>
+                </motion.div>
+              ) : (
+                <>
+                  <div className="flex flex-col items-center text-center mb-6 relative z-10">
+                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#8756FA]/15 border border-[#8756FA]/30 mb-4">
+                      <Sparkles className="w-3 h-3 text-[#A379F9]" />
+                      <span className="text-[10px] font-black tracking-[0.18em] uppercase text-[#A379F9]">Lemons Universe</span>
+                    </div>
+                    <h3 className="font-serif font-black text-white text-[28px] leading-tight mb-2">
+                      Resta nel mondo<br/>
+                      <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#8756FA] to-[#FF8731]">Lemons</span>
+                    </h3>
+                    <p className="text-slate-400 text-sm font-medium leading-relaxed max-w-[300px]">
+                      Novità, aggiornamenti e contenuti esclusivi sull'uso della realtà virtuale in sanità.
+                    </p>
+                  </div>
+
+                  <form onSubmit={handleNewsletterSubmit} className="relative z-10 space-y-3">
+                    <div className="relative">
+                      <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 pointer-events-none" />
+                      <input
+                        type="email"
+                        required
+                        value={newsletterEmail}
+                        onChange={(e) => setNewsletterEmail(e.target.value)}
+                        placeholder="La tua email"
+                        className="block w-full pl-11 pr-4 h-12 bg-white/[0.04] hover:bg-white/[0.06] focus:bg-white/[0.07] border border-white/[0.08] focus:border-[#8756FA]/60 rounded-2xl text-white text-[15px] font-semibold placeholder-slate-600 outline-none transition-all duration-300"
+                      />
+                    </div>
+                    <motion.button
+                      type="submit"
+                      disabled={newsletterStatus === 'loading'}
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      className="group w-full h-12 rounded-2xl font-bold text-white text-[15px] flex items-center justify-center gap-2 relative overflow-hidden disabled:opacity-60"
+                      style={{ background: 'linear-gradient(90deg, #8756FA 0%, #B385FF 50%, #FF8731 100%)', boxShadow: '0 8px 32px -8px rgba(135,86,250,0.5)' }}
+                    >
+                      <span className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-[900ms] ease-out bg-gradient-to-r from-transparent via-white/20 to-transparent skew-x-12" />
+                      <span className="relative z-10">{newsletterStatus === 'loading' ? 'Iscrizione...' : 'Iscriviti'}</span>
+                      <Send className="w-4 h-4 relative z-10 group-hover:translate-x-0.5 transition-transform" />
+                    </motion.button>
+                    <button type="button" onClick={closeNewsletter} className="w-full text-center text-slate-500 hover:text-slate-300 text-xs font-medium transition-colors pt-1">
+                      No grazie
+                    </button>
+                  </form>
+                </>
+              )}
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Certificato Invisibile */}
       <div style={{ position: 'absolute', left: '-9999px', top: '-9999px' }}>
