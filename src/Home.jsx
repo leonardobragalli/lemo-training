@@ -45,7 +45,7 @@ const Home = () => {
   }, [navigate, mode]);
 
   useEffect(() => {
-    if (localStorage.getItem('lemo_newsletter_shown')) return;
+    if (sessionStorage.getItem('lemo_newsletter_shown')) return;
     const timer = setTimeout(() => setShowNewsletter(true), 4000);
     return () => clearTimeout(timer);
   }, []);
@@ -56,13 +56,13 @@ const Home = () => {
     setNewsletterStatus('loading');
     await supabase.from('newsletter').upsert({ email: newsletterEmail.trim().toLowerCase() }, { onConflict: 'email' });
     setNewsletterStatus('success');
-    localStorage.setItem('lemo_newsletter_shown', '1');
+    sessionStorage.setItem('lemo_newsletter_shown', '1');
     setTimeout(() => setShowNewsletter(false), 2500);
   };
 
   const closeNewsletter = () => {
     setShowNewsletter(false);
-    localStorage.setItem('lemo_newsletter_shown', '1');
+    sessionStorage.setItem('lemo_newsletter_shown', '1');
   };
 
   const progressPercentage = Math.round((completedCount / totalLessons) * 100);
