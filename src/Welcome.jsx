@@ -453,7 +453,7 @@ const Welcome = () => {
                   </span>
                 </motion.button>
                 <p className="text-center text-slate-400 text-[11px] mt-3 font-medium">
-                  GUIDA OPERATIVA LEMO
+                  GUIDA OPERATIVA LEMONS IN THE ROOM
                 </p>
               </motion.div>
             </form>
