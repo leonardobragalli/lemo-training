@@ -47,6 +47,7 @@ const Admin = () => {
   const [expandedUser, setExpandedUser] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [confirmModal, setConfirmModal] = useState({ open: false, title: '', message: '', onConfirm: null, danger: true });
+  const [newsletterList, setNewsletterList] = useState([]);
   const navigate = useNavigate();
 
   const totalLessons = 4;
@@ -187,11 +188,17 @@ const Admin = () => {
     });
   };
 
+  const loadNewsletter = async () => {
+    const { data } = await supabase.from('newsletter').select('email, created_at').order('created_at', { ascending: false });
+    if (data) setNewsletterList(data);
+  };
+
   const handleLogin = (e) => {
     e.preventDefault();
     if (password === 'lemons2026') {
       setIsAuthenticated(true);
       loadStats();
+      loadNewsletter();
     } else {
       alert('Password errata!');
     }
@@ -853,6 +860,47 @@ const Admin = () => {
                 </button>
               </div>
             </div>
+          )}
+        </div>
+
+        {/* Sezione Newsletter */}
+        <div className="bg-slate-900 border border-slate-800 rounded-[2.5rem] shadow-2xl overflow-hidden mb-20">
+          <div className="p-8 border-b border-slate-800 bg-slate-900/50 backdrop-blur-xl flex items-center justify-between">
+            <div>
+              <h3 className="text-2xl font-black text-white">Newsletter</h3>
+              <p className="text-sm text-slate-500 font-medium mt-1">{newsletterList.length} iscritti</p>
+            </div>
+            <button
+              onClick={() => {
+                const csv = 'Email,Data iscrizione\n' + newsletterList.map(r => `${r.email},${new Date(r.created_at).toLocaleDateString('it-IT')}`).join('\n');
+                const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' })); a.download = 'newsletter.csv'; a.click();
+              }}
+              className="px-4 py-2 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 hover:text-white rounded-xl font-bold text-sm transition-all"
+            >
+              Esporta CSV
+            </button>
+          </div>
+          {newsletterList.length === 0 ? (
+            <div className="p-12 text-center text-slate-600 font-medium">Nessun iscritto ancora.</div>
+          ) : (
+            <table className="w-full text-left">
+              <thead>
+                <tr className="border-b border-slate-800">
+                  <th className="px-8 py-4 text-xs font-black text-slate-500 uppercase tracking-widest">#</th>
+                  <th className="px-8 py-4 text-xs font-black text-slate-500 uppercase tracking-widest">Email</th>
+                  <th className="px-8 py-4 text-xs font-black text-slate-500 uppercase tracking-widest">Data iscrizione</th>
+                </tr>
+              </thead>
+              <tbody>
+                {newsletterList.map((row, i) => (
+                  <tr key={row.email} className="border-b border-slate-800/50 hover:bg-slate-800/30 transition-colors">
+                    <td className="px-8 py-4 text-slate-600 text-sm font-bold">{i + 1}</td>
+                    <td className="px-8 py-4 text-white font-semibold">{row.email}</td>
+                    <td className="px-8 py-4 text-slate-400 text-sm">{new Date(row.created_at).toLocaleDateString('it-IT', { day: '2-digit', month: 'short', year: 'numeric' })}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           )}
         </div>
 
