@@ -30,11 +30,11 @@ const LangPicker = () => {
         whileHover={{ scale: 1.03 }}
         whileTap={{ scale: 0.97 }}
         onClick={() => { audio.playClick(); setOpen(o => !o); }}
-        className="flex items-center gap-2 pl-3 pr-3 py-2 rounded-full bg-white/20 hover:bg-white/30 backdrop-blur-2xl border border-white/30 text-white text-[13px] font-semibold transition-all duration-200 shadow-[0_4px_16px_-4px_rgba(3,9,27,0.25)]"
+        className="flex items-center gap-2.5 pl-4 pr-3.5 py-2.5 rounded-full bg-white/25 hover:bg-white/35 backdrop-blur-2xl border border-white/40 text-white text-[14px] font-semibold transition-all duration-200 shadow-[0_4px_20px_-4px_rgba(3,9,27,0.3)]"
       >
-        <span className="text-base leading-none">{current.flag}</span>
-        <span className="hidden sm:inline text-[#03091B]/80 font-bold">{current.label}</span>
-        <ChevronDown className={`w-3.5 h-3.5 text-[#03091B]/60 transition-transform duration-200 ${open ? 'rotate-180' : ''}`} />
+        <span className="text-xl leading-none">{current.flag}</span>
+        <span className="hidden sm:inline text-[#03091B]/85 font-bold">{current.label}</span>
+        <ChevronDown className={`w-4 h-4 text-[#03091B]/60 transition-transform duration-200 ${open ? 'rotate-180' : ''}`} />
       </motion.button>
       <AnimatePresence>
         {open && (
@@ -194,7 +194,7 @@ const BrandPanel = () => (
       style={{ WebkitFontSmoothing: 'antialiased', textWrap: 'balance', textShadow: '0 1px 0 rgba(255,255,255,0.9), 0 4px 24px rgba(255,255,255,0.6), 0 8px 40px rgba(255,255,255,0.3)' }}
     >
       Il training<br/>
-      <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#FF8731] to-[#FF9E54]">che accoglie</span>
+      <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#8756FA] to-[#B385FF]">che accoglie</span>
     </motion.h1>
 
     <motion.p
@@ -303,7 +303,7 @@ const Welcome = () => {
         <div className="absolute inset-0 opacity-[0.035] mix-blend-overlay" style={{ backgroundImage: "url('https://grainy-gradients.vercel.app/noise.svg')" }} />
       </div>
 
-      <header className="relative z-20 grid grid-cols-3 items-center px-5 sm:px-8 lg:px-12 pt-5 sm:pt-8">
+      <header className="relative z-20 grid grid-cols-3 items-center px-5 sm:px-8 lg:px-12 pt-8 sm:pt-10 lg:pt-12">
         <div />
         <motion.div
           initial={{ opacity: 0, y: -8 }}
@@ -314,7 +314,7 @@ const Welcome = () => {
           <img
             src="/images/logos/logo esteso bianco png.png"
             alt="Lemons in the room"
-            className="h-10 sm:h-12 w-auto object-contain drop-shadow-[0_2px_12px_rgba(3,9,27,0.35)] drop-shadow-[0_8px_32px_rgba(3,9,27,0.20)]"
+            className="h-14 sm:h-16 lg:h-16 w-auto object-contain drop-shadow-[0_2px_12px_rgba(3,9,27,0.35)] drop-shadow-[0_8px_32px_rgba(3,9,27,0.20)]"
           />
         </motion.div>
         <motion.div
