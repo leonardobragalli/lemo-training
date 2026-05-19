@@ -7,9 +7,9 @@ import { useLang } from './LanguageContext';
 import { audio } from './utils/audio';
 
 const LANGUAGES = [
-  { code: 'it', label: 'Italiano', flag: '🇮🇹' },
-  { code: 'en', label: 'English',  flag: '🇬🇧' },
-  { code: 'es', label: 'Español',  flag: '🇪🇸' },
+  { code: 'it', label: 'Italiano', flag: 'https://flagcdn.com/w40/it.png' },
+  { code: 'en', label: 'English',  flag: 'https://flagcdn.com/w40/gb.png' },
+  { code: 'es', label: 'Español',  flag: 'https://flagcdn.com/w40/es.png' },
 ];
 
 const LangPicker = ({ isHome, isDarkMode }) => {
@@ -23,7 +23,7 @@ const LangPicker = ({ isHome, isDarkMode }) => {
         onClick={() => { audio.playClick(); setOpen(o => !o); }}
         className={`flex items-center gap-3 px-4 py-3 2xl:gap-4 2xl:px-6 2xl:py-5 w-full rounded-[1.5rem] 2xl:rounded-[2rem] transition-all duration-300 text-left font-bold group border border-transparent ${isHome || isDarkMode ? 'text-slate-300 hover:text-white hover:border-white/10 hover:bg-white/5' : 'text-slate-700 hover:text-black hover:border-black/10 hover:bg-black/5'}`}
       >
-        <span className="text-lg leading-none">{current.flag}</span>
+        <img src={current.flag} alt={current.label} className="w-6 h-4 object-cover rounded-sm shadow-sm" />
         <span className="text-base 2xl:text-lg">{current.label}</span>
       </button>
 
@@ -42,7 +42,7 @@ const LangPicker = ({ isHome, isDarkMode }) => {
                 onClick={() => { audio.playClick(); switchLang(l.code); setOpen(false); }}
                 className={`flex items-center gap-3 px-4 py-3 2xl:px-6 2xl:py-4 w-full text-left font-bold text-sm 2xl:text-base transition-all duration-200 ${lang === l.code ? 'text-white bg-white/10' : 'text-slate-300 hover:text-white hover:bg-white/5'}`}
               >
-                <span className="text-base">{l.flag}</span>
+                <img src={l.flag} alt={l.label} className="w-5 h-3.5 object-cover rounded-sm" />
                 <span>{l.label}</span>
               </button>
             ))}
@@ -67,7 +67,7 @@ const MobileLangPicker = ({ isDarkMode, inline }) => {
           : `w-12 h-12 rounded-full backdrop-blur-2xl border flex items-center justify-center shadow-lg transition-all text-lg ${isDarkMode ? 'bg-white/10 border-white/20' : 'bg-white/80 border-slate-200'}`
         }
       >
-        <span className="text-base leading-none">{current.flag}</span>
+        <img src={current.flag} alt={current.label} className="w-6 h-4 object-cover rounded-sm shadow-sm" />
         {inline && <span className="text-[9px] font-black uppercase tracking-widest">{current.code.toUpperCase()}</span>}
       </button>
       <AnimatePresence>
@@ -85,7 +85,7 @@ const MobileLangPicker = ({ isDarkMode, inline }) => {
                 onClick={() => { audio.playClick(); switchLang(l.code); setOpen(false); }}
                 className={`flex items-center gap-3 px-4 py-3 w-full text-left font-bold text-sm transition-all duration-200 ${lang === l.code ? 'text-white bg-white/10' : 'text-slate-300 hover:text-white hover:bg-white/5'}`}
               >
-                <span className="text-base">{l.flag}</span>
+                <img src={l.flag} alt={l.label} className="w-5 h-3.5 object-cover rounded-sm" />
                 <span>{l.label}</span>
               </button>
             ))}
