@@ -30,11 +30,11 @@ const LangPicker = () => {
         whileHover={{ scale: 1.03 }}
         whileTap={{ scale: 0.97 }}
         onClick={() => { audio.playClick(); setOpen(o => !o); }}
-        className="flex items-center gap-2.5 pl-4 pr-3.5 py-2.5 rounded-full bg-white/25 hover:bg-white/35 backdrop-blur-2xl border border-white/40 text-white text-[14px] font-semibold transition-all duration-200 shadow-[0_4px_20px_-4px_rgba(3,9,27,0.3)]"
+        className="flex items-center gap-2.5 pl-4 pr-4 py-3 rounded-full bg-white/70 hover:bg-white/90 backdrop-blur-xl border border-white/80 text-[#03091B] text-[15px] font-bold transition-all duration-200 shadow-[0_4px_20px_-4px_rgba(3,9,27,0.2)]"
       >
-        <span className="text-xl leading-none">{current.flag}</span>
-        <span className="hidden sm:inline text-[#03091B]/85 font-bold">{current.label}</span>
-        <ChevronDown className={`w-4 h-4 text-[#03091B]/60 transition-transform duration-200 ${open ? 'rotate-180' : ''}`} />
+        <span className="text-2xl leading-none">{current.flag}</span>
+        <span className="hidden sm:inline">{current.label}</span>
+        <ChevronDown className={`w-4 h-4 text-[#03091B]/50 transition-transform duration-200 ${open ? 'rotate-180' : ''}`} />
       </motion.button>
       <AnimatePresence>
         {open && (
@@ -191,7 +191,7 @@ const BrandPanel = () => (
       animate={{ y: 0, opacity: 1 }}
       transition={{ delay: 0.15, duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
       className="font-serif font-black text-[#03091B] leading-[1.02] tracking-[-0.035em] text-[44px] sm:text-[56px] lg:text-[64px] xl:text-[76px]"
-      style={{ WebkitFontSmoothing: 'antialiased', textWrap: 'balance', textShadow: '0 1px 0 rgba(255,255,255,0.9), 0 4px 24px rgba(255,255,255,0.6), 0 8px 40px rgba(255,255,255,0.3)' }}
+      style={{ WebkitFontSmoothing: 'antialiased', textWrap: 'balance' }}
     >
       Il training<br/>
       <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#8756FA] to-[#B385FF]">che accoglie</span>
@@ -303,7 +303,7 @@ const Welcome = () => {
         <div className="absolute inset-0 opacity-[0.035] mix-blend-overlay" style={{ backgroundImage: "url('https://grainy-gradients.vercel.app/noise.svg')" }} />
       </div>
 
-      <header className="relative z-20 grid grid-cols-3 items-center px-5 sm:px-8 lg:px-12 pt-8 sm:pt-10 lg:pt-12">
+      <header className="relative z-20 grid grid-cols-3 items-center px-5 sm:px-8 lg:px-12 pt-12 sm:pt-14 lg:pt-16">
         <div />
         <motion.div
           initial={{ opacity: 0, y: -8 }}
@@ -314,7 +314,7 @@ const Welcome = () => {
           <img
             src="/images/logos/logo esteso bianco png.png"
             alt="Lemons in the room"
-            className="h-14 sm:h-16 lg:h-16 w-auto object-contain drop-shadow-[0_2px_12px_rgba(3,9,27,0.35)] drop-shadow-[0_8px_32px_rgba(3,9,27,0.20)]"
+            className="h-16 sm:h-20 lg:h-20 w-auto object-contain drop-shadow-[0_2px_12px_rgba(3,9,27,0.35)] drop-shadow-[0_8px_32px_rgba(3,9,27,0.20)]"
           />
         </motion.div>
         <motion.div
