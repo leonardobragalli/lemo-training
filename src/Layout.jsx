@@ -115,7 +115,7 @@ const Layout = () => {
   const handleLogout = () => {
     audio.playClick();
     localStorage.removeItem('lemo_user');
-    navigate('/');
+    window.location.href = '/';
   };
 
   const handleNavClick = () => audio.playClick();
