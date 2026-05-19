@@ -297,11 +297,11 @@ const Home = () => {
                 <>
                   <div className="flex flex-col items-center text-center mb-6 relative z-10">
                     <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#8756FA]/15 border border-[#8756FA]/30 mb-4">
-                      <Sparkles className="w-3 h-3 text-[#A379F9]" />
+                      <img src="/images/logos/logo bianco png.png" alt="" className="w-3.5 h-3.5 object-contain" />
                       <span className="text-[10px] font-black tracking-[0.18em] uppercase text-[#A379F9]">Lemons Universe</span>
                     </div>
                     <h3 className="font-serif font-black text-white text-[28px] leading-tight mb-2">
-                      Resta nel mondo<br/>
+                      Entra nel mondo<br/>
                       <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#8756FA] to-[#FF8731]">Lemons</span>
                     </h3>
                     <p className="text-slate-400 text-sm font-medium leading-relaxed max-w-[300px]">
