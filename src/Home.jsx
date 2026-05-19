@@ -290,7 +290,7 @@ const Home = () => {
                   className="flex flex-col items-center text-center py-4"
                 >
                   <div className="w-16 h-16 rounded-full bg-gradient-to-br from-[#8756FA] to-[#FF8731] flex items-center justify-center mb-4 shadow-[0_8px_32px_-8px_rgba(135,86,250,0.6)]">
-                    <Sparkles className="w-7 h-7 text-white" />
+                    <img src="/images/logos/logo bianco png.png" alt="Lemons" className="w-8 h-8 object-contain" />
                   </div>
                   <h3 className="font-serif font-black text-white text-2xl mb-2">Grazie!</h3>
                   <p className="text-slate-400 text-sm font-medium">Sei iscritto al mondo Lemons.</p>
