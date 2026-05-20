@@ -45,6 +45,7 @@ const Home = () => {
   }, [navigate, mode]);
 
   useEffect(() => {
+    if (localStorage.getItem('lemo_newsletter_subscribed')) return;
     const isReload = performance.getEntriesByType('navigation')[0]?.type === 'reload';
     if (isReload) sessionStorage.removeItem('lemo_newsletter_shown');
     if (sessionStorage.getItem('lemo_newsletter_shown')) return;
@@ -58,7 +59,7 @@ const Home = () => {
     setNewsletterStatus('loading');
     await supabase.from('newsletter').upsert({ email: newsletterEmail.trim().toLowerCase() }, { onConflict: 'email' });
     setNewsletterStatus('success');
-    sessionStorage.setItem('lemo_newsletter_shown', '1');
+    localStorage.setItem('lemo_newsletter_subscribed', '1');
     setTimeout(() => setShowNewsletter(false), 2500);
   };
 
