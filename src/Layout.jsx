@@ -21,7 +21,7 @@ const LangPicker = ({ isHome, isDarkMode }) => {
     <div className="relative">
       <button
         onClick={() => { audio.playClick(); setOpen(o => !o); }}
-        className={`flex items-center gap-3 px-4 py-3 2xl:gap-4 2xl:px-6 2xl:py-5 w-full rounded-[1.5rem] 2xl:rounded-[2rem] transition-all duration-300 text-left font-bold group border border-transparent ${isHome || isDarkMode ? 'text-slate-300 hover:text-white hover:border-white/10 hover:bg-white/5' : 'text-slate-700 hover:text-black hover:border-black/10 hover:bg-black/5'}`}
+        className="flex items-center gap-3 px-4 py-3 2xl:gap-4 2xl:px-6 2xl:py-5 w-full rounded-[1.5rem] 2xl:rounded-[2rem] transition-all duration-300 text-left font-bold group text-slate-400 hover:text-white hover:bg-white/[0.07]"
       >
         <img src={current.flag} alt={current.label} className="w-6 h-4 object-cover rounded-sm shadow-sm" />
         <span className="text-base 2xl:text-lg">{current.label}</span>
@@ -121,17 +121,19 @@ const Layout = () => {
   const handleNavClick = () => audio.playClick();
 
   return (
-    <div className={`flex h-[100dvh] overflow-hidden font-sans transition-colors duration-300 ${isDarkMode ? 'bg-[#020617]' : 'bg-[#FFF5EE]'}`}>
+    <div className="flex h-[100dvh] overflow-hidden font-sans bg-[#03091B]">
 
       {/* Sidebar Desktop */}
       <motion.aside
         initial={{ x: -300, opacity: 0 }} animate={{ x: 0, opacity: 1 }} transition={{ type: "spring", stiffness: 100, damping: 20 }}
-        className="hidden md:flex flex-col w-64 2xl:w-80 m-4 2xl:m-6 rounded-[2rem] 2xl:rounded-[3rem] shadow-[0_40px_100px_-10px_rgba(3,9,27,0.8)] relative z-50 transition-colors duration-500 overflow-hidden bg-[#03091B]/5 backdrop-blur-[40px] border-t border-l border-white/20 border-r border-b border-white/5"
+        className="hidden md:flex flex-col w-64 2xl:w-80 m-4 2xl:m-6 rounded-[2rem] 2xl:rounded-[3rem] shadow-[0_40px_100px_-10px_rgba(3,9,27,0.7)] relative z-50 overflow-hidden bg-[#040F2A]/80 backdrop-blur-[40px] border border-white/[0.10]"
       >
-        <div className="absolute top-[-50px] left-[-50px] w-[200px] h-[200px] bg-[#FF8731] rounded-full blur-[80px] opacity-30 pointer-events-none"></div>
+        <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent pointer-events-none" />
+        <div className="absolute top-[-50px] left-[-50px] w-[200px] h-[200px] bg-[#FF8731] rounded-full blur-[80px] opacity-20 pointer-events-none"></div>
 
-        <div className="p-4 2xl:p-10 flex items-center justify-center border-b shrink-0 border-white/10">
-          <img src={isHome || isDarkMode ? "/images/logos/logo esteso bianco panna png.png" : "/images/logos/logo esteso nero png.png"} alt="Lemons in the room Logo" className="h-8 2xl:h-16 w-auto object-contain drop-shadow-md" />
+        <div className="p-4 2xl:p-10 flex items-center justify-center border-b shrink-0 border-white/[0.08]">
+          <img src="/images/logos/logo esteso bianco png.png" alt="Lemons in the room Logo" className="h-8 2xl:h-16 w-auto object-contain drop-shadow-md"
+            onError={(e) => { e.target.src = '/images/logos/logo esteso nero png.png'; }} />
         </div>
 
         <nav className="flex-1 min-h-0 px-4 py-4 2xl:px-6 2xl:py-6 overflow-y-auto space-y-1 2xl:space-y-4">
@@ -143,14 +145,13 @@ const Layout = () => {
               className={({ isActive }) =>
                 `flex items-center gap-3 px-4 py-3 2xl:gap-5 2xl:px-6 2xl:py-5 rounded-[1.5rem] 2xl:rounded-[2rem] font-bold transition-all duration-300 relative group overflow-hidden shrink-0 ${
                   isActive ? 'text-white shadow-[0_20px_40px_-10px_rgba(255,135,49,0.5)] scale-[1.02]' :
-                  (isHome || isDarkMode ? 'text-slate-300 hover:text-white hover:bg-white/10' : 'text-slate-700 hover:text-black hover:bg-black/5')
+                  'text-slate-400 hover:text-white hover:bg-white/[0.07]'
                 }`
               }
             >
               {({ isActive }) => (
                 <>
                   {isActive && <motion.div layoutId="activeNav" className="absolute inset-0 bg-gradient-to-r from-[#FF8731] to-[#FF9E54] z-0" />}
-                  {!isActive && <div className={`absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity z-0 ${isHome || isDarkMode ? 'bg-white/5' : 'bg-black/5'}`}></div>}
                   <item.icon className={`w-5 h-5 2xl:w-6 2xl:h-6 relative z-10 transition-transform duration-300 ${isActive ? 'scale-110' : 'group-hover:scale-110'}`} />
                   <span className="relative z-10 text-base 2xl:text-lg tracking-wide">{item.label}</span>
                 </>
@@ -159,16 +160,16 @@ const Layout = () => {
           ))}
         </nav>
 
-        <div className="p-4 2xl:p-8 space-y-2 2xl:space-y-4 border-t border-white/10 shrink-0">
+        <div className="p-4 2xl:p-8 space-y-1 2xl:space-y-2 border-t border-white/[0.08] shrink-0">
           <LangPicker isHome={isHome} isDarkMode={isDarkMode} />
 
-          <a href="https://www.lemonsintheroom.com/" target="_blank" rel="noopener noreferrer" onClick={() => audio.playClick()} className={`flex items-center gap-3 px-4 py-3 2xl:gap-4 2xl:px-6 2xl:py-5 w-full rounded-[1.5rem] 2xl:rounded-[2rem] transition-all duration-300 text-left font-bold group border border-transparent ${isHome || isDarkMode ? 'text-slate-300 hover:text-white hover:border-white/10 hover:bg-white/5' : 'text-slate-700 hover:text-black hover:border-black/10 hover:bg-black/5'}`}>
+          <a href="https://www.lemonsintheroom.com/" target="_blank" rel="noopener noreferrer" onClick={() => audio.playClick()} className="flex items-center gap-3 px-4 py-3 2xl:gap-4 2xl:px-6 2xl:py-5 w-full rounded-[1.5rem] 2xl:rounded-[2rem] transition-all duration-300 text-left font-bold group text-slate-400 hover:text-white hover:bg-white/[0.07]">
             <Globe className="w-5 h-5 2xl:w-6 2xl:h-6 group-hover:rotate-12 transition-transform duration-500" />
             <span className="text-base 2xl:text-lg">{t.nav.visitSite}</span>
           </a>
 
-          <button onClick={handleLogout} className={`flex items-center gap-3 px-4 py-3 2xl:gap-4 2xl:px-6 2xl:py-5 w-full rounded-[1.5rem] 2xl:rounded-[2rem] transition-all duration-300 text-left font-bold group border border-transparent ${isHome || isDarkMode ? 'text-slate-400 hover:text-red-400 hover:border-red-500/20 hover:bg-red-500/10' : 'text-slate-600 hover:text-red-600 hover:border-red-500/20 hover:bg-red-50'}`}>
-            <LogOut className="w-5 h-5 2xl:w-6 2xl:h-6 group-hover:-translate-x-2 transition-transform duration-300" />
+          <button onClick={handleLogout} className="flex items-center gap-3 px-4 py-3 2xl:gap-4 2xl:px-6 2xl:py-5 w-full rounded-[1.5rem] 2xl:rounded-[2rem] transition-all duration-300 text-left font-bold group text-slate-500 hover:text-red-400 hover:bg-red-500/10">
+            <LogOut className="w-5 h-5 2xl:w-6 2xl:h-6 group-hover:-translate-x-1 transition-transform duration-300" />
             <span className="text-base 2xl:text-lg">{t.nav.logout}</span>
           </button>
         </div>
@@ -176,10 +177,10 @@ const Layout = () => {
 
       {/* Mobile Top Actions */}
       <div className="md:hidden fixed top-6 right-6 z-50 flex flex-col items-end gap-3">
-        <a href="https://www.lemonsintheroom.com/" target="_blank" rel="noopener noreferrer" onClick={() => audio.playClick()} className={`w-12 h-12 rounded-full backdrop-blur-2xl border flex items-center justify-center shadow-lg transition-all ${isDarkMode ? 'bg-white/10 border-white/20 text-slate-300' : 'bg-white/80 border-slate-200 text-slate-600'}`}>
+        <a href="https://www.lemonsintheroom.com/" target="_blank" rel="noopener noreferrer" onClick={() => audio.playClick()} className="w-12 h-12 rounded-full backdrop-blur-2xl border flex items-center justify-center shadow-lg transition-all bg-[#040F2A]/80 border-white/[0.12] text-slate-400 hover:text-white">
           <Globe className="w-5 h-5" />
         </a>
-        <button onClick={handleLogout} className={`w-12 h-12 rounded-full backdrop-blur-2xl border flex items-center justify-center shadow-lg transition-all ${isDarkMode ? 'bg-red-500/10 border-red-500/20 text-red-400' : 'bg-red-50 border-red-200 text-red-500'}`}>
+        <button onClick={handleLogout} className="w-12 h-12 rounded-full backdrop-blur-2xl border flex items-center justify-center shadow-lg transition-all bg-[#040F2A]/80 border-white/[0.12] text-red-400 hover:text-red-300 hover:bg-red-500/10">
           <LogOut className="w-5 h-5 ml-0.5" />
         </button>
       </div>
@@ -193,7 +194,7 @@ const Layout = () => {
 
       {/* Bottom Nav Mobile */}
       <div className="md:hidden fixed bottom-3 left-4 right-4 z-50">
-        <div className={`backdrop-blur-[40px] border flex justify-around items-center p-2 rounded-[2.5rem] transition-colors duration-500 ${isDarkMode ? 'bg-[#03091B]/60 border-white/20 shadow-[0_30px_60px_rgba(0,0,0,0.8),inset_0_2px_10px_rgba(255,255,255,0.1)]' : 'bg-white/70 border-black/10 shadow-[0_20px_40px_rgba(0,0,0,0.1),inset_0_2px_10px_rgba(255,255,255,0.4)]'}`}>
+        <div className="backdrop-blur-[40px] border flex justify-around items-center p-2 rounded-[2.5rem] bg-[#040F2A]/85 border-white/[0.10] shadow-[0_20px_40px_rgba(0,0,0,0.5)]">
           {navItems.map((item) => (
             <NavLink
               key={item.label}
@@ -202,7 +203,7 @@ const Layout = () => {
               className={({ isActive }) =>
                 `flex flex-col items-center justify-center w-[4.5rem] h-[4.5rem] rounded-full transition-all duration-500 relative group overflow-hidden ${
                   isActive ? 'text-white bg-gradient-to-br from-[#8756FA] to-[#FF8731] shadow-[0_10px_20px_rgba(255,135,49,0.5),inset_0_2px_4px_rgba(255,255,255,0.3)] z-10' :
-                  (isDarkMode ? 'text-slate-300 hover:text-white hover:bg-white/10 border border-transparent' : 'text-slate-600 font-bold hover:text-black hover:bg-black/5 border border-transparent')
+                  'text-slate-400 hover:text-white hover:bg-white/[0.07] border border-transparent'
                 }`
               }
             >
