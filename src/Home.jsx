@@ -1,36 +1,211 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, Fragment } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { Award, ArrowRight, Target, X, Mail, ArrowRight as Send, Sparkles } from 'lucide-react';
-import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
+import { Award, ArrowRight, Check, Clock, X, Mail, ArrowRight as Send } from 'lucide-react';
+import {
+  motion, AnimatePresence,
+  useMotionValue, useTransform, useSpring,
+  animate, useMotionValueEvent,
+} from 'framer-motion';
 import html2pdf from 'html2pdf.js';
 
 import { audio } from './utils/audio';
 import { useLang } from './LanguageContext';
 import { supabase } from './utils/supabase';
 
+/* ── PROGRESS RING ─────────────────────────────────────────── */
+const ProgressRing = ({ percent = 0, size = 220 }) => {
+  const stroke = Math.round(size * 0.085);
+  const radius = (size - stroke - 6) / 2;
+  const C = 2 * Math.PI * radius;
+  const target = Math.max(0, Math.min(100, percent));
+
+  const [drawn, setDrawn] = useState(0);
+  const counter = useMotionValue(0);
+  const [display, setDisplay] = useState(0);
+
+  useEffect(() => {
+    const ctrl = animate(counter, target, { duration: 1.6, ease: [0.16, 1, 0.3, 1] });
+    return ctrl.stop;
+  }, [target, counter]);
+  useMotionValueEvent(counter, 'change', (v) => setDisplay(Math.round(v)));
+
+  useEffect(() => {
+    const id = requestAnimationFrame(() => setDrawn(target));
+    return () => cancelAnimationFrame(id);
+  }, [target]);
+
+  const angle = (drawn / 100) * 360 - 90;
+  const tipX = size / 2 + radius * Math.cos((angle * Math.PI) / 180);
+  const tipY = size / 2 + radius * Math.sin((angle * Math.PI) / 180);
+
+  return (
+    <div className="relative shrink-0" style={{ width: size, height: size }}>
+      <motion.div
+        className="absolute inset-0 rounded-full pointer-events-none"
+        style={{ background: 'radial-gradient(circle, rgba(255,135,49,0.30) 0%, transparent 60%)', filter: 'blur(24px)' }}
+        animate={{ opacity: [0.55, 0.9, 0.55], scale: [0.95, 1.03, 0.95] }}
+        transition={{ duration: 4.5, repeat: Infinity, ease: 'easeInOut' }}
+      />
+      <motion.div
+        className="relative w-full h-full"
+        animate={{ rotateX: [0, 3, -3, 0], rotateY: [0, -3, 3, 0] }}
+        transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
+        style={{ transformPerspective: 1000, transformStyle: 'preserve-3d', filter: 'drop-shadow(0 18px 30px rgba(3,9,27,0.55))' }}
+      >
+        <svg viewBox={`0 0 ${size} ${size}`} className="w-full h-full -rotate-90 overflow-visible">
+          <defs>
+            <linearGradient id="lemoActivity" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%"  stopColor="#FFB07A" />
+              <stop offset="35%" stopColor="#FF9E54" />
+              <stop offset="70%" stopColor="#FF8731" />
+              <stop offset="100%" stopColor="#E65C00" />
+            </linearGradient>
+            <filter id="ringGlow" x="-30%" y="-30%" width="160%" height="160%">
+              <feGaussianBlur stdDeviation="4" result="blur" />
+              <feFlood floodColor="#FF8731" floodOpacity="0.55" result="color" />
+              <feComposite in="color" in2="blur" operator="in" result="glow" />
+              <feMerge><feMergeNode in="glow" /><feMergeNode in="SourceGraphic" /></feMerge>
+            </filter>
+          </defs>
+          <circle cx={size/2} cy={size/2} r={radius} fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth={stroke} />
+          {drawn > 0 && (
+            <circle cx={size/2} cy={size/2} r={radius} fill="none" stroke="url(#lemoActivity)" strokeWidth={stroke}
+              strokeLinecap="round" strokeDasharray={C} strokeDashoffset={C - (C * drawn) / 100}
+              filter="url(#ringGlow)"
+              style={{ transition: 'stroke-dashoffset 1.8s cubic-bezier(0.16,1,0.3,1)' }}
+            />
+          )}
+          {drawn > 2 && drawn < 100 && (
+            <circle cx={tipX} cy={tipY} r={stroke / 2 + 2} fill="#FF8731" filter="url(#ringGlow)" />
+          )}
+        </svg>
+        <div className="absolute inset-0 flex flex-col items-center justify-center">
+          <span className="font-serif font-black text-white leading-none" style={{ fontSize: size * 0.22, textShadow: '0 4px 12px rgba(0,0,0,0.6)' }}>
+            {display}<span style={{ fontSize: size * 0.12 }} className="text-white/60 font-sans font-bold ml-0.5">%</span>
+          </span>
+        </div>
+      </motion.div>
+    </div>
+  );
+};
+
+/* ── MODULE STEPPER ────────────────────────────────────────── */
+const MODULE_NAMES = ['Istruzioni', 'Pulizia', 'Ricarica', 'Simulazione'];
+const ModuleStepper = ({ completed, total }) => (
+  <div className="flex items-center gap-0 w-full max-w-[440px] mx-auto md:mx-0 mb-6">
+    {Array.from({ length: total }).map((_, i) => {
+      const done = i < completed;
+      const current = i === completed && i < total;
+      return (
+        <Fragment key={i}>
+          <motion.div
+            initial={{ scale: 0.6, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ delay: 0.4 + i * 0.08, type: 'spring', stiffness: 300, damping: 22 }}
+            className="relative flex flex-col items-center"
+            style={{ width: 56 }}
+          >
+            <div
+              className="w-8 h-8 rounded-full flex items-center justify-center font-bold text-[12px] transition-all duration-300"
+              style={
+                done
+                  ? { background: 'linear-gradient(135deg, #FF9E54, #FF8731)', color: 'white', boxShadow: '0 6px 16px -4px rgba(255,135,49,0.6), inset 0 1px 0 rgba(255,255,255,0.35)' }
+                  : current
+                  ? { background: 'rgba(255,135,49,0.10)', border: '1.5px solid #FF8731', color: '#FF9E54', boxShadow: '0 0 0 4px rgba(255,135,49,0.10)' }
+                  : { background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.10)', color: '#64748b' }
+              }
+            >
+              {done ? <Check className="w-3.5 h-3.5" strokeWidth={3} /> : <span>{i + 1}</span>}
+            </div>
+            {current && (
+              <motion.div
+                className="absolute rounded-full border-2 border-[#FF8731] pointer-events-none"
+                animate={{ scale: [1, 1.4], opacity: [0.8, 0] }}
+                transition={{ duration: 1.6, repeat: Infinity, ease: 'easeOut' }}
+                style={{ width: 32, height: 32, top: 0, left: '50%', marginLeft: -16 }}
+              />
+            )}
+            <span className={`mt-2 text-[9.5px] font-black tracking-[0.10em] uppercase whitespace-nowrap ${done ? 'text-white/90' : current ? 'text-[#FF9E54]' : 'text-slate-500'}`}>
+              {MODULE_NAMES[i]}
+            </span>
+          </motion.div>
+
+          {i < total - 1 && (
+            <div className="flex-1 h-px relative -mt-5 mx-1">
+              <div className="absolute inset-0 bg-white/[0.08]" />
+              <motion.div
+                className="absolute inset-y-0 left-0"
+                initial={{ width: 0 }}
+                animate={{ width: i < completed ? '100%' : '0%' }}
+                transition={{ delay: 0.6 + i * 0.1, duration: 0.6, ease: 'easeOut' }}
+                style={{ background: 'linear-gradient(90deg, #FF9E54, #FF8731)', boxShadow: '0 0 8px rgba(255,135,49,0.5)' }}
+              />
+            </div>
+          )}
+        </Fragment>
+      );
+    })}
+  </div>
+);
+
+/* ── CHAPTER LINE ──────────────────────────────────────────── */
+const ChapterLine = ({ num, label }) => (
+  <div className="flex items-center gap-2 mb-2">
+    <span className="text-[10px] font-black tracking-[0.22em] uppercase text-white/30">{String(num).padStart(2, '0')}</span>
+    <span className="h-px w-8 bg-white/[0.15]" />
+    {label && <span className="text-[10px] font-black tracking-[0.22em] uppercase text-white/30">{label}</span>}
+  </div>
+);
+
+/* ── HOME ──────────────────────────────────────────────────── */
 const Home = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [user, setUser] = useState(null);
   const [completedCount, setCompletedCount] = useState(0);
   const mode = searchParams.get('mode') || 'guided';
-  
   const totalLessons = 4;
-
   const { t } = useLang();
   const h = t.home;
 
-  const { scrollYProgress } = useScroll();
-  const yParallax = useTransform(scrollYProgress, [0, 1], [0, -100]);
-  const rotateParallax = useTransform(scrollYProgress, [0, 1], [0, 20]);
-
-  // Generate certificate data once per mount using useState initializer for purity
   const [certificateCode] = useState(() => `LMR-${new Date().getFullYear()}-${Math.floor(Math.random() * 9000) + 1000}`);
   const [certificateDate] = useState(() => new Date().toLocaleDateString('it-IT'));
-
   const [showNewsletter, setShowNewsletter] = useState(false);
   const [newsletterEmail, setNewsletterEmail] = useState('');
-  const [newsletterStatus, setNewsletterStatus] = useState('idle'); // idle | loading | success | error
+  const [newsletterStatus, setNewsletterStatus] = useState('idle');
+
+  const today = new Date();
+  const dateLabel = today.toLocaleDateString('it-IT', { weekday: 'long', day: 'numeric', month: 'long' }).toUpperCase();
+
+  /* 3D tilt — hero */
+  const heroRef = useRef(null);
+  const heroMx = useMotionValue(0);
+  const heroMy = useMotionValue(0);
+  const heroSx = useSpring(heroMx, { stiffness: 100, damping: 20 });
+  const heroSy = useSpring(heroMy, { stiffness: 100, damping: 20 });
+  const heroRotateY = useTransform(heroSx, [-0.5, 0.5], [3, -3]);
+  const heroRotateX = useTransform(heroSy, [-0.5, 0.5], [-2, 2]);
+const onHeroMove = (e) => {
+    const r = heroRef.current.getBoundingClientRect();
+    heroMx.set((e.clientX - r.left) / r.width - 0.5);
+    heroMy.set((e.clientY - r.top) / r.height - 0.5);
+  };
+  const onHeroLeave = () => { heroMx.set(0); heroMy.set(0); };
+
+  /* 3D tilt — progress */
+  const progressRef = useRef(null);
+  const progressMx = useMotionValue(0);
+  const progressMy = useMotionValue(0);
+  const progressSx = useSpring(progressMx, { stiffness: 100, damping: 20 });
+  const progressSy = useSpring(progressMy, { stiffness: 100, damping: 20 });
+  const progressRotateY = useTransform(progressSx, [-0.5, 0.5], [2, -2]);
+  const progressRotateX = useTransform(progressSy, [-0.5, 0.5], [-1.5, 1.5]);
+  const onProgressMove = (e) => {
+    const r = progressRef.current.getBoundingClientRect();
+    progressMx.set((e.clientX - r.left) / r.width - 0.5);
+    progressMy.set((e.clientY - r.top) / r.height - 0.5);
+  };
+  const onProgressLeave = () => { progressMx.set(0); progressMy.set(0); };
 
   useEffect(() => {
     const savedUser = JSON.parse(localStorage.getItem('lemo_user'));
@@ -83,187 +258,199 @@ const Home = () => {
     }).from(element).save().then(() => element.style.display = 'none');
   };
 
-  const handleNav = (path) => {
-    audio.playClick();
-    navigate(path);
-  };
+  const handleNav = (path) => { audio.playClick(); navigate(path); };
 
   const container = { hidden: { opacity: 0 }, show: { opacity: 1, transition: { staggerChildren: 0.15, delayChildren: 0.2 } } };
   const item = { hidden: { opacity: 0, y: 40, scale: 0.95 }, show: { opacity: 1, y: 0, scale: 1, transition: { type: "spring", stiffness: 100, damping: 20 } } };
 
   return (
-    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="px-4 pt-8 pb-6 md:px-8 md:pt-12 lg:px-12 lg:pt-16 min-h-screen transition-colors duration-500 relative bg-[#03091B]">
-      
-      {/* Background Layer Fixed for Mobile/Safari */}
-      <div className="fixed inset-0 bg-cover bg-center z-0 bg-[url('/images/bg-mobile-nature.png')] md:bg-[url('/images/bg-pc.png')] pointer-events-none"></div>
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+      className="px-4 pt-8 pb-6 md:px-8 md:pt-12 lg:px-12 lg:pt-16 min-h-screen relative bg-[#03091B]"
+    >
+      <style>{`
+        @keyframes lemoAurora {
+          0%,100% { transform: translate(0,0) scale(1); opacity:.6; }
+          33%      { transform: translate(8%,-4%) scale(1.05); opacity:.9; }
+          66%      { transform: translate(-6%,6%) scale(1.08); opacity:.75; }
+        }
+        .lemo-aurora { animation: lemoAurora 12s ease-in-out infinite; }
+        @keyframes lemoAuroraText { 0%{background-position:0% 50%} 100%{background-position:100% 50%} }
+      `}</style>
 
-      {/* Immersive 3D-like Background Elements */}
-      <motion.div style={{ y: yParallax, rotate: rotateParallax }} className="fixed top-[10%] right-[5%] w-[40vw] h-[40vw] bg-gradient-to-tr from-[#FF8731]/30 to-transparent rounded-full blur-[100px] pointer-events-none mix-blend-screen z-0"></motion.div>
-      <motion.div style={{ y: useTransform(scrollYProgress, [0, 1], [0, 150]) }} className="fixed bottom-[10%] left-[5%] w-[50vw] h-[50vw] bg-gradient-to-tr from-[#8756FA]/20 to-transparent rounded-full blur-[120px] pointer-events-none mix-blend-screen z-0"></motion.div>
+      <div className="fixed inset-0 bg-cover bg-center z-0 bg-[url('/images/bg-mobile-nature.png')] md:bg-[url('/images/bg-pc.png')] pointer-events-none" />
+      <div className="fixed top-[10%] right-[5%] w-[40vw] h-[40vw] bg-gradient-to-tr from-[#FF8731]/30 to-transparent rounded-full blur-[100px] pointer-events-none mix-blend-screen z-0" />
+      <div className="fixed bottom-[10%] left-[5%] w-[50vw] h-[50vw] bg-gradient-to-tr from-[#8756FA]/20 to-transparent rounded-full blur-[120px] pointer-events-none mix-blend-screen z-0" />
 
-      <div className="max-w-[1200px] 2xl:max-w-7xl mx-auto relative z-10 mb-20 md:mb-0">
-        {/* Hero Header */}
-        <div className="mb-6 lg:mb-8 2xl:mb-12 relative z-10 bg-[#03091B]/20 dark:bg-[#03091B]/40 backdrop-blur-[40px] p-5 lg:p-6 2xl:p-12 rounded-[1.5rem] lg:rounded-[2rem] 2xl:rounded-[3.5rem] border-t border-l border-white/20 border-r border-b border-white/5 shadow-[0_20px_60px_-10px_rgba(0,0,0,0.3)] w-full flex flex-col justify-center">
-          <motion.div initial={{ scale: 0, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ type: "spring", stiffness: 200, damping: 20 }} className="inline-flex items-center gap-2 px-3 py-1.5 2xl:px-4 2xl:py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 mb-2 2xl:mb-4 shadow-xl shadow-black/5 w-fit">
-            <img src="/images/logos/logo png.png" className="h-3.5 2xl:h-5 w-auto object-contain" alt="Lemons" />
-            <span className="text-[9px] lg:text-[10px] 2xl:text-sm font-bold tracking-widest uppercase text-white drop-shadow-md">{h.badge}</span>
-          </motion.div>
-          
-          <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1, duration: 0.8 }} className="text-5xl lg:text-[2rem] 2xl:text-[4.5rem] font-black font-serif text-white tracking-tighter mb-1.5 2xl:mb-4 leading-[1.1] pb-1 2xl:pb-2 overflow-visible flex flex-wrap items-baseline gap-x-2 2xl:gap-x-4 drop-shadow-sm">
-            <span>{h.greeting}</span>
-            <span className="relative inline-block overflow-visible">
-              <span className="relative z-10 text-[#A379F9]" style={{ textShadow: '0 0 40px rgba(135, 86, 250, 0.8), 0 4px 10px rgba(0,0,0,0.8), 0 1px 1px rgba(255,255,255,0.4)' }}>{user?.firstName || h.guest}</span>
+      <div className="max-w-[1200px] 2xl:max-w-7xl mx-auto relative z-10 mb-20 md:mb-0 flex flex-col gap-4 lg:gap-5 2xl:gap-6">
+
+        {/* ── HERO CARD ── */}
+        <motion.div
+          ref={heroRef}
+          onMouseMove={onHeroMove}
+          onMouseLeave={onHeroLeave}
+          style={{ rotateX: heroRotateX, rotateY: heroRotateY, transformPerspective: 1400, transformStyle: 'preserve-3d' }}
+          className="relative overflow-hidden bg-[#040F2A]/65 backdrop-blur-[40px] p-5 lg:p-6 2xl:p-12 rounded-[1.5rem] lg:rounded-[2rem] 2xl:rounded-[3.5rem] border border-white/[0.10] shadow-[0_30px_80px_-20px_rgba(3,9,27,0.7)]"
+        >
+          <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/25 to-transparent pointer-events-none" />
+
+          {/* Aurora blobs */}
+          <div className="absolute -left-10 top-1/4 w-[60%] h-[80%] pointer-events-none">
+            <div className="lemo-aurora absolute inset-0 rounded-full opacity-60"
+              style={{ background: 'radial-gradient(circle at 40% 40%, rgba(135,86,250,0.50), transparent 65%)', filter: 'blur(60px)' }} />
+            <div className="lemo-aurora absolute inset-0 rounded-full opacity-50"
+              style={{ background: 'radial-gradient(circle at 60% 70%, rgba(255,135,49,0.40), transparent 60%)', filter: 'blur(70px)', animationDelay: '-4s' }} />
+          </div>
+
+          {/* Badge row */}
+          <div className="relative z-10 flex items-center justify-between flex-wrap gap-3 mb-3 2xl:mb-5">
+            <div className="flex items-center gap-3 flex-wrap">
+              <motion.div
+                initial={{ scale: 0, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}
+                transition={{ type: "spring", stiffness: 200, damping: 20 }}
+                className="inline-flex items-center gap-2 px-3 py-1.5 2xl:px-4 2xl:py-2 rounded-full bg-white/[0.22] backdrop-blur-md border border-white/[0.40] shadow-xl shadow-black/5"
+              >
+                <img src="/images/logos/logo png.png" className="h-3.5 2xl:h-5 w-auto object-contain" alt="Lemons" />
+                <span
+                  className="text-[9px] lg:text-[10px] 2xl:text-sm font-bold tracking-widest uppercase bg-clip-text text-transparent"
+                  style={{ backgroundImage: 'linear-gradient(90deg, #8756FA 0%, #B385FF 30%, #FF9E54 65%, #FF8731 100%)', backgroundSize: '200% 100%', animation: 'lemo-badge-shift 4s ease-in-out infinite alternate' }}
+                >{h.badge}</span>
+              </motion.div>
+              <motion.span
+                initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.3, type: 'spring', stiffness: 200, damping: 20 }}
+                className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-full bg-emerald-400/10 border border-emerald-400/20 text-emerald-400 text-[10px] font-bold tracking-[0.12em] uppercase"
+              >
+                <span className="relative flex w-2 h-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-400" />
+                </span>
+                Operativo
+              </motion.span>
+            </div>
+            <span className="text-[11px] font-black tracking-[0.16em] uppercase text-white/70 flex items-center gap-2">
+              <Clock className="w-3.5 h-3.5" /> {dateLabel}
             </span>
-          </motion.h1>
-          
-          <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2, duration: 0.8 }} className="text-slate-200 font-medium text-xs lg:text-sm 2xl:text-xl leading-relaxed drop-shadow-md">
-            {h.subtitle}
-          </motion.p>
-        </div>
+          </div>
 
-        <motion.div variants={container} initial="hidden" animate="show" className="grid grid-cols-1 lg:grid-cols-12 gap-6 2xl:gap-8 relative z-10">
-          
-          {/* Main Progress Dashboard - Epic Glassmorphism */}
-          <motion.div
-            variants={item}
-            className="lg:col-span-12 group relative h-full bg-[#03091B]/20 dark:bg-[#03091B]/40 backdrop-blur-[40px] rounded-[2rem] 2xl:rounded-[3.5rem] p-8 lg:p-10 2xl:p-14 shadow-[0_20px_60px_-10px_rgba(0,0,0,0.3)] border-t border-l border-white/20 border-r border-b border-white/5 flex flex-col md:flex-row items-center gap-8 lg:gap-10 2xl:gap-12"
-          >
+          <ChapterLine num={1} label="Benvenuto" />
 
-            <div className="contents">
-
-              {/* Solid Matte 3D Skeuomorphic Progress Ring */}
-              <div className="relative w-48 h-48 lg:w-56 lg:h-56 2xl:w-64 2xl:h-64 shrink-0 flex items-center justify-center z-10">
-                <motion.div 
-                  animate={{ rotateY: [0, 5, -5, 0], rotateX: [0, 5, -5, 0] }} 
-                  transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-                  className="relative w-full h-full flex items-center justify-center drop-shadow-[0_15px_25px_rgba(3,9,27,0.5)]"
+          <div className="relative z-10 flex items-start justify-between gap-4">
+            <div className="flex-1 min-w-0">
+              <motion.h1
+                initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.1, duration: 0.8 }}
+                className="text-5xl lg:text-[3.5rem] 2xl:text-[4.5rem] font-black font-serif text-white tracking-tighter mb-1.5 2xl:mb-4 leading-[1.1] overflow-visible flex flex-wrap items-baseline gap-x-2 2xl:gap-x-4 drop-shadow-sm"
+              >
+                <span>{h.greeting}</span>
+                <span
+                  className="bg-clip-text text-transparent"
+                  style={{
+                    backgroundImage: 'linear-gradient(90deg, #FF8731 0%, #FF9E54 35%, #B385FF 70%, #8756FA 100%)',
+                    backgroundSize: '200% 100%',
+                    animation: 'lemoAuroraText 6s ease-in-out infinite alternate',
+                    paddingRight: '0.05em',
+                  }}
                 >
-                  <svg className="absolute inset-0 w-full h-full transform -rotate-90 overflow-visible" viewBox="0 0 256 256">
-                    <defs>
-                      <linearGradient id="lemonsGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" stopColor="#FF9E54" /> {/* Lemons Light Orange */}
-                        <stop offset="100%" stopColor="#FF8731" /> {/* Lemons Orange */}
-                      </linearGradient>
-                      
-                      {/* Filter for the raised 3D progress bar (clean drop shadow without inner artifacts) */}
-                      <filter id="raised3D" x="-20%" y="-20%" width="140%" height="140%">
-                        {/* Drop shadow behind the tube */}
-                        <feDropShadow dx="0" dy="6" stdDeviation="5" floodColor="#000000" floodOpacity="0.5" result="dropShadow" />
-                        <feDropShadow dx="0" dy="2" stdDeviation="2" floodColor="#000000" floodOpacity="0.3" result="dropShadow2" />
-                        
-                        {/* Merge shadow with graphic */}
-                        <feMerge>
-                          <feMergeNode in="dropShadow" />
-                          <feMergeNode in="dropShadow2" />
-                          <feMergeNode in="SourceGraphic" />
-                        </feMerge>
-                      </filter>
-                      
-                      {/* Filter for the recessed track (inner shadow) */}
-                      <filter id="recessedTrack" x="-20%" y="-20%" width="140%" height="140%">
-                        <feOffset dx="0" dy="4"/>
-                        <feGaussianBlur stdDeviation="3" result="offset-blur"/>
-                        <feComposite operator="out" in="SourceGraphic" in2="offset-blur" result="inverse"/>
-                        <feFlood floodColor="black" floodOpacity="0.6" result="color"/>
-                        <feComposite operator="in" in="color" in2="inverse" result="shadow"/>
-                        <feComposite operator="over" in="shadow" in2="SourceGraphic"/>
-                      </filter>
-                    </defs>
+                  {user?.firstName || h.guest}
+                </span>
+              </motion.h1>
+              <motion.p
+                initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2, duration: 0.8 }}
+                className="text-slate-200 font-medium text-xs lg:text-sm 2xl:text-xl leading-relaxed drop-shadow-md"
+              >
+                {h.subtitle}
+              </motion.p>
+            </div>
 
-                    {/* Recessed Track */}
-                    <circle 
-                      cx="128" cy="128" r="110" 
-                      fill="none" 
-                      stroke="#0d1428" 
-                      strokeWidth="18" 
-                      filter="url(#recessedTrack)"
-                    />
+          </div>
+        </motion.div>
 
-                    {/* Raised 3D Progress Ring */}
-                    <circle 
-                      cx="128" cy="128" r="110" 
-                      fill="none" 
-                      stroke="url(#lemonsGradient)" 
-                      strokeWidth="18" 
-                      strokeLinecap="round" 
-                      strokeDasharray="691" 
-                      strokeDashoffset={691 - (691 * progressPercentage) / 100} 
-                      className="transition-all duration-[2s] ease-out" 
-                      filter="url(#raised3D)"
-                    />
-                  </svg>
+        {/* hairline */}
+        <div className="h-px bg-white/[0.08] mx-2" />
 
-                  {/* Center Content with Glass Plate (Matching Hero Panel) */}
-                  <div className="absolute inset-[15px] lg:inset-[20px] rounded-full bg-[#03091B]/5 backdrop-blur-[40px] border-t border-l border-white/20 border-r border-b border-white/5 shadow-[0_40px_100px_-10px_rgba(3,9,27,0.8)] flex flex-col items-center justify-center z-10">
-                    <motion.span 
-                      initial={{ scale: 0, opacity: 0 }} 
-                      animate={{ scale: 1, opacity: 1 }} 
-                      transition={{ delay: 0.2, type: "spring", stiffness: 120 }} 
-                      className="text-4xl lg:text-5xl 2xl:text-6xl font-black font-serif text-white tracking-normal flex items-baseline"
-                      style={{ textShadow: '0 8px 16px rgba(0,0,0,0.9), 0 2px 4px rgba(0,0,0,0.6)' }}
-                    >
-                      {progressPercentage}
-                      <span className="text-2xl 2xl:text-3xl text-white ml-1 font-sans tracking-normal opacity-90">%</span>
-                    </motion.span>
-                  </div>
-                </motion.div>
-              </div>
-              
-              <div className="flex-1 text-center md:text-left relative z-10">
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-xs 2xl:text-sm font-bold text-white mb-3 2xl:mb-4 border border-white/10 backdrop-blur-md shadow-inner">
-                  <Target className="w-3 h-3 2xl:w-4 2xl:h-4 text-[#FF8731]" />
-                  {completedCount} {h.modulesOf} {totalLessons} {h.modulesCompleted}
-                </div>
+        {/* ── PROGRESS CARD ── */}
+        <motion.div variants={container} initial="hidden" animate="show">
+          <motion.div variants={item}>
+            <motion.div
+              ref={progressRef}
+              onMouseMove={onProgressMove}
+              onMouseLeave={onProgressLeave}
+              style={{ rotateX: progressRotateX, rotateY: progressRotateY, transformPerspective: 1400, transformStyle: 'preserve-3d' }}
+              className="group relative overflow-hidden bg-[#040F2A]/65 backdrop-blur-[40px] rounded-[2rem] 2xl:rounded-[3.5rem] p-8 lg:p-10 2xl:p-14 shadow-[0_30px_80px_-20px_rgba(3,9,27,0.7)] border border-white/[0.10] flex flex-col md:flex-row items-center gap-8 lg:gap-10 2xl:gap-12"
+            >
+              <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/25 to-transparent pointer-events-none" />
+              <div className="absolute -left-32 -top-32 w-[420px] h-[420px] rounded-full bg-[#FF8731] opacity-[0.12] blur-[120px] pointer-events-none" />
+              <div className="absolute -right-32 -bottom-32 w-[420px] h-[420px] rounded-full bg-[#8756FA] opacity-[0.10] blur-[120px] pointer-events-none" />
+
+              <ProgressRing percent={progressPercentage} size={220} />
+
+              <div className="flex-1 text-center md:text-left relative z-10 w-full">
+                <ChapterLine num={2} label="Avanzamento" />
+
                 <h2 className="text-3xl lg:text-4xl 2xl:text-5xl font-black font-serif text-white mb-4 2xl:mb-6 leading-tight drop-shadow-sm">
                   {hasFinishedAll ? h.statusDone : h.statusProgress}
                 </h2>
 
-                {/* Descrizione — solo desktop (prima del bottone) */}
                 <p className="hidden md:block text-slate-300 text-base 2xl:text-lg mb-6 2xl:mb-8 leading-relaxed font-medium">
                   {hasFinishedAll ? h.descDone : h.descProgress}
                 </p>
 
+                <div className="h-px bg-white/[0.08] mb-6 hidden md:block" />
+
                 {!hasFinishedAll ? (
                   <motion.button
-                    whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}
+                    whileHover={{ scale: 1.025, y: -1 }} whileTap={{ scale: 0.97 }}
+                    transition={{ type: 'spring', stiffness: 380, damping: 22 }}
                     onClick={() => handleNav(`/modules?mode=${mode}&autoopen=${completedCount + 1}`)}
-                    className="w-full md:w-auto px-8 2xl:px-10 py-5 2xl:py-6 bg-gradient-to-r from-[#8756FA] to-[#FF8731] text-white rounded-[2rem] 2xl:rounded-[2.5rem] font-black text-lg 2xl:text-xl flex items-center justify-center gap-3 2xl:gap-4 transition-all shadow-[0_15px_40px_-10px_rgba(135,86,250,0.8),inset_0_2px_4px_rgba(255,255,255,0.3)] hover:shadow-[0_20px_60px_-10px_rgba(255,135,49,1),inset_0_2px_4px_rgba(255,255,255,0.5)]"
+                    className="group relative inline-flex items-center gap-3 px-7 py-4 lg:px-8 lg:py-5 rounded-2xl lg:rounded-[1.75rem] font-bold text-white text-[15px] lg:text-[16px] tracking-tight overflow-hidden"
+                    style={{
+                      background: 'linear-gradient(90deg, #8756FA 0%, #B385FF 50%, #FF8731 100%)',
+                      boxShadow: '0 18px 40px -10px rgba(255,135,49,0.55), 0 10px 30px -10px rgba(135,86,250,0.55), inset 0 1px 0 rgba(255,255,255,0.30)',
+                    }}
                   >
-                    <span className="relative z-10 drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]">{h.goModules}</span>
-                    <div className="w-6 h-6 2xl:w-8 2xl:h-8 rounded-full bg-white/20 flex items-center justify-center relative z-10 transition-colors duration-300 border border-white/30 shadow-inner">
-                      <ArrowRight className="w-4 h-4 2xl:w-5 2xl:h-5" />
-                    </div>
+                    <span className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-[900ms] ease-out bg-gradient-to-r from-transparent via-white/30 to-transparent skew-x-12 pointer-events-none" />
+                    <span className="relative z-10">{h.goModules}</span>
+                    <span className="relative z-10 w-7 h-7 rounded-full flex items-center justify-center transition-transform duration-300 group-hover:translate-x-0.5"
+                      style={{ background: 'rgba(255,255,255,0.22)', border: '1px solid rgba(255,255,255,0.30)', backdropFilter: 'blur(10px)' }}>
+                      <ArrowRight className="w-3.5 h-3.5" strokeWidth={2.5} />
+                    </span>
                   </motion.button>
                 ) : (
                   <motion.button
-                    whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}
+                    whileHover={{ scale: 1.025, y: -1 }} whileTap={{ scale: 0.97 }}
                     onClick={downloadCertificate}
-                    className="w-full md:w-auto px-8 2xl:px-10 py-5 2xl:py-6 bg-gradient-to-r from-[#FF8731] to-[#FF9E54] text-white rounded-[2rem] 2xl:rounded-[2.5rem] font-black text-lg 2xl:text-xl flex items-center justify-center gap-3 2xl:gap-4 transition-all shadow-[0_15px_30px_rgba(255,135,49,0.5),inset_0_2px_10px_rgba(255,255,255,0.4)] hover:shadow-[0_20px_40px_rgba(255,135,49,0.8),inset_0_2px_10px_rgba(255,255,255,0.6)] border border-[#FF8731]/50"
+                    className="group relative inline-flex items-center gap-3 px-7 py-4 lg:px-8 lg:py-5 rounded-2xl lg:rounded-[1.75rem] font-bold text-white text-[15px] lg:text-[16px] tracking-tight overflow-hidden"
+                    style={{
+                      background: 'linear-gradient(90deg, #FF8731 0%, #FF9E54 100%)',
+                      boxShadow: '0 18px 40px -10px rgba(255,135,49,0.65), inset 0 1px 0 rgba(255,255,255,0.35)',
+                    }}
                   >
-                    <Award className="w-6 h-6 2xl:w-7 2xl:h-7 relative z-10 drop-shadow-md" />
-                    <span className="relative z-10 drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] tracking-wide">{h.getCert}</span>
+                    <span className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-[900ms] ease-out bg-gradient-to-r from-transparent via-white/30 to-transparent skew-x-12 pointer-events-none" />
+                    <Award className="w-4 h-4 relative z-10" />
+                    <span className="relative z-10">{h.getCert}</span>
                   </motion.button>
                 )}
 
-                {/* Descrizione — solo mobile (dopo il bottone) */}
+                <div className="mt-6">
+                  <ModuleStepper completed={completedCount} total={totalLessons} />
+                </div>
+
                 <p className="md:hidden text-slate-300 text-base leading-relaxed font-medium mt-4">
                   {hasFinishedAll ? h.descDone : h.descProgress}
                 </p>
               </div>
-            </div>
+            </motion.div>
           </motion.div>
-
-
         </motion.div>
+
       </div>
 
-      {/* Newsletter Popup */}
+      {/* ── NEWSLETTER POPUP ── */}
       <AnimatePresence>
         {showNewsletter && (
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
             className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-4 bg-black/40 backdrop-blur-sm"
             onClick={(e) => { if (e.target === e.currentTarget) closeNewsletter(); }}
           >
@@ -276,20 +463,12 @@ const Home = () => {
             >
               <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent" />
               <div className="absolute -top-20 left-1/2 -translate-x-1/2 w-[280px] h-[280px] rounded-full bg-[#8756FA] opacity-[0.12] blur-[80px] pointer-events-none" />
-
-              <button
-                onClick={closeNewsletter}
-                className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 text-slate-400 hover:text-white transition-all"
-              >
+              <button onClick={closeNewsletter} className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 text-slate-400 hover:text-white transition-all">
                 <X className="w-4 h-4" />
               </button>
 
               {newsletterStatus === 'success' ? (
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  className="flex flex-col items-center text-center py-4"
-                >
+                <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="flex flex-col items-center text-center py-4">
                   <div className="w-16 h-16 rounded-full bg-gradient-to-br from-[#8756FA] to-[#FF8731] flex items-center justify-center mb-4 shadow-[0_8px_32px_-8px_rgba(135,86,250,0.6)]">
                     <img src="/images/logos/logo bianco png.png" alt="Lemons" className="w-8 h-8 object-contain" />
                   </div>
@@ -311,27 +490,15 @@ const Home = () => {
                       Novità, aggiornamenti e contenuti esclusivi sull'uso della realtà virtuale in sanità.
                     </p>
                   </div>
-
                   <form onSubmit={handleNewsletterSubmit} className="relative z-10 space-y-3">
                     <div className="relative">
                       <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 pointer-events-none" />
-                      <input
-                        type="email"
-                        required
-                        value={newsletterEmail}
-                        onChange={(e) => setNewsletterEmail(e.target.value)}
-                        placeholder="La tua email"
-                        className="block w-full pl-11 pr-4 h-12 bg-white/[0.04] hover:bg-white/[0.06] focus:bg-white/[0.07] border border-white/[0.08] focus:border-[#8756FA]/60 rounded-2xl text-white text-[15px] font-semibold placeholder-slate-600 outline-none transition-all duration-300"
-                      />
+                      <input type="email" required value={newsletterEmail} onChange={(e) => setNewsletterEmail(e.target.value)} placeholder="La tua email"
+                        className="block w-full pl-11 pr-4 h-12 bg-white/[0.04] hover:bg-white/[0.06] focus:bg-white/[0.07] border border-white/[0.08] focus:border-[#8756FA]/60 rounded-2xl text-white text-[15px] font-semibold placeholder-slate-600 outline-none transition-all duration-300" />
                     </div>
-                    <motion.button
-                      type="submit"
-                      disabled={newsletterStatus === 'loading'}
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.98 }}
+                    <motion.button type="submit" disabled={newsletterStatus === 'loading'} whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
                       className="group w-full h-12 rounded-2xl font-bold text-white text-[15px] flex items-center justify-center gap-2 relative overflow-hidden disabled:opacity-60"
-                      style={{ background: 'linear-gradient(90deg, #8756FA 0%, #B385FF 50%, #FF8731 100%)', boxShadow: '0 8px 32px -8px rgba(135,86,250,0.5)' }}
-                    >
+                      style={{ background: 'linear-gradient(90deg, #8756FA 0%, #B385FF 50%, #FF8731 100%)', boxShadow: '0 8px 32px -8px rgba(135,86,250,0.5)' }}>
                       <span className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-[900ms] ease-out bg-gradient-to-r from-transparent via-white/20 to-transparent skew-x-12" />
                       <span className="relative z-10">{newsletterStatus === 'loading' ? 'Iscrizione...' : 'Iscriviti'}</span>
                       <Send className="w-4 h-4 relative z-10 group-hover:translate-x-0.5 transition-transform" />
@@ -347,59 +514,40 @@ const Home = () => {
         )}
       </AnimatePresence>
 
-      {/* Certificato Invisibile */}
+      {/* ── CERTIFICATO INVISIBILE ── */}
       <div style={{ position: 'absolute', left: '-9999px', top: '-9999px' }}>
         <div id="certificate-template" style={{ width: '1123px', height: '794px', backgroundColor: '#ffffff', position: 'relative', overflow: 'hidden', fontFamily: "'Nunito', sans-serif" }}>
-          
-          <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, border: '25px solid #03091B', boxSizing: 'border-box' }}></div>
-          <div style={{ position: 'absolute', top: '35px', left: '35px', right: '35px', bottom: '35px', border: '2px solid #e2e8f0', boxSizing: 'border-box' }}></div>
-          <div style={{ position: 'absolute', top: '40px', left: '40px', right: '40px', bottom: '40px', border: '1px solid #e2e8f0', boxSizing: 'border-box' }}></div>
-
-          <div style={{ position: 'absolute', top: '-100px', right: '-100px', width: '400px', height: '400px', backgroundColor: '#FF8731', borderRadius: '50%', opacity: '0.2' }}></div>
-          <div style={{ position: 'absolute', bottom: '-150px', left: '-150px', width: '500px', height: '500px', backgroundColor: '#03091B', borderRadius: '50%', opacity: '0.05' }}></div>
-
+          <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, border: '25px solid #03091B', boxSizing: 'border-box' }} />
+          <div style={{ position: 'absolute', top: '35px', left: '35px', right: '35px', bottom: '35px', border: '2px solid #e2e8f0', boxSizing: 'border-box' }} />
+          <div style={{ position: 'absolute', top: '40px', left: '40px', right: '40px', bottom: '40px', border: '1px solid #e2e8f0', boxSizing: 'border-box' }} />
+          <div style={{ position: 'absolute', top: '-100px', right: '-100px', width: '400px', height: '400px', backgroundColor: '#FF8731', borderRadius: '50%', opacity: '0.2' }} />
+          <div style={{ position: 'absolute', bottom: '-150px', left: '-150px', width: '500px', height: '500px', backgroundColor: '#03091B', borderRadius: '50%', opacity: '0.05' }} />
           <div style={{ position: 'relative', zIndex: 10, height: '100%', padding: '60px 80px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', boxSizing: 'border-box' }}>
-            
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-              <div style={{ display: 'flex', alignItems: 'center' }}>
-                <img src="/images/logos/logo esteso nero png.png" alt="Lemons in the room" style={{ height: '70px', width: 'auto', objectFit: 'contain' }} />
-              </div>
+              <img src="/images/logos/logo esteso nero png.png" alt="Lemons in the room" style={{ height: '70px', width: 'auto', objectFit: 'contain' }} />
               <div style={{ textAlign: 'right', marginTop: '10px' }}>
                 <p style={{ margin: 0, fontSize: '11px', color: '#94a3b8', letterSpacing: '2px', textTransform: 'uppercase', fontWeight: 'bold' }}>Codice Attestato</p>
                 <p style={{ margin: 0, fontSize: '14px', color: '#03091B', letterSpacing: '4px', fontWeight: 'bold', fontFamily: 'monospace' }}>{certificateCode}</p>
               </div>
             </div>
-
             <div style={{ textAlign: 'center', marginTop: '-20px' }}>
               <div style={{ marginBottom: '30px' }}>
-                <div style={{ display: 'inline-block' }}>
-                  <h1 style={{ margin: 0, fontSize: '56px', fontWeight: '900', color: '#03091B', letterSpacing: '4px', textTransform: 'uppercase', fontFamily: "'Recoleta Alt', serif" }}>
-                    Attestato di Qualifica
-                  </h1>
-                  <div style={{ width: '100%', height: '4px', backgroundColor: '#FF8731', margin: '15px auto 0 auto' }}></div>
-                </div>
+                <h1 style={{ margin: 0, fontSize: '56px', fontWeight: '900', color: '#03091B', letterSpacing: '4px', textTransform: 'uppercase', fontFamily: "'Recoleta Alt', serif" }}>Attestato di Qualifica</h1>
+                <div style={{ width: '100%', height: '4px', backgroundColor: '#FF8731', margin: '15px auto 0 auto' }} />
               </div>
-
               <div style={{ marginBottom: '30px' }}>
                 <p style={{ margin: '0 0 8px 0', fontSize: '18px', color: '#64748b', letterSpacing: '2px', textTransform: 'uppercase' }}>Conferito con merito a:</p>
-                <h2 style={{ margin: 0, fontSize: '48px', fontWeight: 'bold', color: '#03091B', textTransform: 'capitalize' }}>
-                  {user?.name || 'Mario Rossi'}
-                </h2>
+                <h2 style={{ margin: 0, fontSize: '48px', fontWeight: 'bold', color: '#03091B', textTransform: 'capitalize' }}>{user?.name || 'Mario Rossi'}</h2>
               </div>
-
-              <div>
-                <p style={{ margin: '0 auto', fontSize: '18px', color: '#475569', lineHeight: '1.5', maxWidth: '800px' }}>
-                  Per aver completato con successo l'intero percorso formativo e aver dimostrato piena competenza tecnica, operativa e procedurale nell'utilizzo dell'ecosistema <strong>Lemons in the room</strong> presso la struttura <strong>{user?.hospital || 'Struttura Ospedaliera'}</strong> ({user?.department || 'Reparto'}).
-                </p>
-              </div>
+              <p style={{ margin: '0 auto', fontSize: '18px', color: '#475569', lineHeight: '1.5', maxWidth: '800px' }}>
+                Per aver completato con successo l'intero percorso formativo e aver dimostrato piena competenza tecnica, operativa e procedurale nell'utilizzo dell'ecosistema <strong>Lemons in the room</strong> presso la struttura <strong>{user?.hospital || 'Struttura Ospedaliera'}</strong> ({user?.department || 'Reparto'}).
+              </p>
             </div>
-
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', padding: '0 20px', marginBottom: '20px' }}>
               <div style={{ textAlign: 'center', flex: 1 }}>
                 <p style={{ margin: '0 auto 8px auto', fontSize: '20px', fontWeight: 'bold', color: '#03091B', borderBottom: '2px solid #cbd5e1', paddingBottom: '8px', maxWidth: '180px' }}>{certificateDate}</p>
                 <p style={{ margin: 0, fontSize: '12px', color: '#64748b', textTransform: 'uppercase', letterSpacing: '2px', fontWeight: 'bold' }}>Data di Rilascio</p>
               </div>
-
               <div style={{ textAlign: 'center', flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-end', marginBottom: '10px' }}>
                 <span style={{ fontSize: '12px', fontWeight: '900', color: '#03091B', textAlign: 'center', lineHeight: '1.2', marginBottom: '8px', letterSpacing: '1px' }}>LEMONS<br/>CERTIFIED</span>
                 <img src="/images/logos/Logo nero png.png" alt="Lemons Certified" style={{ width: '40px', height: 'auto', objectFit: 'contain' }} />
@@ -411,7 +559,6 @@ const Home = () => {
                 <p style={{ margin: 0, fontSize: '12px', color: '#64748b', textTransform: 'uppercase', letterSpacing: '2px', fontWeight: 'bold' }}>Firma Autorizzata</p>
               </div>
             </div>
-            
           </div>
         </div>
       </div>
@@ -419,4 +566,5 @@ const Home = () => {
     </motion.div>
   );
 };
+
 export default Home;

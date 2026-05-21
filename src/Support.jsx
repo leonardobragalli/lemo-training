@@ -1,8 +1,230 @@
-import { useState } from 'react';
-import { HelpCircle, MessageSquareHeart, Phone, Send, ChevronDown, ChevronUp, CheckCircle, Sparkles } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { useState, useRef } from 'react';
+import {
+  HelpCircle, ChevronDown, Send, CheckCircle, Sparkles, Phone, ShieldCheck,
+  Wrench, MessageSquareHeart, AlertTriangle, ArrowRight,
+} from 'lucide-react';
+import {
+  motion, AnimatePresence,
+  useMotionValue, useTransform, useSpring,
+} from 'framer-motion';
 import { audio } from './utils/audio';
 import { useLang } from './LanguageContext';
+
+const TAG_COLORS = {
+  Generale:  { bg: 'rgba(135,86,250,0.12)', border: 'rgba(135,86,250,0.30)', text: '#B385FF' },
+  Sicurezza: { bg: 'rgba(16,185,129,0.10)',  border: 'rgba(16,185,129,0.30)',  text: '#34D399' },
+  Hardware:  { bg: 'rgba(255,135,49,0.10)',  border: 'rgba(255,135,49,0.30)',  text: '#FF9E54' },
+  Software:  { bg: 'rgba(56,189,248,0.10)',  border: 'rgba(56,189,248,0.30)',  text: '#7DD3FC' },
+};
+const DEFAULT_TAG = TAG_COLORS.Generale;
+
+const ChapterLine = ({ num, label }) => (
+  <div className="flex items-center gap-2 mb-2">
+    <span className="text-[10px] font-black tracking-[0.22em] uppercase text-white/30">{String(num).padStart(2, '0')}</span>
+    <span className="h-px w-8 bg-white/[0.15]" />
+    {label && <span className="text-[10px] font-black tracking-[0.22em] uppercase text-white/30">{label}</span>}
+  </div>
+);
+
+const FaqItem = ({ faq, index, isOpen, onToggle }) => {
+  const tc = TAG_COLORS[faq.tag] || DEFAULT_TAG;
+  return (
+    <div
+      className={`relative overflow-hidden rounded-[1.5rem] lg:rounded-[1.75rem] backdrop-blur-[40px] border transition-colors duration-300 ${
+        isOpen
+          ? 'bg-[#03091B]/60 border-[#8756FA]/35'
+          : 'bg-[#040F2A]/65 border-white/[0.08] hover:border-[#8756FA]/25'
+      }`}
+    >
+      <button
+        onClick={onToggle}
+        className="relative z-10 w-full text-left px-5 py-4 lg:px-6 lg:py-5 flex items-start gap-4"
+      >
+        <div className="flex-1 min-w-0">
+          {faq.tag && (
+            <span
+              className="inline-flex items-center px-2 py-0.5 rounded-full text-[9.5px] font-black tracking-[0.16em] uppercase mb-2"
+              style={{ background: tc.bg, border: `1px solid ${tc.border}`, color: tc.text }}
+            >
+              {faq.tag}
+            </span>
+          )}
+          <h4 className={`font-serif font-black text-[16px] lg:text-[17px] 2xl:text-[20px] leading-[1.25] tracking-[-0.01em] ${isOpen ? 'text-white' : 'text-slate-100'}`}>
+            {faq.q}
+          </h4>
+        </div>
+        <motion.div
+          animate={{ rotate: isOpen ? 180 : 0 }}
+          transition={{ type: 'spring', stiffness: 300, damping: 22 }}
+          className="shrink-0 w-9 h-9 rounded-full flex items-center justify-center"
+          style={{
+            background: isOpen ? 'linear-gradient(135deg, #8756FA, #6A35E8)' : 'rgba(255,255,255,0.05)',
+            border: isOpen ? '1px solid rgba(255,255,255,0.20)' : '1px solid rgba(255,255,255,0.10)',
+            boxShadow: isOpen ? '0 8px 20px -6px rgba(135,86,250,0.55), inset 0 1px 0 rgba(255,255,255,0.25)' : 'none',
+          }}
+        >
+          <ChevronDown className="w-4 h-4 text-white" strokeWidth={2.6} />
+        </motion.div>
+      </button>
+
+      <AnimatePresence initial={false}>
+        {isOpen && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+            className="overflow-hidden"
+          >
+            <div className="border-t border-white/[0.08] mx-5 lg:mx-6" />
+            <p className="relative z-10 px-5 pt-4 pb-5 lg:px-6 lg:pt-5 lg:pb-6 text-slate-300 font-medium text-[13.5px] lg:text-[14.5px] 2xl:text-base leading-relaxed">
+              {faq.a}
+            </p>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+};
+
+const ContactCard = ({ name, role, desc, phone, accent }) => {
+  const ref = useRef(null);
+  const mx = useMotionValue(0);
+  const my = useMotionValue(0);
+  const sx = useSpring(mx, { stiffness: 90, damping: 18 });
+  const sy = useSpring(my, { stiffness: 90, damping: 18 });
+  const rotateY = useTransform(sx, [-0.5, 0.5], [4, -4]);
+  const rotateX = useTransform(sy, [-0.5, 0.5], [-3, 3]);
+
+  const onMove = (e) => {
+    const r = ref.current.getBoundingClientRect();
+    mx.set((e.clientX - r.left) / r.width - 0.5);
+    my.set((e.clientY - r.top) / r.height - 0.5);
+  };
+  const onLeave = () => { mx.set(0); my.set(0); };
+
+  const accentColor = accent === 'orange' ? '#FF8731' : '#8756FA';
+  const accentDeep  = accent === 'orange' ? '#E65C00' : '#6A35E8';
+  const accentLight = accent === 'orange' ? '#FF9E54' : '#B385FF';
+  const initials = name.split(' ').map(w => w[0]).join('');
+
+  return (
+    <motion.a
+      ref={ref}
+      href={`tel:${phone.replace(/\s+/g, '')}`}
+      onMouseMove={onMove}
+      onMouseLeave={onLeave}
+      onClick={() => audio.playClick()}
+      style={{ rotateX, rotateY, transformPerspective: 1600 }}
+      whileTap={{ scale: 0.99 }}
+      className="group relative block overflow-hidden rounded-[1.75rem] lg:rounded-[2rem] p-5 lg:p-6 2xl:p-8 bg-[#040F2A]/65 backdrop-blur-[40px] border border-white/[0.10] hover:border-white/20 transition-colors"
+    >
+      <div
+        className="absolute -top-20 -right-10 w-[260px] h-[260px] rounded-full opacity-25 group-hover:opacity-40 transition-opacity pointer-events-none"
+        style={{ background: accentColor, filter: 'blur(80px)' }}
+      />
+      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/25 to-transparent pointer-events-none" />
+
+      <div className="relative z-10 flex items-start gap-4">
+        <div className="relative shrink-0">
+          <div
+            className="w-14 h-14 2xl:w-16 2xl:h-16 rounded-full flex items-center justify-center font-serif font-black text-white text-[18px] 2xl:text-[20px] tracking-tight"
+            style={{
+              background: `linear-gradient(135deg, ${accentColor}, ${accentDeep})`,
+              boxShadow: `0 12px 30px -8px ${accentColor}88, inset 0 1px 0 rgba(255,255,255,0.30)`,
+            }}
+          >
+            {initials}
+          </div>
+          <div className="absolute -bottom-0.5 -right-0.5 w-4 h-4 rounded-full bg-emerald-400 border-2 border-[#03091B] flex items-center justify-center">
+            <span className="absolute inset-0 rounded-full bg-emerald-400 opacity-60 animate-ping" />
+          </div>
+        </div>
+
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2 mb-1">
+            <span
+              className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9.5px] font-black tracking-[0.16em] uppercase"
+              style={{
+                background: `${accentColor}14`,
+                border: `1px solid ${accentColor}55`,
+                color: accentLight,
+              }}
+            >
+              <Sparkles className="w-2.5 h-2.5" />
+              {role}
+            </span>
+          </div>
+          <h3 className="font-serif font-black text-white text-[20px] 2xl:text-[22px] leading-tight truncate">{name}</h3>
+          <p className="text-slate-400 text-[12px] 2xl:text-sm font-medium mt-0.5">{desc}</p>
+        </div>
+      </div>
+
+      <div className="relative z-10 mt-5 pt-4 border-t border-white/[0.08] flex items-center justify-between gap-3">
+        <div className="flex items-center gap-3 min-w-0">
+          <div
+            className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0"
+            style={{
+              background: `linear-gradient(135deg, ${accentColor}22, ${accentColor}08)`,
+              border: `1px solid ${accentColor}33`,
+            }}
+          >
+            <Phone className="w-4 h-4" style={{ color: accentColor }} strokeWidth={2.4} />
+          </div>
+          <div className="min-w-0">
+            <div className="text-[9.5px] font-black tracking-[0.18em] uppercase text-slate-500">Chiama ora</div>
+            <div className="text-white font-bold text-[15.5px] 2xl:text-base tracking-tight truncate">{phone}</div>
+          </div>
+        </div>
+        <motion.div
+          className="shrink-0 w-9 h-9 rounded-full flex items-center justify-center"
+          style={{
+            background: 'rgba(255,255,255,0.05)',
+            border: '1px solid rgba(255,255,255,0.10)',
+          }}
+          animate={{ x: [0, 4, 0] }}
+          transition={{ duration: 1.6, repeat: Infinity, ease: 'easeInOut' }}
+        >
+          <ArrowRight className="w-4 h-4 text-white" strokeWidth={2.4} />
+        </motion.div>
+      </div>
+    </motion.a>
+  );
+};
+
+const SegmentedControl = ({ value, onChange, options }) => (
+  <div className="relative grid grid-cols-2 gap-1 p-1 rounded-2xl bg-white/[0.04] border border-white/[0.08]">
+    {options.map(opt => {
+      const active = opt.value === value;
+      return (
+        <button
+          key={opt.value}
+          type="button"
+          onClick={() => onChange(opt.value)}
+          className="relative flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl text-[12.5px] font-bold transition-colors"
+        >
+          {active && (
+            <motion.div
+              layoutId="segActive"
+              className="absolute inset-0 rounded-xl"
+              style={{
+                background: opt.value === 'Tecnico'
+                  ? 'linear-gradient(135deg, #FF8731, #E65C00)'
+                  : 'linear-gradient(135deg, #8756FA, #6A35E8)',
+                boxShadow: opt.value === 'Tecnico'
+                  ? '0 8px 22px -8px rgba(255,135,49,0.6), inset 0 1px 0 rgba(255,255,255,0.30)'
+                  : '0 8px 22px -8px rgba(135,86,250,0.6), inset 0 1px 0 rgba(255,255,255,0.30)',
+              }}
+              transition={{ type: 'spring', stiffness: 380, damping: 30 }}
+            />
+          )}
+          <opt.icon className={`w-3.5 h-3.5 relative z-10 ${active ? 'text-white' : 'text-slate-400'}`} strokeWidth={2.4} />
+          <span className={`relative z-10 ${active ? 'text-white' : 'text-slate-300'}`}>{opt.label}</span>
+        </button>
+      );
+    })}
+  </div>
+);
 
 const Support = () => {
   const [openFaq, setOpenFaq] = useState(null);
@@ -18,27 +240,27 @@ const Support = () => {
   const handleTicketSubmit = async (e) => {
     e.preventDefault();
     if (!ticketSubject.trim() || !ticketMessage.trim()) return;
-    
+
     audio.playClick();
     setIsSubmitting(true);
     setErrorMessage('');
-    
+
     const savedUser = JSON.parse(localStorage.getItem('lemo_user')) || {};
-    
+
     const payload = {
       subject: `[${ticketType}] Ticket Supporto: ${ticketSubject}`,
-      ticketType: ticketType,
+      ticketType,
       message: ticketMessage,
       user_name: savedUser.name || 'Sconosciuto',
       hospital: savedUser.hospital || 'Non specificato',
       department: savedUser.department || 'Non specificato',
-      patientType: savedUser.patientType || 'Non specificato'
+      patientType: savedUser.patientType || 'Non specificato',
     };
 
     try {
       const [r1, r2] = await Promise.all([
-        fetch('https://formspree.io/f/mjglzlqo', { method: 'POST', headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }),
-        fetch('https://formspree.io/f/mqenjjnb', { method: 'POST', headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }),
+        fetch('https://formspree.io/f/mjglzlqo', { method: 'POST', headers: { Accept: 'application/json', 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }),
+        fetch('https://formspree.io/f/mqenjjnb', { method: 'POST', headers: { Accept: 'application/json', 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }),
       ]);
 
       if (r1.ok && r2.ok) {
@@ -49,225 +271,296 @@ const Support = () => {
       } else {
         setErrorMessage(s.errorSend);
       }
-    } catch (error) {
-      console.error(error);
+    } catch (err) {
+      console.error(err);
       setErrorMessage(s.errorConnection);
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  const faqs = s.faqs;
+  const accent = ticketType === 'Tecnico' ? '#FF8731' : '#8756FA';
 
-  const container = { hidden: { opacity: 0 }, show: { opacity: 1, transition: { staggerChildren: 0.15, delayChildren: 0.1 } } };
-  const item = { hidden: { opacity: 0, y: 30 }, show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 100, damping: 20 } } };
+  const heroRef = useRef(null);
+  const heroMx = useMotionValue(0);
+  const heroMy = useMotionValue(0);
+  const heroSx = useSpring(heroMx, { stiffness: 100, damping: 20 });
+  const heroSy = useSpring(heroMy, { stiffness: 100, damping: 20 });
+  const heroRotateY = useTransform(heroSx, [-0.5, 0.5], [2, -2]);
+  const heroRotateX = useTransform(heroSy, [-0.5, 0.5], [-1.5, 1.5]);
+  const onHeroMove = (e) => {
+    const r = heroRef.current.getBoundingClientRect();
+    heroMx.set((e.clientX - r.left) / r.width - 0.5);
+    heroMy.set((e.clientY - r.top) / r.height - 0.5);
+  };
+  const onHeroLeave = () => { heroMx.set(0); heroMy.set(0); };
 
   return (
-    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="px-6 pt-12 pb-6 md:px-10 md:pt-12 lg:px-12 lg:pt-12 2xl:p-16 2xl:pt-20 max-w-[1200px] 2xl:max-w-[1600px] mx-auto mb-20 md:mb-0 relative z-10 min-h-screen">
-      
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="px-6 pt-12 pb-6 md:px-10 md:pt-12 lg:px-12 lg:pt-12 2xl:p-16 2xl:pt-20 max-w-[1200px] 2xl:max-w-7xl mx-auto mb-20 md:mb-0 relative z-10 min-h-screen">
+
       {/* Backgrounds */}
       <div className="fixed inset-0 bg-cover bg-center z-[-30] bg-[url('/images/bg-mobile-support.png')] md:hidden opacity-30 dark:opacity-20 mix-blend-luminosity"></div>
-      
       <div className="hidden md:block fixed inset-0 bg-cover bg-center z-[-30] bg-[url('/images/bg-support.png')] opacity-100"></div>
-      {/* Semi-transparent overlay to improve text legibility on PC */}
-      <div className="hidden md:block fixed inset-0 bg-white/50 dark:bg-black/50 backdrop-blur-[2px] z-[-29]"></div>
-
-      {/* Immersive Background Elements - Performance Optimized */}
+      <div className="hidden md:block fixed inset-0 bg-[#03091B]/60 backdrop-blur-[2px] z-[-29]"></div>
       <div className="fixed top-[-20%] right-[-10%] w-[50vw] h-[50vw] bg-gradient-to-tr from-[#FF8731] to-transparent rounded-full blur-[120px] opacity-20 pointer-events-none -z-20"></div>
       <div className="fixed bottom-[-10%] left-[-10%] w-[40vw] h-[40vw] bg-gradient-to-tr from-[#8756FA] to-transparent rounded-full blur-[100px] opacity-15 pointer-events-none -z-20"></div>
 
       {/* Hero Header */}
-      <div className="mb-8 lg:mb-10 2xl:mb-20 relative z-10">
-        <motion.div initial={{ scale: 0, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ type: "spring", stiffness: 200, damping: 20 }} className="inline-flex items-center gap-2 px-3 py-1.5 2xl:px-4 2xl:py-2 rounded-full bg-white/10 dark:bg-white/5 backdrop-blur-md border border-white/20 mb-4 2xl:mb-6 shadow-xl shadow-black/5">
-          <img src="/images/logos/logo png.png" className="h-3.5 2xl:h-5 w-auto object-contain" alt="Lemons" />
-          <span className="text-xs 2xl:text-sm font-bold tracking-widest uppercase bg-clip-text text-transparent bg-gradient-to-r from-[#8756FA] to-[#FF8731]">{s.badge}</span>
-        </motion.div>
-        
-        <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1, duration: 0.8 }} className="text-5xl md:text-[3rem] lg:text-[3.5rem] 2xl:text-[4.5rem] font-black font-serif text-[#03091B] dark:text-white tracking-tighter mb-1 leading-[1.1] pr-10 overflow-visible flex flex-wrap items-baseline gap-x-4">
+      <motion.div
+        ref={heroRef}
+        onMouseMove={onHeroMove}
+        onMouseLeave={onHeroLeave}
+        style={{ rotateX: heroRotateX, rotateY: heroRotateY, transformPerspective: 1400, transformStyle: 'preserve-3d' }}
+        className="mb-4 lg:mb-5 2xl:mb-8 relative overflow-hidden bg-[#040F2A]/65 backdrop-blur-[40px] p-5 lg:p-6 2xl:p-12 rounded-[1.5rem] lg:rounded-[2rem] 2xl:rounded-[3.5rem] border border-white/[0.10] shadow-[0_30px_80px_-20px_rgba(3,9,27,0.7)] z-10"
+      >
+        <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/25 to-transparent pointer-events-none" />
+
+        <div className="flex items-center gap-3 mb-3 2xl:mb-5 flex-wrap">
+          <motion.div initial={{ scale: 0, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ type: "spring", stiffness: 200, damping: 20 }} className="inline-flex items-center gap-2 px-3 py-1.5 2xl:px-4 2xl:py-2 rounded-full bg-white/[0.22] backdrop-blur-md border border-white/[0.40] shadow-xl shadow-black/5">
+            <img src="/images/logos/logo png.png" className="h-3.5 2xl:h-5 w-auto object-contain" alt="Lemons" />
+            <span
+              className="text-xs 2xl:text-sm font-bold tracking-widest uppercase bg-clip-text text-transparent"
+              style={{ backgroundImage: 'linear-gradient(90deg, #8756FA 0%, #B385FF 30%, #FF9E54 65%, #FF8731 100%)', backgroundSize: '200% 100%', animation: 'lemo-badge-shift 4s ease-in-out infinite alternate' }}
+            >{s.badge}</span>
+          </motion.div>
+          <motion.span
+            initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.3, type: 'spring', stiffness: 200, damping: 20 }}
+            className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-full bg-emerald-400/10 border border-emerald-400/20 text-emerald-400 text-[10px] font-bold tracking-[0.12em] uppercase"
+          >
+            <span className="relative flex w-2 h-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-400" />
+            </span>
+            Operativo
+          </motion.span>
+        </div>
+
+        <ChapterLine num={1} label="Supporto" />
+
+        <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1, duration: 0.8 }} className="text-5xl md:text-[3rem] lg:text-[3.5rem] 2xl:text-[4.5rem] font-black font-serif text-white tracking-tighter mb-1 leading-[1.1] pr-10 overflow-visible flex flex-wrap items-baseline gap-x-4">
           <span>{s.titleMain}</span>
           <span className="relative inline-block overflow-visible">
             <span className="relative z-10 text-transparent bg-clip-text bg-gradient-to-r from-[#FF8731] to-[#FF9E54] drop-shadow-sm pr-4">{s.titleAccent}</span>
           </span>
         </motion.h1>
-        
-        <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2, duration: 0.8 }} className="text-slate-700 dark:text-slate-400 font-medium text-base lg:text-lg 2xl:text-2xl max-w-2xl leading-relaxed">
+
+        <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2, duration: 0.8 }} className="text-slate-300 font-medium text-base lg:text-lg 2xl:text-2xl leading-relaxed mt-1">
           {s.subtitle}
         </motion.p>
-      </div>
+      </motion.div>
 
-      <motion.div variants={container} initial="hidden" animate="show" className="grid grid-cols-1 lg:grid-cols-2 gap-6 2xl:gap-8 relative z-10">
-        
-        {/* Accordion FAQ (Glassmorphism Extreme) */}
-        <motion.div variants={item} className="space-y-4 2xl:space-y-6 relative">
-          <h2 className="text-2xl lg:text-[1.75rem] 2xl:text-4xl font-black font-serif text-[#03091B] dark:text-white mb-4 2xl:mb-5 flex items-center gap-3 2xl:gap-4 drop-shadow-sm">
-            <HelpCircle className="w-7 h-7 lg:w-8 lg:h-8 2xl:w-10 2xl:h-10 text-[#8756FA]" />
-            {s.faqTitle}
-          </h2>
-          
-          <div className="space-y-3 2xl:space-y-5">
-            {faqs.map((faq, index) => (
-              <div key={index} className="bg-white/40 dark:bg-[#03091B]/40 backdrop-blur-3xl border border-white/50 dark:border-white/10 rounded-[1.5rem] 2xl:rounded-[2.5rem] overflow-hidden transition-all duration-500 hover:shadow-[0_20px_40px_-10px_rgba(135,86,250,0.15)] hover:border-[#8756FA]/30 group relative">
-                <div className="absolute inset-0 opacity-[0.03] mix-blend-overlay pointer-events-none bg-[url('https://grainy-gradients.vercel.app/noise.svg')] z-0"></div>
-                
-                <button 
-                  onClick={() => setOpenFaq(openFaq === index ? null : index)}
-                  className="w-full px-5 py-4 lg:px-6 lg:py-5 2xl:px-8 2xl:py-7 flex items-center justify-between font-black text-sm lg:text-base 2xl:text-xl text-[#03091B] dark:text-white text-left group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-[#8756FA] group-hover:to-[#9C73FA] transition-all relative z-10"
-                >
-                  <span className="pr-4 leading-tight">{faq.q}</span>
-                  <div className={`w-8 h-8 lg:w-10 lg:h-10 2xl:w-12 2xl:h-12 rounded-full flex items-center justify-center shrink-0 transition-all duration-500 shadow-inner ${openFaq === index ? 'bg-gradient-to-br from-[#8756FA] to-[#6A35E8] text-white shadow-[#8756FA]/30' : 'bg-white/50 dark:bg-black/20 text-slate-400 border border-white/50 dark:border-white/5 group-hover:bg-[#8756FA]/10 group-hover:text-[#8756FA] group-hover:border-[#8756FA]/20'}`}>
-                    {openFaq === index ? <ChevronUp className="w-4 h-4 lg:w-5 lg:h-5 2xl:w-6 2xl:h-6" /> : <ChevronDown className="w-4 h-4 lg:w-5 lg:h-5 2xl:w-6 2xl:h-6" />}
-                  </div>
-                </button>
-                <AnimatePresence>
-                  {openFaq === index && (
-                    <motion.div 
-                      initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.3 }}
-                      className="px-5 pb-5 lg:px-6 lg:pb-6 2xl:px-8 2xl:pb-8 text-slate-600 dark:text-slate-300 font-medium text-sm lg:text-base 2xl:text-lg leading-relaxed relative z-10"
-                    >
-                      <div className="pt-3 lg:pt-4 2xl:pt-6 border-t border-slate-300 dark:border-slate-800/50">
-                        {faq.a}
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
-            ))}
+      <div className="h-px bg-white/[0.08] mx-2 mb-6 lg:mb-8 2xl:mb-10" />
+
+      {/* Two-column layout */}
+      <div className="grid grid-cols-1 lg:grid-cols-[1.15fr_auto_1fr] gap-5 lg:gap-7 2xl:gap-10 relative z-10">
+
+        {/* LEFT — FAQ */}
+        <motion.section
+          initial="hidden" animate="show"
+          variants={{ hidden: {}, show: { transition: { staggerChildren: 0.06, delayChildren: 0.15 } } }}
+          className="flex flex-col gap-3 lg:gap-4"
+        >
+          <div className="flex items-center gap-3 mb-1">
+            <div
+              className="w-10 h-10 rounded-2xl flex items-center justify-center shrink-0"
+              style={{
+                background: 'linear-gradient(135deg, rgba(135,86,250,0.25), rgba(135,86,250,0.08))',
+                border: '1px solid rgba(135,86,250,0.30)',
+                boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.15), 0 8px 20px -8px rgba(135,86,250,0.4)',
+              }}
+            >
+              <HelpCircle className="w-5 h-5 text-[#A379F9]" strokeWidth={2.2} />
+            </div>
+            <h2 className="font-serif font-black text-white text-[24px] lg:text-[28px] 2xl:text-[34px] tracking-[-0.025em] leading-tight">{s.faqTitle}</h2>
           </div>
-        </motion.div>
 
-        {/* Contatti Diretti & Form */}
-        <motion.div variants={item} className="space-y-4 2xl:space-y-8">
-          <h2 className="text-2xl lg:text-[1.75rem] 2xl:text-4xl font-black font-serif text-[#03091B] dark:text-white mb-4 2xl:mb-5 flex items-center gap-3 2xl:gap-4 drop-shadow-sm">
-            <div className="w-3 h-6 2xl:w-4 2xl:h-12 bg-gradient-to-b from-[#FF8731] to-[#FF9E54] rounded-full shadow-[0_0_20px_rgba(255,135,49,0.6)]"></div>
-            {s.directTitle}
-          </h2>
+          {s.faqs.map((faq, i) => (
+            <motion.div
+              key={i}
+              variants={{ hidden: { opacity: 0, y: 14 }, show: { opacity: 1, y: 0, transition: { type: 'spring', stiffness: 120, damping: 22 } } }}
+            >
+              <FaqItem
+                faq={faq}
+                index={i}
+                isOpen={openFaq === i}
+                onToggle={() => { audio.playClick(); setOpenFaq(openFaq === i ? null : i); }}
+              />
+            </motion.div>
+          ))}
+        </motion.section>
 
-          <div className="flex flex-col gap-3 2xl:gap-6">
-            {/* Tech Support */}
-            <div className="bg-gradient-to-br from-[#03091B]/95 to-[#131A33]/90 dark:from-[#03091B]/80 dark:to-[#03091B]/60 backdrop-blur-3xl rounded-[1.5rem] 2xl:rounded-[2.5rem] p-5 2xl:p-8 text-white relative overflow-hidden shadow-[0_20px_40px_-10px_rgba(0,0,0,0.4)] border border-white/10 group">
-              <div className="absolute top-[-50%] right-[-20%] w-[200px] h-[200px] 2xl:w-[300px] 2xl:h-[300px] bg-[#FF8731] rounded-full blur-[60px] 2xl:blur-[80px] opacity-20 pointer-events-none"></div>
-              <div className="absolute inset-0 opacity-[0.05] pointer-events-none mix-blend-overlay bg-[url('https://grainy-gradients.vercel.app/noise.svg')]"></div>
-              
-              <div className="relative z-10">
-                <div className="flex flex-row items-center gap-3 2xl:gap-6 mb-3 2xl:mb-5">
-                  <div className="w-12 h-12 2xl:w-16 2xl:h-16 bg-gradient-to-br from-[#FF8731]/20 to-[#FF8731]/5 rounded-[1rem] 2xl:rounded-[1.2rem] flex items-center justify-center shrink-0 border border-white/10 shadow-xl group-hover:scale-110 group-hover:-rotate-6 transition-transform duration-700">
-                    <Phone className="w-5 h-5 2xl:w-8 2xl:h-8 text-[#FF8731] drop-shadow-md" />
-                  </div>
-                  <div className="min-w-0">
-                    <p className="text-white/50 font-bold text-[9px] 2xl:text-xs mb-0.5 tracking-[0.2em] uppercase flex items-center gap-1.5">
-                      <Sparkles className="w-2.5 h-2.5 2xl:w-3 2xl:h-3 text-[#FF8731] shrink-0" /> {s.techSupport}
-                    </p>
-                    <p className="text-[11px] 2xl:text-sm text-slate-300 leading-tight">{s.techDesc}</p>
-                  </div>
-                </div>
+        {/* Vertical divider */}
+        <div className="hidden lg:flex flex-col items-center py-2">
+          <div className="flex-1 w-px bg-gradient-to-b from-transparent via-white/[0.12] to-transparent" />
+        </div>
 
-                <div className="space-y-2.5 2xl:space-y-4 md:pl-[3.5rem] 2xl:pl-[4.5rem] text-center md:text-left">
-                  <div className="relative">
-                    <div className="hidden md:block absolute left-[-1.25rem] 2xl:left-[-1.5rem] top-1.5 2xl:top-2 w-1.5 h-1.5 rounded-full bg-[#FF8731]"></div>
-                    <h3 className="text-xl md:text-base 2xl:text-xl font-black font-serif tracking-tight truncate text-white">Leonardo Bragalli</h3>
-                    <a href="tel:+393487589509" className="inline-block text-base md:text-sm 2xl:text-base font-black tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-white to-white/70 hover:from-[#FF8731] hover:to-[#FF9E54] transition-all drop-shadow-md">+39 348 758 9509</a>
-                  </div>
-                </div>
+        {/* RIGHT — Contacts + Form */}
+        <motion.section
+          initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3, duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+          className="flex flex-col gap-5 lg:gap-6"
+        >
+          <div className="flex items-center gap-3">
+            <div
+              className="w-10 h-10 rounded-2xl flex items-center justify-center shrink-0"
+              style={{
+                background: 'linear-gradient(135deg, rgba(255,135,49,0.25), rgba(255,135,49,0.08))',
+                border: '1px solid rgba(255,135,49,0.30)',
+                boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.15), 0 8px 20px -8px rgba(255,135,49,0.4)',
+              }}
+            >
+              <Phone className="w-5 h-5 text-[#FF9E54]" strokeWidth={2.2} />
+            </div>
+            <h2 className="font-serif font-black text-white text-[24px] lg:text-[28px] 2xl:text-[34px] tracking-[-0.025em] leading-tight">{s.directTitle}</h2>
+          </div>
+
+          <div className="flex flex-col gap-3 lg:gap-4">
+            <ContactCard
+              name="Leonardo Bragalli"
+              role={s.techSupport}
+              desc={s.techDesc}
+              phone="+39 348 758 9509"
+              accent="orange"
+            />
+            <ContactCard
+              name="Alessandro Romagnosi"
+              role={s.opSupport}
+              desc={s.opDesc}
+              phone="+39 339 565 8074"
+              accent="purple"
+            />
+          </div>
+
+          {/* Ticket Form */}
+          <div className="relative overflow-hidden rounded-[2rem] lg:rounded-[2.25rem] 2xl:rounded-[3rem] p-6 lg:p-8 2xl:p-12 bg-[#040F2A]/65 backdrop-blur-[40px] border border-white/[0.10] shadow-[0_30px_80px_-20px_rgba(3,9,27,0.7)]">
+            <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/25 to-transparent pointer-events-none" />
+            <div className="absolute -top-24 -right-12 w-[280px] h-[280px] rounded-full bg-[#8756FA] opacity-[0.15] blur-[100px] pointer-events-none" />
+
+            <div className="relative z-10 flex items-start gap-3 mb-5">
+              <div
+                className="w-11 h-11 rounded-2xl flex items-center justify-center shrink-0"
+                style={{
+                  background: 'linear-gradient(135deg, rgba(135,86,250,0.25), rgba(135,86,250,0.08))',
+                  border: '1px solid rgba(135,86,250,0.30)',
+                  boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.15), 0 8px 20px -8px rgba(135,86,250,0.40)',
+                }}
+              >
+                <Send className="w-5 h-5 text-[#A379F9]" strokeWidth={2.2} />
+              </div>
+              <div className="flex-1 min-w-0">
+                <h3 className="font-serif font-black text-white text-[22px] lg:text-[24px] 2xl:text-[28px] leading-tight tracking-[-0.02em]">{s.ticketTitle}</h3>
+                <p className="text-slate-400 text-[12.5px] 2xl:text-sm font-medium mt-0.5 leading-relaxed pr-2">{s.ticketDesc}</p>
               </div>
             </div>
 
-            {/* Customer Care */}
-            <div className="bg-gradient-to-br from-[#03091B]/95 to-[#131A33]/90 dark:from-[#03091B]/80 dark:to-[#03091B]/60 backdrop-blur-3xl rounded-[1.5rem] 2xl:rounded-[2.5rem] p-5 2xl:p-8 text-white relative overflow-hidden shadow-[0_20px_40px_-10px_rgba(0,0,0,0.4)] border border-white/10 group">
-              <div className="absolute top-[-50%] right-[-20%] w-[200px] h-[200px] 2xl:w-[300px] 2xl:h-[300px] bg-[#8756FA] rounded-full blur-[60px] 2xl:blur-[80px] opacity-20 pointer-events-none"></div>
-              <div className="absolute inset-0 opacity-[0.05] pointer-events-none mix-blend-overlay bg-[url('https://grainy-gradients.vercel.app/noise.svg')]"></div>
-              
-              <div className="relative z-10">
-                <div className="flex flex-row items-center gap-3 2xl:gap-6 mb-3 2xl:mb-5">
-                  <div className="w-12 h-12 2xl:w-16 2xl:h-16 bg-gradient-to-br from-[#8756FA]/20 to-[#8756FA]/5 rounded-[1rem] 2xl:rounded-[1.2rem] flex items-center justify-center shrink-0 border border-white/10 shadow-xl group-hover:scale-110 group-hover:-rotate-6 transition-transform duration-700">
-                    <Phone className="w-5 h-5 2xl:w-8 2xl:h-8 text-[#8756FA] drop-shadow-md" />
-                  </div>
-                  <div className="min-w-0">
-                    <p className="text-white/50 font-bold text-[9px] 2xl:text-xs mb-0.5 tracking-[0.2em] uppercase flex items-center gap-1.5">
-                      <Sparkles className="w-2.5 h-2.5 2xl:w-3 2xl:h-3 text-[#8756FA] shrink-0" /> {s.opSupport}
-                    </p>
-                    <p className="text-[11px] 2xl:text-sm text-slate-300 leading-tight">{s.opDesc}</p>
-                  </div>
-                </div>
-
-                <div className="space-y-2.5 2xl:space-y-4 md:pl-[3.5rem] 2xl:pl-[4.5rem] text-center md:text-left">
-                  <div className="relative">
-                    <div className="hidden md:block absolute left-[-1.25rem] 2xl:left-[-1.5rem] top-1.5 2xl:top-2 w-1.5 h-1.5 rounded-full bg-[#8756FA]"></div>
-                    <h3 className="text-xl md:text-base 2xl:text-xl font-black font-serif tracking-tight truncate text-white">Alessandro Romagnosi</h3>
-                    <a href="tel:+393395658074" className="inline-block text-base md:text-sm 2xl:text-base font-black tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-white to-white/70 hover:from-[#8756FA] hover:to-[#9C73FA] transition-all drop-shadow-md">+39 339 565 8074</a>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-white/40 dark:bg-[#03091B]/40 backdrop-blur-3xl border border-white/50 dark:border-white/10 rounded-[2rem] 2xl:rounded-[3rem] p-6 2xl:p-12 relative overflow-hidden shadow-[0_20px_40px_-10px_rgba(0,0,0,0.1)] mt-6 2xl:mt-8">
-            <div className="absolute inset-0 opacity-[0.03] mix-blend-overlay pointer-events-none bg-[url('https://grainy-gradients.vercel.app/noise.svg')] z-0"></div>
-            <div className="absolute top-0 right-0 w-40 h-40 2xl:w-64 2xl:h-64 bg-[#8756FA] rounded-full blur-[80px] 2xl:blur-[120px] opacity-20 pointer-events-none"></div>
-            
-            <h3 className="text-xl 2xl:text-3xl font-black font-serif text-[#03091B] dark:text-white mb-1 2xl:mb-2 flex items-center gap-2 2xl:gap-4 relative z-10 tracking-tight">
-              <Send className="w-5 h-5 2xl:w-8 2xl:h-8 text-[#8756FA]" /> {s.ticketTitle}
-            </h3>
-            <p className="text-slate-500 dark:text-slate-400 font-medium text-sm 2xl:text-lg mb-4 2xl:mb-8 relative z-10 leading-relaxed">{s.ticketDesc}</p>
-            
             <AnimatePresence mode="wait">
               {ticketSent ? (
-                <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }} className="bg-gradient-to-b from-[#8756FA]/10 to-[#8756FA]/5 border border-[#8756FA]/30 p-8 2xl:p-10 rounded-[1.5rem] 2xl:rounded-[2.5rem] flex flex-col items-center justify-center text-center py-10 2xl:py-16 relative z-10 shadow-inner">
-                  <CheckCircle className="w-12 h-12 2xl:w-20 2xl:h-20 text-[#8756FA] mb-4 2xl:mb-6 drop-shadow-lg" />
-                  <h4 className="font-black font-serif text-2xl 2xl:text-3xl text-[#03091B] dark:text-white mb-2 2xl:mb-3">{s.sentTitle}</h4>
-                  <p className="text-slate-600 dark:text-slate-300 text-base 2xl:text-xl font-medium">{s.sentDesc}</p>
+                <motion.div
+                  key="sent"
+                  initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }}
+                  className="relative z-10 flex flex-col items-center text-center py-10 px-4 rounded-2xl border border-emerald-400/20 bg-emerald-400/[0.04]"
+                >
+                  <motion.div
+                    initial={{ scale: 0 }} animate={{ scale: 1 }}
+                    transition={{ type: 'spring', stiffness: 300, damping: 18 }}
+                    className="w-14 h-14 rounded-full flex items-center justify-center mb-3"
+                    style={{
+                      background: 'linear-gradient(135deg, #10B981, #059669)',
+                      boxShadow: '0 14px 30px -8px rgba(16,185,129,0.55), inset 0 1px 0 rgba(255,255,255,0.3)',
+                    }}
+                  >
+                    <CheckCircle className="w-7 h-7 text-white" strokeWidth={2.4} />
+                  </motion.div>
+                  <h4 className="font-serif font-black text-white text-[22px] mb-1">{s.sentTitle}</h4>
+                  <p className="text-slate-300 text-[13px] font-medium">{s.sentDesc}</p>
                 </motion.div>
               ) : (
-                <motion.form initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onSubmit={handleTicketSubmit} className="space-y-3 2xl:space-y-5 relative z-10">
-                  <div className="space-y-1">
-                    <label className="text-[9px] 2xl:text-[11px] font-black text-[#8756FA] uppercase ml-2 tracking-[0.2em]">{s.ticketType}</label>
+                <motion.form
+                  key="form"
+                  onSubmit={handleTicketSubmit}
+                  initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+                  className="relative z-10 space-y-4"
+                >
+                  <div>
+                    <label className="block text-[10px] font-black tracking-[0.18em] uppercase text-slate-400 mb-2 ml-1">{s.ticketType}</label>
+                    <SegmentedControl
+                      value={ticketType}
+                      onChange={(v) => { audio.playClick(); setTicketType(v); }}
+                      options={[
+                        { value: 'Tecnico',   label: s.optionTech,  icon: Wrench },
+                        { value: 'Operativo', label: s.optionOp,    icon: MessageSquareHeart },
+                      ]}
+                    />
+                    <p className="mt-2 ml-1 text-[11px] text-slate-500 font-medium">
+                      {ticketType === 'Tecnico' ? s.optionTech : s.optionOp}
+                    </p>
+                  </div>
+
+                  <div>
+                    <label className="block text-[10px] font-black tracking-[0.18em] uppercase text-slate-400 mb-2 ml-1">{s.ticketSubject}</label>
                     <div className="relative">
-                      <select
-                        value={ticketType} onChange={(e) => setTicketType(e.target.value)}
-                        className="block w-full pl-4 pr-8 2xl:pr-10 py-3 2xl:py-5 bg-white/60 dark:bg-black/20 border border-white/50 dark:border-white/10 focus:bg-white dark:focus:bg-[#03091B]/80 rounded-[1rem] 2xl:rounded-[2rem] text-[#03091B] dark:text-white focus:ring-0 focus:border-[#8756FA] transition-all shadow-inner outline-none font-bold text-sm 2xl:text-lg appearance-none cursor-pointer truncate"
-                      >
-                        <option value="Tecnico" className="text-black">{s.optionTech}</option>
-                        <option value="Operativo" className="text-black">{s.optionOp}</option>
-                      </select>
-                      <ChevronDown className="absolute right-3 2xl:right-6 top-1/2 -translate-y-1/2 w-4 h-4 2xl:w-5 2xl:h-5 text-[#8756FA] pointer-events-none" />
+                      <AlertTriangle className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 pointer-events-none" />
+                      <input
+                        type="text" required
+                        value={ticketSubject} onChange={(e) => setTicketSubject(e.target.value)}
+                        placeholder={s.placeholderSubject}
+                        style={{ boxShadow: 'inset 0 1px 2px rgba(0,0,0,0.4)' }}
+                        onFocus={(e) => { e.target.style.boxShadow = `0 0 0 3px ${accent}22, inset 0 1px 2px rgba(0,0,0,0.4)`; e.target.style.borderColor = `${accent}99`; }}
+                        onBlur={(e)  => { e.target.style.boxShadow = 'inset 0 1px 2px rgba(0,0,0,0.4)'; e.target.style.borderColor = 'rgba(255,255,255,0.08)'; }}
+                        className="block w-full pl-11 pr-4 h-12 bg-white/[0.03] hover:bg-white/[0.05] focus:bg-white/[0.06] border border-white/[0.08] rounded-2xl text-white text-[14px] font-semibold placeholder-slate-600 outline-none transition-all duration-300"
+                      />
                     </div>
                   </div>
-                  
-                  <div className="space-y-1">
-                    <label className="text-[9px] 2xl:text-[11px] font-black text-[#8756FA] uppercase ml-2 tracking-[0.2em]">{s.ticketSubject}</label>
-                    <input
-                      type="text" required
-                      value={ticketSubject} onChange={(e) => setTicketSubject(e.target.value)}
-                      className="block w-full px-4 2xl:px-6 py-3 2xl:py-5 bg-white/60 dark:bg-black/20 border border-white/50 dark:border-white/10 focus:bg-white dark:focus:bg-[#03091B]/80 rounded-[1rem] 2xl:rounded-[2rem] text-[#03091B] dark:text-white focus:ring-0 focus:border-[#8756FA] transition-all shadow-inner outline-none font-bold text-sm 2xl:text-lg placeholder-slate-400 dark:placeholder-slate-600 truncate"
-                      placeholder={s.placeholderSubject}
+
+                  <div>
+                    <label className="block text-[10px] font-black tracking-[0.18em] uppercase text-slate-400 mb-2 ml-1">{s.ticketDetails}</label>
+                    <textarea
+                      required rows="4"
+                      value={ticketMessage} onChange={(e) => setTicketMessage(e.target.value)}
+                      placeholder={s.placeholderDetails}
+                      style={{ boxShadow: 'inset 0 1px 2px rgba(0,0,0,0.4)' }}
+                      onFocus={(e) => { e.target.style.boxShadow = `0 0 0 3px ${accent}22, inset 0 1px 2px rgba(0,0,0,0.4)`; e.target.style.borderColor = `${accent}99`; }}
+                      onBlur={(e)  => { e.target.style.boxShadow = 'inset 0 1px 2px rgba(0,0,0,0.4)'; e.target.style.borderColor = 'rgba(255,255,255,0.08)'; }}
+                      className="block w-full px-4 py-3 bg-white/[0.03] hover:bg-white/[0.05] focus:bg-white/[0.06] border border-white/[0.08] rounded-2xl text-white text-[14px] font-medium placeholder-slate-600 outline-none transition-all duration-300 resize-none"
                     />
                   </div>
-                  <div className="space-y-1">
-                    <label className="text-[9px] 2xl:text-[11px] font-black text-[#8756FA] uppercase ml-2 tracking-[0.2em]">{s.ticketDetails}</label>
-                    <textarea
-                      required rows="3"
-                      value={ticketMessage} onChange={(e) => setTicketMessage(e.target.value)}
-                      className="block w-full px-4 2xl:px-6 py-3 2xl:py-5 bg-white/60 dark:bg-black/20 border border-white/50 dark:border-white/10 focus:bg-white dark:focus:bg-[#03091B]/80 rounded-[1rem] 2xl:rounded-[2rem] text-[#03091B] dark:text-white focus:ring-0 focus:border-[#8756FA] transition-all shadow-inner outline-none font-medium text-sm 2xl:text-lg placeholder-slate-400 dark:placeholder-slate-600 resize-none"
-                      placeholder={s.placeholderDetails}
-                    ></textarea>
-                  </div>
-                  <motion.button 
-                    whileHover={{ scale: 1.02 }} 
-                    whileTap={{ scale: 0.95 }}
-                    type="submit" disabled={isSubmitting} 
-                    className={`w-full py-4 2xl:py-6 mt-2 2xl:mt-4 text-base 2xl:text-xl font-black rounded-[1.5rem] 2xl:rounded-[2.5rem] shadow-2xl flex items-center justify-center gap-2 2xl:gap-4 transition-all relative overflow-hidden group ${isSubmitting ? 'bg-slate-300 dark:bg-slate-800 text-slate-500 cursor-not-allowed' : 'bg-gradient-to-r from-[#8756FA] to-[#9C73FA] text-white shadow-[0_20px_40px_-10px_rgba(135,86,250,0.5)]'}`}
+
+                  <motion.button
+                    type="submit" disabled={isSubmitting}
+                    whileHover={!isSubmitting ? { scale: 1.015, y: -1 } : {}}
+                    whileTap={!isSubmitting ? { scale: 0.98 } : {}}
+                    transition={{ type: 'spring', stiffness: 380, damping: 22 }}
+                    className="group relative w-full mt-1 rounded-2xl overflow-hidden font-bold text-white text-[15px] tracking-tight disabled:opacity-60 disabled:cursor-not-allowed py-3.5"
+                    style={{
+                      background: 'linear-gradient(90deg, #8756FA 0%, #B385FF 50%, #FF8731 100%)',
+                      boxShadow: '0 18px 40px -10px rgba(255,135,49,0.55), 0 10px 30px -10px rgba(135,86,250,0.55), inset 0 1px 0 rgba(255,255,255,0.30)',
+                    }}
                   >
-                    <div className="absolute inset-0 bg-white/20 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000 ease-in-out pointer-events-none"></div>
-                    <span className="relative z-10 tracking-wide drop-shadow-sm">{isSubmitting ? s.submitting : s.submitBtn}</span> {!isSubmitting && <Send className="w-4 h-4 2xl:w-6 2xl:h-6 relative z-10 drop-shadow-sm" />}
+                    <span className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-[900ms] ease-out bg-gradient-to-r from-transparent via-white/30 to-transparent skew-x-12 pointer-events-none" />
+                    <span className="relative z-10 flex items-center justify-center gap-2.5">
+                      {isSubmitting ? s.submitting : s.submitBtn}
+                      {!isSubmitting && <Send className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-0.5" strokeWidth={2.5} />}
+                    </span>
                   </motion.button>
-                  {errorMessage && <p className="text-red-500 text-xs 2xl:text-sm font-bold text-center mt-2 2xl:mt-4 bg-red-50 dark:bg-red-500/10 py-2 2xl:py-3 rounded-lg 2xl:rounded-xl border border-red-200 dark:border-red-500/20">{errorMessage}</p>}
+
+                  {errorMessage && (
+                    <p className="text-red-400 text-[12px] font-bold text-center mt-2 bg-red-500/10 py-2.5 rounded-xl border border-red-500/20">
+                      {errorMessage}
+                    </p>
+                  )}
+
+                  <div className="flex items-center gap-2 pt-1 text-[11px] text-slate-500 font-medium">
+                    <ShieldCheck className="w-3.5 h-3.5 text-slate-500" />
+                    Le tue informazioni viaggiano cifrate · GDPR compliant
+                  </div>
                 </motion.form>
               )}
             </AnimatePresence>
           </div>
+        </motion.section>
 
-        </motion.div>
-
-      </motion.div>
+      </div>
     </motion.div>
   );
 };

@@ -183,7 +183,10 @@ const BrandPanel = () => (
       className="inline-flex items-center gap-2 mb-4 lg:mb-6 px-3 py-1.5 rounded-full bg-white/40 backdrop-blur-xl border border-white/60 shadow-[0_8px_24px_-12px_rgba(3,9,27,0.15)]"
     >
       <Sparkles className="w-3.5 h-3.5 text-[#FF8731]" />
-      <span className="text-[10.5px] font-black tracking-[0.22em] uppercase text-[#03091B]/80">Lemons Training Hub</span>
+      <span
+        className="text-[10.5px] font-black tracking-[0.22em] uppercase bg-clip-text text-transparent"
+        style={{ backgroundImage: 'linear-gradient(90deg, #8756FA 0%, #B385FF 30%, #FF9E54 65%, #FF8731 100%)', backgroundSize: '200% 100%', animation: 'lemo-badge-shift 4s ease-in-out infinite alternate' }}
+      >Lemons Training Hub</span>
     </motion.div>
 
     <motion.h1
@@ -344,14 +347,17 @@ const Welcome = () => {
             <div className="absolute -top-24 left-1/2 -translate-x-1/2 w-[300px] h-[300px] rounded-full bg-[#FF8731] opacity-[0.10] blur-[80px] pointer-events-none" />
 
             <motion.div variants={item} className="relative z-10 mb-6 lg:mb-8 flex flex-col items-center">
-              <span className="inline-flex items-center gap-2 pl-1 pr-3 py-1 rounded-full bg-[#FF8731]/12 border border-[#FF8731]/30 mb-4">
+              <span className="inline-flex items-center gap-2 pl-1 pr-3 py-1 rounded-full bg-white/[0.22] border border-white/[0.40] mb-4">
                 <img
                   src="/images/logos/logo png.png"
                   alt=""
                   aria-hidden="true"
                   className="w-4 h-4 object-contain drop-shadow-[0_0_6px_rgba(255,135,49,0.5)]"
                 />
-                <span className="text-[10px] font-black tracking-[0.18em] uppercase text-[#FF9E54]">{w.badge}</span>
+                <span
+                  className="text-[10px] font-black tracking-[0.18em] uppercase bg-clip-text text-transparent"
+                  style={{ backgroundImage: 'linear-gradient(90deg, #FF8731 0%, #FF9E54 40%, #B385FF 75%, #8756FA 100%)', backgroundSize: '200% 100%', animation: 'lemo-badge-shift 4s ease-in-out infinite alternate' }}
+                >{w.badge}</span>
               </span>
               <h2 className="font-serif font-black text-white text-[42px] sm:text-[52px] leading-[1] tracking-[-0.035em] text-center">
                 {w.title}
