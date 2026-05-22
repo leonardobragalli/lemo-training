@@ -19,7 +19,6 @@ const ProgressRing = ({ percent = 0, size = 220 }) => {
   const C = 2 * Math.PI * radius;
   const target = Math.max(0, Math.min(100, percent));
 
-  const [drawn, setDrawn] = useState(0);
   const counter = useMotionValue(0);
   const [display, setDisplay] = useState(0);
 
@@ -29,12 +28,8 @@ const ProgressRing = ({ percent = 0, size = 220 }) => {
   }, [target, counter]);
   useMotionValueEvent(counter, 'change', (v) => setDisplay(Math.round(v)));
 
-  useEffect(() => {
-    const id = requestAnimationFrame(() => setDrawn(target));
-    return () => cancelAnimationFrame(id);
-  }, [target]);
-
-  const angle = (drawn / 100) * 360;
+  const dashOffset = C - (C * target) / 100;
+  const angle = (target / 100) * 360;
   const tipX = size / 2 + radius * Math.cos((angle * Math.PI) / 180);
   const tipY = size / 2 + radius * Math.sin((angle * Math.PI) / 180);
 
@@ -68,15 +63,26 @@ const ProgressRing = ({ percent = 0, size = 220 }) => {
             </filter>
           </defs>
           <circle cx={size/2} cy={size/2} r={radius} fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth={stroke} />
-          {drawn > 0 && (
-            <circle cx={size/2} cy={size/2} r={radius} fill="none" stroke="url(#lemoActivity)" strokeWidth={stroke}
-              strokeLinecap="round" strokeDasharray={C} strokeDashoffset={C - (C * drawn) / 100}
+          {target > 0 && (
+            <motion.circle
+              cx={size/2} cy={size/2} r={radius}
+              fill="none" stroke="url(#lemoActivity)" strokeWidth={stroke}
+              strokeLinecap="round"
+              strokeDasharray={C}
+              initial={{ strokeDashoffset: C }}
+              animate={{ strokeDashoffset: dashOffset }}
+              transition={{ duration: 1.6, ease: [0.16, 1, 0.3, 1] }}
               filter="url(#ringGlow)"
-              style={{ transition: 'stroke-dashoffset 1.8s cubic-bezier(0.16,1,0.3,1)' }}
             />
           )}
-          {drawn > 2 && drawn < 100 && (
-            <circle cx={tipX} cy={tipY} r={stroke / 2 + 2} fill="#FF8731" filter="url(#ringGlow)" />
+          {target > 2 && target < 100 && (
+            <motion.circle
+              cx={tipX} cy={tipY} r={stroke / 2 + 2}
+              fill="#FF8731" filter="url(#ringGlow)"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.3, delay: 0.2 }}
+            />
           )}
         </svg>
         <div className="absolute inset-0 flex flex-col items-center justify-center">
