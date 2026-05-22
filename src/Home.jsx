@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, Fragment } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { Award, ArrowRight, Check, Clock, X, Mail, ArrowRight as Send } from 'lucide-react';
+import { Award, ArrowRight, Check, Clock, Mail, ArrowRight as Send } from 'lucide-react';
 import {
   motion, AnimatePresence,
   useMotionValue, useTransform, useSpring,
@@ -465,9 +465,6 @@ const onHeroMove = (e) => {
             >
               <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent" />
               <div className="absolute -top-20 left-1/2 -translate-x-1/2 w-[280px] h-[280px] rounded-full bg-[#8756FA] opacity-[0.12] blur-[80px] pointer-events-none" />
-              <button onClick={closeNewsletter} className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 text-slate-400 hover:text-white transition-all">
-                <X className="w-4 h-4" />
-              </button>
 
               {newsletterStatus === 'success' ? (
                 <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="flex flex-col items-center text-center py-4">
