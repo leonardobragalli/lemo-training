@@ -67,7 +67,7 @@ const ProgressRing = ({ percent = 0, size = 220 }) => {
             <motion.circle
               cx={size/2} cy={size/2} r={radius}
               fill="none" stroke="url(#lemoActivity)" strokeWidth={stroke}
-              strokeLinecap="round"
+              strokeLinecap="butt"
               strokeDasharray={C}
               initial={{ strokeDashoffset: C }}
               animate={{ strokeDashoffset: dashOffset }}
