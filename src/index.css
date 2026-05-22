@@ -53,29 +53,42 @@
 html {
   margin: 0;
   padding: 0;
-  background-color: #7BB8D4;
-  background-image: url('/images/bg-mobile-nature.png');
-  background-size: cover;
-  background-position: center top;
-  background-repeat: no-repeat;
-}
-
-@media (min-width: 768px) {
-  html {
-    background-image: url('/images/bg-pc.png');
-    background-position: center center;
-  }
+  /* fallback colore cielo per le safe areas dove non arriva l'immagine */
+  background-color: #87C4E0;
 }
 
 body {
   margin: 0;
   padding: 0;
-  background-color: transparent;
+  background-color: #03091B;
   color: #FFF5EE;
   font-family: 'Open Runde', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
+}
+
+/* Layer di sfondo che si estende OLTRE i bordi del viewport nelle safe areas */
+body::before {
+  content: '';
+  position: fixed;
+  top: calc(0px - env(safe-area-inset-top, 0px));
+  left: calc(0px - env(safe-area-inset-left, 0px));
+  right: calc(0px - env(safe-area-inset-right, 0px));
+  bottom: calc(0px - env(safe-area-inset-bottom, 0px));
+  z-index: -100;
+  background-image: url('/images/bg-mobile-nature.png');
+  background-size: cover;
+  background-position: center top;
+  pointer-events: none;
+}
+
+@media (min-width: 768px) {
+  html { background-color: #03091B; }
+  body::before {
+    background-image: url('/images/bg-pc.png');
+    background-position: center center;
+  }
 }
 
 /* Force hardware acceleration and smooth rendering for titles on Windows */
