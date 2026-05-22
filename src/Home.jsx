@@ -224,7 +224,10 @@ const onHeroMove = (e) => {
     const isReload = performance.getEntriesByType('navigation')[0]?.type === 'reload';
     if (isReload) sessionStorage.removeItem('lemo_newsletter_shown');
     if (sessionStorage.getItem('lemo_newsletter_shown')) return;
-    const timer = setTimeout(() => setShowNewsletter(true), 4000);
+    const timer = setTimeout(() => {
+      setShowNewsletter(true);
+      sessionStorage.setItem('lemo_newsletter_shown', '1');
+    }, 4000);
     return () => clearTimeout(timer);
   }, []);
 
