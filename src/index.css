@@ -50,17 +50,24 @@
   --font-hand: 'Kalam', cursive;
 }
 
-html {
+html, body {
   margin: 0;
   padding: 0;
-  /* fallback colore cielo per le safe areas dove non arriva l'immagine */
+  width: 100%;
+  height: 100%;
+}
+
+html {
+  /* questo colore appare nelle safe areas su iOS — corrisponde al cielo dello sfondo */
   background-color: #87C4E0;
 }
 
+@media (min-width: 768px) {
+  html { background-color: #03091B; }
+}
+
 body {
-  margin: 0;
-  padding: 0;
-  background-color: #03091B;
+  background-color: transparent;
   color: #FFF5EE;
   font-family: 'Open Runde', sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -68,15 +75,16 @@ body {
   text-rendering: optimizeLegibility;
 }
 
-/* Layer di sfondo che si estende OLTRE i bordi del viewport nelle safe areas */
-body::before {
-  content: '';
+#root {
+  position: relative;
+  min-height: 100%;
+}
+
+/* background globale fuori da qualsiasi overflow container */
+#bg-global {
   position: fixed;
-  top: calc(0px - env(safe-area-inset-top, 0px));
-  left: calc(0px - env(safe-area-inset-left, 0px));
-  right: calc(0px - env(safe-area-inset-right, 0px));
-  bottom: calc(0px - env(safe-area-inset-bottom, 0px));
-  z-index: -100;
+  inset: 0;
+  z-index: -1;
   background-image: url('/images/bg-mobile-nature.png');
   background-size: cover;
   background-position: center top;
@@ -84,8 +92,7 @@ body::before {
 }
 
 @media (min-width: 768px) {
-  html { background-color: #03091B; }
-  body::before {
+  #bg-global {
     background-image: url('/images/bg-pc.png');
     background-position: center center;
   }
