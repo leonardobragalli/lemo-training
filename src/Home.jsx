@@ -359,7 +359,7 @@ const onHeroMove = (e) => {
               <motion.p
                 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2, duration: 0.8 }}
-                className="text-slate-200 font-medium text-xs lg:text-sm 2xl:text-xl leading-relaxed drop-shadow-md"
+                className="text-slate-200 font-medium text-base lg:text-lg 2xl:text-2xl leading-relaxed drop-shadow-md"
               >
                 {h.subtitle}
               </motion.p>
