@@ -29,9 +29,8 @@ const ProgressRing = ({ percent = 0, size = 220 }) => {
   useMotionValueEvent(counter, 'change', (v) => setDisplay(Math.round(v)));
 
   const dashOffset = C - (C * target) / 100;
-  const angle = (target / 100) * 360;
-  const tipX = size / 2 + radius * Math.cos((angle * Math.PI) / 180);
-  const tipY = size / 2 + radius * Math.sin((angle * Math.PI) / 180);
+  const tipX = useTransform(counter, v => size / 2 + radius * Math.cos(((v / 100) * 360 * Math.PI) / 180));
+  const tipY = useTransform(counter, v => size / 2 + radius * Math.sin(((v / 100) * 360 * Math.PI) / 180));
 
   return (
     <div className="relative shrink-0" style={{ width: size, height: size }}>
@@ -79,9 +78,6 @@ const ProgressRing = ({ percent = 0, size = 220 }) => {
             <motion.circle
               cx={tipX} cy={tipY} r={stroke / 2 + 2}
               fill="#FF8731" filter="url(#ringGlow)"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.3, delay: 0.2 }}
             />
           )}
         </svg>
