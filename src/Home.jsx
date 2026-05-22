@@ -126,8 +126,8 @@ const ModuleStepper = ({ completed, total }) => (
             {current && (
               <motion.div
                 className="absolute rounded-full border-2 border-[#FF8731] pointer-events-none"
-                animate={{ scale: [1, 1.4], opacity: [0.8, 0] }}
-                transition={{ duration: 1.6, repeat: Infinity, ease: 'easeOut' }}
+                animate={{ scale: [1, 1.5], opacity: [0.7, 0] }}
+                transition={{ duration: 1.4, repeat: Infinity, ease: 'easeOut', repeatDelay: 0.4 }}
                 style={{ width: 32, height: 32, top: 0, left: '50%', marginLeft: -16 }}
               />
             )}
