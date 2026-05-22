@@ -310,13 +310,13 @@ const Modules = () => {
           <motion.span
             initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.3, type: 'spring', stiffness: 200, damping: 20 }}
-            className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-full bg-emerald-400/10 border border-emerald-400/20 text-emerald-400 text-[10px] font-bold tracking-[0.12em] uppercase"
+            className={`inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-full text-[10px] font-bold tracking-[0.12em] uppercase ${completedCount === total ? 'bg-emerald-400/10 border border-emerald-400/20 text-emerald-400' : 'bg-[#FF8731]/10 border border-[#FF8731]/20 text-[#FF9E54]'}`}
           >
             <span className="relative flex w-2 h-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-400" />
+              <span className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${completedCount === total ? 'bg-emerald-400' : 'bg-[#FF8731]'}`} />
+              <span className={`relative inline-flex rounded-full h-2 w-2 ${completedCount === total ? 'bg-emerald-400' : 'bg-[#FF8731]'}`} />
             </span>
-            Operativo
+            {completedCount === total ? 'Operativo' : 'In Corso'}
           </motion.span>
           {mode === 'full' && (
             <motion.span
