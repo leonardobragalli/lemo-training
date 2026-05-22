@@ -50,15 +50,22 @@
   --font-hand: 'Kalam', cursive;
 }
 
+html {
+  background-color: #03091B;
+  background-image: url('/images/bg-mobile-nature.png');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+}
+
 body {
-  background-color: #03091B; /* Sempre scuro per evitare flash bianchi */
+  background-color: transparent;
   color: #FFF5EE;
   font-family: 'Open Runde', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
-  transition: background-color 0.3s ease, color 0.3s ease;
-  min-height: 100vh;
+  min-height: 100dvh;
   margin: 0;
 }
 
