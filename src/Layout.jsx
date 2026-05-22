@@ -121,7 +121,7 @@ const Layout = () => {
   const handleNavClick = () => audio.playClick();
 
   return (
-    <div className="flex h-[100dvh] overflow-hidden font-sans bg-[#03091B]">
+    <div className="flex h-[100dvh] overflow-hidden font-sans">
 
       {/* Sidebar Desktop */}
       <motion.aside
