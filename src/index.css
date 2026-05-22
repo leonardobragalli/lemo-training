@@ -50,23 +50,45 @@
   --font-hand: 'Kalam', cursive;
 }
 
-html {
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  min-height: 100%;
   background-color: #03091B;
-  background-image: url('/images/bg-mobile-nature.png');
-  background-size: cover;
-  background-position: center;
-  background-attachment: fixed;
 }
 
 body {
-  background-color: transparent;
   color: #FFF5EE;
   font-family: 'Open Runde', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
-  min-height: 100dvh;
-  margin: 0;
+}
+
+/* Background layer che copre tutto lo schermo incluse safe areas */
+#root::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  /* estende anche nelle safe areas (notch, barra browser) */
+  top: env(safe-area-inset-top, 0px);
+  margin-top: calc(-1 * env(safe-area-inset-top, 0px));
+  margin-bottom: calc(-1 * env(safe-area-inset-bottom, 0px));
+  background-image: url('/images/bg-mobile-nature.png');
+  background-size: cover;
+  background-position: center top;
+  z-index: -1;
+}
+
+@media (min-width: 768px) {
+  #root::before {
+    background-image: url('/images/bg-pc.png');
+    background-position: center;
+  }
 }
 
 /* Force hardware acceleration and smooth rendering for titles on Windows */
