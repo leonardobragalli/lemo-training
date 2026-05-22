@@ -34,7 +34,7 @@ const ProgressRing = ({ percent = 0, size = 220 }) => {
     return () => cancelAnimationFrame(id);
   }, [target]);
 
-  const angle = (drawn / 100) * 360 - 90;
+  const angle = (drawn / 100) * 360;
   const tipX = size / 2 + radius * Math.cos((angle * Math.PI) / 180);
   const tipY = size / 2 + radius * Math.sin((angle * Math.PI) / 180);
 
