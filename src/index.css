@@ -50,52 +50,33 @@
   --font-hand: 'Kalam', cursive;
 }
 
-html, body {
+html {
   margin: 0;
   padding: 0;
-  width: 100%;
-  height: 100%;
-}
-
-html {
-  /* questo colore appare nelle safe areas su iOS — corrisponde al cielo dello sfondo */
-  background-color: #87C4E0;
+  min-height: 100%;
+  background-color: #03091B;
+  background-image: url('/images/bg-mobile-nature.png');
+  background-size: cover;
+  background-position: center top;
+  background-repeat: no-repeat;
 }
 
 @media (min-width: 768px) {
-  html { background-color: #03091B; }
+  html {
+    background-image: url('/images/bg-pc.png');
+    background-position: center center;
+  }
 }
 
 body {
-  background-color: transparent;
+  margin: 0;
+  padding: 0;
+  background: transparent;
   color: #FFF5EE;
   font-family: 'Open Runde', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
-}
-
-#root {
-  position: relative;
-  min-height: 100%;
-}
-
-/* background globale fuori da qualsiasi overflow container */
-#bg-global {
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-  background-image: url('/images/bg-mobile-nature.png');
-  background-size: cover;
-  background-position: center top;
-  pointer-events: none;
-}
-
-@media (min-width: 768px) {
-  #bg-global {
-    background-image: url('/images/bg-pc.png');
-    background-position: center center;
-  }
 }
 
 /* Force hardware acceleration and smooth rendering for titles on Windows */
