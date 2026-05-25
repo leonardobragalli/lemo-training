@@ -366,10 +366,10 @@ const Welcome = () => {
                   style={{ backgroundImage: 'linear-gradient(90deg, #FF8731 0%, #FF9E54 40%, #B385FF 75%, #8756FA 100%)', backgroundSize: '200% 100%', animation: 'lemo-badge-shift 4s ease-in-out infinite alternate' }}
                 >{w.badge}</span>
               </span>
-              <h2 className="font-serif font-black text-white text-[42px] sm:text-[52px] leading-[1] tracking-[-0.035em] text-center">
+              <h2 className="font-serif font-black text-white text-[36px] sm:text-[44px] leading-[1] tracking-[-0.035em] text-center">
                 {w.title}
               </h2>
-              <p className="mt-3 text-slate-300 text-[14px] sm:text-[15px] font-medium leading-relaxed max-w-[360px] text-center">
+              <p className="mt-2 text-slate-300 text-[13px] sm:text-[14px] font-medium leading-relaxed max-w-[360px] text-center">
                 {w.description}
               </p>
             </motion.div>
@@ -380,38 +380,39 @@ const Welcome = () => {
                 <Field icon={SquareUser} label={w.lastName} placeholder={w.placeholderLast} value={lastName} onChange={setLastName} accent="#8756FA" />
               </motion.div>
 
-              <motion.div variants={item} className="space-y-2">
-                <label className="block text-[10.5px] font-bold text-slate-400 uppercase ml-1 tracking-[0.18em]">{w.email}</label>
-                <div className="relative group">
-                  <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-500 group-focus-within:text-white transition-colors duration-300 z-10" />
-                  <input
-                    type="email"
-                    required
-                    autoComplete="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value.toLowerCase())}
-                    placeholder={w.placeholderEmail}
-                    style={{ '--accent': '#8756FA' }}
-                    className="block w-full pl-11 pr-4 h-12 bg-white/[0.03] hover:bg-white/[0.05] focus:bg-white/[0.06] border border-white/[0.08] focus:border-[var(--accent)]/60 rounded-2xl text-white text-[15px] font-semibold placeholder-slate-600 outline-none transition-all duration-300 shadow-[inset_0_1px_2px_rgba(0,0,0,0.4)] focus:shadow-[0_0_0_3px_var(--accent)/0.15,inset_0_1px_2px_rgba(0,0,0,0.4)]"
-                  />
+              <motion.div variants={item} className="grid grid-cols-2 gap-3">
+                <div className="space-y-2">
+                  <label className="block text-[10.5px] font-bold text-slate-400 uppercase ml-1 tracking-[0.18em]">{w.email}</label>
+                  <div className="relative group">
+                    <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-500 group-focus-within:text-white transition-colors duration-300 z-10" />
+                    <input
+                      type="email"
+                      required
+                      autoComplete="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value.toLowerCase())}
+                      placeholder={w.placeholderEmail}
+                      style={{ '--accent': '#8756FA' }}
+                      className="block w-full pl-11 pr-4 h-12 bg-white/[0.03] hover:bg-white/[0.05] focus:bg-white/[0.06] border border-white/[0.08] focus:border-[var(--accent)]/60 rounded-2xl text-white text-[15px] font-semibold placeholder-slate-600 outline-none transition-all duration-300 shadow-[inset_0_1px_2px_rgba(0,0,0,0.4)] focus:shadow-[0_0_0_3px_var(--accent)/0.15,inset_0_1px_2px_rgba(0,0,0,0.4)]"
+                    />
+                  </div>
                 </div>
-              </motion.div>
-
-              <motion.div variants={item} className="space-y-2">
-                <label className="block text-[10.5px] font-bold text-slate-400 uppercase ml-1 tracking-[0.18em]">
-                  {w.phone} <span className="text-slate-600 normal-case tracking-normal font-medium">{w.phoneOptional}</span>
-                </label>
-                <div className="relative group">
-                  <Phone className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-500 group-focus-within:text-white transition-colors duration-300 z-10" />
-                  <input
-                    type="tel"
-                    autoComplete="tel"
-                    value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
-                    placeholder={w.placeholderPhone}
-                    style={{ '--accent': '#8756FA' }}
-                    className="block w-full pl-11 pr-4 h-12 bg-white/[0.03] hover:bg-white/[0.05] focus:bg-white/[0.06] border border-white/[0.08] focus:border-[var(--accent)]/60 rounded-2xl text-white text-[15px] font-semibold placeholder-slate-600 outline-none transition-all duration-300 shadow-[inset_0_1px_2px_rgba(0,0,0,0.4)] focus:shadow-[0_0_0_3px_var(--accent)/0.15,inset_0_1px_2px_rgba(0,0,0,0.4)]"
-                  />
+                <div className="space-y-2">
+                  <label className="block text-[10.5px] font-bold text-slate-400 uppercase ml-1 tracking-[0.18em]">
+                    {w.phone} <span className="text-slate-600 normal-case tracking-normal font-medium">{w.phoneOptional}</span>
+                  </label>
+                  <div className="relative group">
+                    <Phone className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-500 group-focus-within:text-white transition-colors duration-300 z-10" />
+                    <input
+                      type="tel"
+                      autoComplete="tel"
+                      value={phone}
+                      onChange={(e) => setPhone(e.target.value)}
+                      placeholder={w.placeholderPhone}
+                      style={{ '--accent': '#8756FA' }}
+                      className="block w-full pl-11 pr-4 h-12 bg-white/[0.03] hover:bg-white/[0.05] focus:bg-white/[0.06] border border-white/[0.08] focus:border-[var(--accent)]/60 rounded-2xl text-white text-[15px] font-semibold placeholder-slate-600 outline-none transition-all duration-300 shadow-[inset_0_1px_2px_rgba(0,0,0,0.4)] focus:shadow-[0_0_0_3px_var(--accent)/0.15,inset_0_1px_2px_rgba(0,0,0,0.4)]"
+                    />
+                  </div>
                 </div>
               </motion.div>
 
