@@ -308,7 +308,7 @@ const Welcome = () => {
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
+      exit={{ opacity: 1 }}
       className="relative min-h-[100dvh] w-full font-sans text-white overflow-x-hidden"
     >
       <div className="fixed inset-0 z-0 pointer-events-none">
