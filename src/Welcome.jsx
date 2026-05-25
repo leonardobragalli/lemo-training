@@ -432,7 +432,7 @@ const Welcome = () => {
                         whileTap={{ scale: 0.97 }}
                         className="relative rounded-full overflow-hidden cursor-pointer transition-shadow duration-300 flex-shrink-0"
                         style={{
-                          width: '120px', height: '120px',
+                          width: '160px', height: '160px',
                           border: sel ? `2px solid ${p.accent}` : '1px solid rgba(255,255,255,0.10)',
                           boxShadow: sel ? `0 0 0 4px ${p.accent}25, 0 12px 40px -10px ${p.accent}99` : '0 8px 24px -10px rgba(0,0,0,0.6)',
                         }}
