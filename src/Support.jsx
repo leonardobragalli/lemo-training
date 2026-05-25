@@ -173,7 +173,7 @@ const ContactCard = ({ name, role, desc, phone, accent }) => {
             <Phone className="w-4 h-4" style={{ color: accentColor }} strokeWidth={2.4} />
           </div>
           <div className="min-w-0">
-            <div className="text-[9.5px] font-black tracking-[0.18em] uppercase text-slate-500">Chiama ora</div>
+            <div className="text-[9.5px] font-black tracking-[0.18em] uppercase text-slate-500">{s.callNow}</div>
             <div className="text-white font-bold text-[15.5px] 2xl:text-base tracking-tight truncate">{phone}</div>
           </div>
         </div>
@@ -543,7 +543,7 @@ const Support = () => {
 
                   <div className="flex items-center gap-2 pt-1 text-[11px] text-slate-500 font-medium">
                     <ShieldCheck className="w-3.5 h-3.5 text-slate-500" />
-                    Le tue informazioni viaggiano cifrate · GDPR compliant
+                    {s.gdprNote}
                   </div>
                 </motion.form>
               )}

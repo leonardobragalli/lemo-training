@@ -92,8 +92,7 @@ const ProgressRing = ({ percent = 0, size = 220 }) => {
 };
 
 /* ── MODULE STEPPER ────────────────────────────────────────── */
-const MODULE_NAMES = ['Istruzioni', 'Pulizia', 'Ricarica', 'Simulazione'];
-const ModuleStepper = ({ completed, total }) => (
+const ModuleStepper = ({ completed, total, moduleNames }) => (
   <div className="flex items-center gap-0 w-full max-w-[440px] mx-auto md:mx-0 mb-6">
     {Array.from({ length: total }).map((_, i) => {
       const done = i < completed;
@@ -128,7 +127,7 @@ const ModuleStepper = ({ completed, total }) => (
               />
             )}
             <span className={`mt-2 text-[9.5px] font-black tracking-[0.10em] uppercase whitespace-nowrap ${done ? 'text-white/90' : current ? 'text-[#FF9E54]' : 'text-slate-500'}`}>
-              {MODULE_NAMES[i]}
+              {moduleNames[i]}
             </span>
           </motion.div>
 
@@ -179,7 +178,7 @@ const Home = () => {
   const [newsletterStatus, setNewsletterStatus] = useState('idle');
 
   const today = new Date();
-  const dateLabel = today.toLocaleDateString('it-IT', { weekday: 'long', day: 'numeric', month: 'long' }).toUpperCase();
+  const dateLabel = today.toLocaleDateString(h.dateLocale, { weekday: 'long', day: 'numeric', month: 'long' }).toUpperCase();
 
   /* 3D tilt — hero */
   const heroRef = useRef(null);
@@ -437,7 +436,7 @@ const onHeroMove = (e) => {
                 )}
 
                 <div className="mt-6">
-                  <ModuleStepper completed={completedCount} total={totalLessons} />
+                  <ModuleStepper completed={completedCount} total={totalLessons} moduleNames={h.moduleSteps} />
                 </div>
 
                 <p className="md:hidden text-slate-300 text-base leading-relaxed font-medium mt-4">
