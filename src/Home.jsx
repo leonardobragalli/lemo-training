@@ -241,9 +241,12 @@ const onHeroMove = (e) => {
     setTimeout(() => setShowNewsletter(false), 2500);
   };
 
-  const closeNewsletter = () => {
+  const closeNewsletter = async () => {
     setShowNewsletter(false);
     localStorage.setItem('lemo_newsletter_subscribed', '0');
+    if (user?.name) {
+      await supabase.from('users').update({ newsletter_opt_in: false }).eq('name', user.name);
+    }
   };
 
   const progressPercentage = Math.round((completedCount / totalLessons) * 100);
