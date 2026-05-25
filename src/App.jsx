@@ -13,12 +13,13 @@ import { LanguageProvider } from './LanguageContext';
 
 function AnimatedRoutes() {
   const location = useLocation();
+  const isWelcome = location.pathname === '/' || location.pathname === '/admin';
   return (
     <AnimatePresence mode="wait">
-      <Routes location={location} key={location.pathname}>
+      <Routes location={location} key={isWelcome ? location.pathname : 'app'}>
         <Route path="/" element={<Welcome />} />
         <Route path="/admin" element={<Admin />} />
-        
+
         {/* Pagine con la Sidebar */}
         <Route element={<Layout />}>
           <Route path="/home" element={<Home />} />
