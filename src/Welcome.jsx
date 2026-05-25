@@ -419,7 +419,7 @@ const Welcome = () => {
 
               <motion.div variants={item}>
                 <label className="block text-[10px] font-bold text-slate-400 uppercase ml-1 tracking-[0.18em] mb-2">{w.patientProfile}</label>
-                <div className="grid grid-cols-2 gap-2.5">
+                <div className="grid grid-cols-2 gap-2.5 max-w-[280px] lg:max-w-[220px] mx-auto w-full">
                   {[
                     { id: 'pediatria', label: w.pediatria, accent: '#8756FA', img: '/images/profilo-pediatria.png' },
                     { id: 'adulti',    label: w.adulti,    accent: '#FF8731', img: '/images/profilo-adulti.png'    },
