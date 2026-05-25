@@ -50,6 +50,7 @@ const EmailSection = ({ allUsers }) => {
     .map(u => ({
       name: u.name,
       email: u.email,
+      phone: u.phone,
       hospital: u.hospital,
       status: u.newsletterOptIn === true ? 'accepted' : u.newsletterOptIn === false ? 'refused' : 'pending',
       lastLogin: u.lastLogin,
@@ -65,8 +66,8 @@ const EmailSection = ({ allUsers }) => {
   };
 
   const exportCSV = () => {
-    const csv = 'Nome,Email,Ospedale,Newsletter,Ultimo Login\n' + rows.map(r =>
-      `"${r.name}","${r.email}","${r.hospital || ''}","${r.status === 'accepted' ? 'Iscritto' : r.status === 'refused' ? 'Rifiutato' : 'Non risposto'}","${r.lastLogin ? new Date(r.lastLogin).toLocaleDateString('it-IT') : '—'}"`
+    const csv = 'Nome,Email,Telefono,Ospedale,Newsletter,Ultimo Login\n' + rows.map(r =>
+      `"${r.name}","${r.email}","${r.phone || ''}","${r.hospital || ''}","${r.status === 'accepted' ? 'Iscritto' : r.status === 'refused' ? 'Rifiutato' : 'Non risposto'}","${r.lastLogin ? new Date(r.lastLogin).toLocaleDateString('it-IT') : '—'}"`
     ).join('\n');
     const a = document.createElement('a');
     a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' }));
@@ -115,6 +116,7 @@ const EmailSection = ({ allUsers }) => {
             <tr className="border-b border-slate-800">
               <th className="px-8 py-4 text-xs font-black text-slate-500 uppercase tracking-widest">Nome</th>
               <th className="px-8 py-4 text-xs font-black text-slate-500 uppercase tracking-widest">Email</th>
+              <th className="px-8 py-4 text-xs font-black text-slate-500 uppercase tracking-widest">Telefono</th>
               <th className="px-8 py-4 text-xs font-black text-slate-500 uppercase tracking-widest">Ospedale</th>
               <th className="px-8 py-4 text-xs font-black text-slate-500 uppercase tracking-widest">Newsletter</th>
               <th className="px-8 py-4 text-xs font-black text-slate-500 uppercase tracking-widest">Ultimo login</th>
@@ -203,6 +205,7 @@ const Admin = () => {
           firstName: u.first_name,
           lastName: u.last_name,
           email: u.email,
+          phone: u.phone,
           hospital: u.hospital,
           department: u.department,
           patientType: u.patient_type,
@@ -848,6 +851,7 @@ const Admin = () => {
                                     <p className="text-[10px] uppercase tracking-widest text-slate-500 font-bold mb-3">Contatto</p>
                                     <div className="space-y-2 text-sm font-medium text-slate-300 mb-5">
                                       <div className="flex justify-between"><span className="text-slate-500">Email:</span> <span className="text-white font-bold">{u.email || '—'}</span></div>
+                                      <div className="flex justify-between"><span className="text-slate-500">Telefono:</span> <span className="text-white font-bold">{u.phone || '—'}</span></div>
                                       <div className="flex justify-between"><span className="text-slate-500">Newsletter:</span>
                                         <span className={`font-bold ${u.newsletterOptIn === true ? 'text-emerald-400' : u.newsletterOptIn === false ? 'text-red-400' : 'text-slate-500'}`}>
                                           {u.newsletterOptIn === true ? 'Iscritto ✓' : u.newsletterOptIn === false ? 'Rifiutato' : 'Non risposto'}

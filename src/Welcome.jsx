@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { Stethoscope, ArrowRight, ShieldCheck, Sparkles, Type, SquareUser, Building2, ChevronDown, Check, Mail } from 'lucide-react';
+import { Stethoscope, ArrowRight, ShieldCheck, Sparkles, Type, SquareUser, Building2, ChevronDown, Check, Mail, Phone } from 'lucide-react';
 import { motion, AnimatePresence, useMotionValue, useTransform, useSpring } from 'framer-motion';
 import { useLang } from './LanguageContext';
 import { audio } from './utils/audio';
@@ -218,6 +218,7 @@ const Welcome = () => {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
   const [hospital, setHospital] = useState('');
   const [department, setDepartment] = useState('');
   const [patientType, setPatientType] = useState('');
@@ -247,7 +248,7 @@ const Welcome = () => {
       localStorage.setItem(`lemo_progress_${fullName}`, JSON.stringify([1, 2, 3, 4]));
     }
 
-    const userData = { name: fullName, firstName, lastName, email, hospital, department, patientType, mode };
+    const userData = { name: fullName, firstName, lastName, email, phone, hospital, department, patientType, mode };
     localStorage.setItem('lemo_user', JSON.stringify(userData));
 
     const now = new Date().toISOString();
@@ -259,7 +260,7 @@ const Welcome = () => {
 
     if (existing) {
       await supabase.from('users').update({
-        first_name: firstName, last_name: lastName, email, hospital, department,
+        first_name: firstName, last_name: lastName, email, phone, hospital, department,
         patient_type: patientType, mode,
         login_count: (existing.login_count || 1) + 1,
         last_login: now,
@@ -267,7 +268,7 @@ const Welcome = () => {
       }).eq('name', fullName);
     } else {
       await supabase.from('users').insert({
-        name: fullName, first_name: firstName, last_name: lastName, email,
+        name: fullName, first_name: firstName, last_name: lastName, email, phone,
         hospital, department, patient_type: patientType, mode,
         login_count: 1, first_login: now, last_login: now,
         completed_modules: isDemoAccount ? [1, 2, 3, 4] : [],
@@ -385,6 +386,24 @@ const Welcome = () => {
                     value={email}
                     onChange={(e) => setEmail(e.target.value.toLowerCase())}
                     placeholder={w.placeholderEmail}
+                    style={{ '--accent': '#8756FA' }}
+                    className="block w-full pl-11 pr-4 h-12 bg-white/[0.03] hover:bg-white/[0.05] focus:bg-white/[0.06] border border-white/[0.08] focus:border-[var(--accent)]/60 rounded-2xl text-white text-[15px] font-semibold placeholder-slate-600 outline-none transition-all duration-300 shadow-[inset_0_1px_2px_rgba(0,0,0,0.4)] focus:shadow-[0_0_0_3px_var(--accent)/0.15,inset_0_1px_2px_rgba(0,0,0,0.4)]"
+                  />
+                </div>
+              </motion.div>
+
+              <motion.div variants={item} className="space-y-2">
+                <label className="block text-[10.5px] font-bold text-slate-400 uppercase ml-1 tracking-[0.18em]">
+                  {w.phone} <span className="text-slate-600 normal-case tracking-normal font-medium">{w.phoneOptional}</span>
+                </label>
+                <div className="relative group">
+                  <Phone className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-500 group-focus-within:text-white transition-colors duration-300 z-10" />
+                  <input
+                    type="tel"
+                    autoComplete="tel"
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                    placeholder={w.placeholderPhone}
                     style={{ '--accent': '#8756FA' }}
                     className="block w-full pl-11 pr-4 h-12 bg-white/[0.03] hover:bg-white/[0.05] focus:bg-white/[0.06] border border-white/[0.08] focus:border-[var(--accent)]/60 rounded-2xl text-white text-[15px] font-semibold placeholder-slate-600 outline-none transition-all duration-300 shadow-[inset_0_1px_2px_rgba(0,0,0,0.4)] focus:shadow-[0_0_0_3px_var(--accent)/0.15,inset_0_1px_2px_rgba(0,0,0,0.4)]"
                   />
