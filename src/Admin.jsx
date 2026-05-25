@@ -6,7 +6,7 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip,
 import { QRCodeCanvas } from 'qrcode.react';
 import { supabase } from './utils/supabase';
 
-const MODULE_NAMES = { 1: 'Istruzioni Generali', 2: 'Pulizia', 3: 'Ricarica', 4: 'Simulazione' };
+const MODULE_NAMES = { 1: 'General Instructions', 2: 'Cleaning', 3: 'Charging', 4: 'Simulation' };
 const ITEMS_PER_PAGE = 20;
 
 const ConfirmModal = ({ open, title, message, onConfirm, onCancel, danger = true }) => (
@@ -22,10 +22,10 @@ const ConfirmModal = ({ open, title, message, onConfirm, onCancel, danger = true
           <p className="text-slate-400 text-center text-sm font-medium mb-8 leading-relaxed">{message}</p>
           <div className="flex gap-3">
             <button onClick={onCancel} className="flex-1 py-3.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-2xl font-bold transition-colors border border-slate-700">
-              Annulla
+              Cancel
             </button>
             <button onClick={onConfirm} className={`flex-1 py-3.5 rounded-2xl font-bold transition-all text-white ${danger ? 'bg-red-500 hover:bg-red-600 shadow-lg shadow-red-500/20' : 'bg-amber-500 hover:bg-amber-600 shadow-lg shadow-amber-500/20'}`}>
-              Conferma
+              Confirm
             </button>
           </div>
         </motion.div>
@@ -35,10 +35,10 @@ const ConfirmModal = ({ open, title, message, onConfirm, onCancel, danger = true
 );
 
 const EMAIL_FILTERS = [
-  { key: 'all',      label: 'Tutte',       color: 'text-slate-300' },
-  { key: 'accepted', label: 'Iscritte',    color: 'text-emerald-400' },
-  { key: 'refused',  label: 'Rifiutato',   color: 'text-red-400' },
-  { key: 'pending',  label: 'Non risposto', color: 'text-slate-500' },
+  { key: 'all',      label: 'All',       color: 'text-slate-300' },
+  { key: 'accepted', label: 'Subscribed', color: 'text-emerald-400' },
+  { key: 'refused',  label: 'Declined',  color: 'text-red-400' },
+  { key: 'pending',  label: 'Pending',   color: 'text-slate-500' },
 ];
 
 const EmailSection = ({ allUsers }) => {
@@ -66,8 +66,8 @@ const EmailSection = ({ allUsers }) => {
   };
 
   const exportCSV = () => {
-    const csv = 'Nome,Email,Telefono,Ospedale,Newsletter,Ultimo Login\n' + rows.map(r =>
-      `"${r.name}","${r.email}","${r.phone || ''}","${r.hospital || ''}","${r.status === 'accepted' ? 'Iscritto' : r.status === 'refused' ? 'Rifiutato' : 'Non risposto'}","${r.lastLogin ? new Date(r.lastLogin).toLocaleDateString('it-IT') : '—'}"`
+    const csv = 'Name,Email,Phone,Hospital,Newsletter,Last Login\n' + rows.map(r =>
+      `"${r.name}","${r.email}","${r.phone || ''}","${r.hospital || ''}","${r.status === 'accepted' ? 'Subscribed' : r.status === 'refused' ? 'Declined' : 'Pending'}","${r.lastLogin ? new Date(r.lastLogin).toLocaleDateString('en-GB') : '—'}"`
     ).join('\n');
     const a = document.createElement('a');
     a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' }));
@@ -81,10 +81,10 @@ const EmailSection = ({ allUsers }) => {
         <div className="flex items-start justify-between gap-4 flex-wrap">
           <div>
             <h3 className="text-2xl font-black text-white">Email & Newsletter</h3>
-            <p className="text-sm text-slate-500 font-medium mt-1">{counts.all} email raccolte · {counts.accepted} iscritte · {counts.refused} rifiutato · {counts.pending} non risposto</p>
+            <p className="text-sm text-slate-500 font-medium mt-1">{counts.all} emails collected · {counts.accepted} subscribed · {counts.refused} declined · {counts.pending} pending</p>
           </div>
           <button onClick={exportCSV} className="px-4 py-2 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 hover:text-white rounded-xl font-bold text-sm transition-all flex items-center gap-2">
-            <Download className="w-4 h-4" /> Esporta CSV
+            <Download className="w-4 h-4" /> Export CSV
           </button>
         </div>
 
@@ -100,7 +100,7 @@ const EmailSection = ({ allUsers }) => {
           ))}
           <input
             type="text"
-            placeholder="Cerca email o nome..."
+            placeholder="Search email or name..."
             value={search}
             onChange={e => setSearch(e.target.value)}
             className="ml-auto px-4 py-1.5 rounded-xl bg-slate-800 border border-slate-700 text-slate-300 text-sm font-medium placeholder-slate-600 outline-none focus:border-[#FF8731]/50 transition-all"
@@ -109,17 +109,17 @@ const EmailSection = ({ allUsers }) => {
       </div>
 
       {rows.length === 0 ? (
-        <div className="p-12 text-center text-slate-600 font-medium">Nessun risultato.</div>
+        <div className="p-12 text-center text-slate-600 font-medium">No results.</div>
       ) : (
         <table className="w-full text-left">
           <thead>
             <tr className="border-b border-slate-800">
-              <th className="px-8 py-4 text-xs font-black text-slate-500 uppercase tracking-widest">Nome</th>
+              <th className="px-8 py-4 text-xs font-black text-slate-500 uppercase tracking-widest">Name</th>
               <th className="px-8 py-4 text-xs font-black text-slate-500 uppercase tracking-widest">Email</th>
-              <th className="px-8 py-4 text-xs font-black text-slate-500 uppercase tracking-widest">Telefono</th>
-              <th className="px-8 py-4 text-xs font-black text-slate-500 uppercase tracking-widest">Ospedale</th>
+              <th className="px-8 py-4 text-xs font-black text-slate-500 uppercase tracking-widest">Phone</th>
+              <th className="px-8 py-4 text-xs font-black text-slate-500 uppercase tracking-widest">Hospital</th>
               <th className="px-8 py-4 text-xs font-black text-slate-500 uppercase tracking-widest">Newsletter</th>
-              <th className="px-8 py-4 text-xs font-black text-slate-500 uppercase tracking-widest">Ultimo login</th>
+              <th className="px-8 py-4 text-xs font-black text-slate-500 uppercase tracking-widest">Last login</th>
             </tr>
           </thead>
           <tbody>
@@ -127,13 +127,14 @@ const EmailSection = ({ allUsers }) => {
               <tr key={row.email + i} className="border-b border-slate-800/50 hover:bg-slate-800/30 transition-colors">
                 <td className="px-8 py-4 text-white font-bold text-sm">{row.name}</td>
                 <td className="px-8 py-4 text-slate-300 font-semibold text-sm">{row.email}</td>
+                <td className="px-8 py-4 text-slate-500 text-sm">{row.phone || '—'}</td>
                 <td className="px-8 py-4 text-slate-500 text-sm">{row.hospital || '—'}</td>
                 <td className="px-8 py-4">
-                  {row.status === 'accepted' && <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-bold">Iscritto ✓</span>}
-                  {row.status === 'refused'  && <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-red-500/10 border border-red-500/20 text-red-400 text-xs font-bold">Rifiutato</span>}
-                  {row.status === 'pending'  && <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-slate-700 border border-slate-600 text-slate-500 text-xs font-bold">Non risposto</span>}
+                  {row.status === 'accepted' && <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-bold">Subscribed ✓</span>}
+                  {row.status === 'refused'  && <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-red-500/10 border border-red-500/20 text-red-400 text-xs font-bold">Declined</span>}
+                  {row.status === 'pending'  && <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-slate-700 border border-slate-600 text-slate-500 text-xs font-bold">Pending</span>}
                 </td>
-                <td className="px-8 py-4 text-slate-500 text-sm">{row.lastLogin ? new Date(row.lastLogin).toLocaleDateString('it-IT') : '—'}</td>
+                <td className="px-8 py-4 text-slate-500 text-sm">{row.lastLogin ? new Date(row.lastLogin).toLocaleDateString('en-GB') : '—'}</td>
               </tr>
             ))}
           </tbody>
@@ -164,11 +165,11 @@ const Admin = () => {
   const timeAgo = (iso) => {
     if (!iso) return '—';
     const diff = Math.floor((Date.now() - new Date(iso)) / 1000);
-    if (diff < 60) return 'Adesso';
-    if (diff < 3600) return `${Math.floor(diff / 60)} min fa`;
-    if (diff < 86400) return `${Math.floor(diff / 3600)} ore fa`;
-    if (diff < 172800) return 'Ieri';
-    return `${Math.floor(diff / 86400)} giorni fa`;
+    if (diff < 60) return 'Just now';
+    if (diff < 3600) return `${Math.floor(diff / 60)} min ago`;
+    if (diff < 86400) return `${Math.floor(diff / 3600)} hrs ago`;
+    if (diff < 172800) return 'Yesterday';
+    return `${Math.floor(diff / 86400)} days ago`;
   };
 
   const getNextModule = (completedList) => {
@@ -192,13 +193,11 @@ const Admin = () => {
   const closeConfirm = () => setConfirmModal(m => ({ ...m, open: false }));
 
   const loadStats = async () => {
-    // Fetch all users from Supabase
     const { data: supaUsers, error } = await supabase
       .from('users')
       .select('*')
       .order('last_login', { ascending: false });
 
-    // Fallback to localStorage if Supabase fails
     const source = (!error && supaUsers && supaUsers.length > 0)
       ? supaUsers.map(u => ({
           name: u.name,
@@ -244,7 +243,7 @@ const Admin = () => {
       if (user.patientType === 'adulti') adultiCount++;
       else if (user.patientType === 'pediatria') pediatriaCount++;
 
-      const hosp = user.hospital || 'Sconosciuto';
+      const hosp = user.hospital || 'Unknown';
       hospitalsMap[hosp] = (hospitalsMap[hosp] || 0) + 1;
       dropOffMap[Math.min(completedModules, 4)]++;
 
@@ -259,11 +258,11 @@ const Admin = () => {
 
     const hospitalsData = Object.keys(hospitalsMap).map(k => ({ name: k, value: hospitalsMap[k] }));
     const completionRatesData = [
-      { name: '0 Mod.', utenti: dropOffMap[0] },
-      { name: '1 Mod.', utenti: dropOffMap[1] },
-      { name: '2 Mod.', utenti: dropOffMap[2] },
-      { name: '3 Mod.', utenti: dropOffMap[3] },
-      { name: 'Completati', utenti: dropOffMap[4] },
+      { name: '0 Mod.', users: dropOffMap[0] },
+      { name: '1 Mod.', users: dropOffMap[1] },
+      { name: '2 Mod.', users: dropOffMap[2] },
+      { name: '3 Mod.', users: dropOffMap[3] },
+      { name: 'Completed', users: dropOffMap[4] },
     ];
 
     const loginsByDay = {};
@@ -278,8 +277,8 @@ const Admin = () => {
       d.setDate(d.getDate() - (6 - i));
       const dayKey = d.toISOString().split('T')[0];
       return {
-        name: d.toLocaleDateString('it-IT', { weekday: 'short' }),
-        accessi: loginsByDay[dayKey] || 0
+        name: d.toLocaleDateString('en-GB', { weekday: 'short' }),
+        logins: loginsByDay[dayKey] || 0
       };
     });
 
@@ -312,14 +311,14 @@ const Admin = () => {
       loadStats();
       loadNewsletter();
     } else {
-      alert('Password errata!');
+      alert('Wrong password!');
     }
   };
 
   const deleteUser = (userName) => {
     openConfirm(
-      'Elimina Sessione',
-      `Eliminare definitivamente "${userName}"? Tutti i dati e il progresso verranno persi. Operazione irreversibile.`,
+      'Delete Session',
+      `Permanently delete "${userName}"? All data and progress will be lost. This action is irreversible.`,
       async () => {
         await supabase.from('users').delete().eq('name', userName);
         const globalUsers = JSON.parse(localStorage.getItem('lemo_all_users')) || {};
@@ -336,8 +335,8 @@ const Admin = () => {
 
   const resetProgress = (userName) => {
     openConfirm(
-      'Azzera Progresso',
-      `Azzerare il progresso formativo di "${userName}"? L'utente verrà riportato al Modulo 1 ma manterrà il suo account.`,
+      'Reset Progress',
+      `Reset the training progress for "${userName}"? The user will be taken back to Module 1 but will keep their account.`,
       async () => {
         await supabase.from('users').update({ completed_modules: [] }).eq('name', userName);
         localStorage.removeItem(`lemo_progress_${userName}`);
@@ -355,8 +354,8 @@ const Admin = () => {
 
   const unlockAll = (userName) => {
     openConfirm(
-      'Sblocca Tutti i Moduli',
-      `Sbloccare l'intero percorso formativo per "${userName}"? Tutti i 4 moduli verranno segnati come completati.`,
+      'Unlock All Modules',
+      `Unlock the entire training path for "${userName}"? All 4 modules will be marked as completed.`,
       async () => {
         const allModules = [1, 2, 3, 4];
         await supabase.from('users').update({ completed_modules: allModules }).eq('name', userName);
@@ -378,38 +377,38 @@ const Admin = () => {
     const BOM = '﻿';
     const escapeCell = (val) => `"${String(val ?? '').replace(/"/g, '""')}"`;
 
-    const headers = ['Operatore', 'Email', 'Newsletter', 'Ospedale', 'Reparto', 'Profilo Paziente', 'Modalità', 'Progresso %', 'Moduli Completati', 'Prossimo Modulo', 'Login Totali', 'Media Login', 'Primo Accesso', 'Ultimo Accesso'];
+    const headers = ['Operator', 'Email', 'Newsletter', 'Hospital', 'Department', 'Patient Profile', 'Mode', 'Progress %', 'Completed Modules', 'Next Module', 'Total Logins', 'Avg Logins', 'First Access', 'Last Access'];
 
     const rows = filteredUsers.map(u => {
       const nextMod = getNextModule(u.completedModulesList || []);
       return [
         u.name || '',
         u.email || '',
-        u.newsletterOptIn === true ? 'Sì' : u.newsletterOptIn === false ? 'No' : '—',
+        u.newsletterOptIn === true ? 'Yes' : u.newsletterOptIn === false ? 'No' : '—',
         u.hospital || '',
         u.department || '',
-        u.patientType === 'pediatria' ? 'Pediatria' : 'Adulti',
-        u.mode === 'full' ? 'Libera' : 'Guidata',
+        u.patientType === 'pediatria' ? 'Paediatrics' : 'Adults',
+        u.mode === 'full' ? 'Free' : 'Guided',
         `${u.percentage || 0}%`,
         `${u.progressCount || 0}/${totalLessons}`,
-        nextMod ? `Modulo ${nextMod} — ${MODULE_NAMES[nextMod]}` : 'Completato ✓',
+        nextMod ? `Module ${nextMod} — ${MODULE_NAMES[nextMod]}` : 'Completed ✓',
         u.loginCount || 1,
         stats?.avgLogins || 0,
-        new Date(u.firstLogin || u.lastLogin || Date.now()).toLocaleDateString('it-IT'),
-        new Date(u.lastLogin || Date.now()).toLocaleString('it-IT'),
+        new Date(u.firstLogin || u.lastLogin || Date.now()).toLocaleDateString('en-GB'),
+        new Date(u.lastLogin || Date.now()).toLocaleString('en-GB'),
       ].map(escapeCell).join(SEP);
     });
 
     const summary = [
       '',
-      ['RIEPILOGO', '', '', '', '', '', '', '', '', '', '', ''].map(escapeCell).join(SEP),
-      ['Totale operatori', allUsersList.length, '', '', '', '', '', '', '', '', '', ''].map(escapeCell).join(SEP),
-      ['Certificati rilasciati', stats?.completed || 0, '', '', '', '', '', '', '', '', '', ''].map(escapeCell).join(SEP),
-      ['Tasso completamento', `${stats?.completionRate || 0}%`, '', '', '', '', '', '', '', '', '', ''].map(escapeCell).join(SEP),
-      ['Progresso medio', `${stats?.avgProgress || 0}%`, '', '', '', '', '', '', '', '', '', ''].map(escapeCell).join(SEP),
-      ['Profilo Adulti', stats?.adultiCount || 0, '', '', '', '', '', '', '', '', '', ''].map(escapeCell).join(SEP),
-      ['Profilo Pediatria', stats?.pediatriaCount || 0, '', '', '', '', '', '', '', '', '', ''].map(escapeCell).join(SEP),
-      [`Report generato il`, new Date().toLocaleString('it-IT'), '', '', '', '', '', '', '', '', '', ''].map(escapeCell).join(SEP),
+      ['SUMMARY', '', '', '', '', '', '', '', '', '', '', ''].map(escapeCell).join(SEP),
+      ['Total operators', allUsersList.length, '', '', '', '', '', '', '', '', '', ''].map(escapeCell).join(SEP),
+      ['Certificates issued', stats?.completed || 0, '', '', '', '', '', '', '', '', '', ''].map(escapeCell).join(SEP),
+      ['Completion rate', `${stats?.completionRate || 0}%`, '', '', '', '', '', '', '', '', '', ''].map(escapeCell).join(SEP),
+      ['Average progress', `${stats?.avgProgress || 0}%`, '', '', '', '', '', '', '', '', '', ''].map(escapeCell).join(SEP),
+      ['Adult profile', stats?.adultiCount || 0, '', '', '', '', '', '', '', '', '', ''].map(escapeCell).join(SEP),
+      ['Paediatric profile', stats?.pediatriaCount || 0, '', '', '', '', '', '', '', '', '', ''].map(escapeCell).join(SEP),
+      ['Report generated on', new Date().toLocaleString('en-GB'), '', '', '', '', '', '', '', '', '', ''].map(escapeCell).join(SEP),
     ];
 
     const csvContent = BOM + [headers.map(escapeCell).join(SEP), ...rows, ...summary].join('\r\n');
@@ -456,13 +455,13 @@ const Admin = () => {
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-red-500/10 rounded-full blur-[100px]"></div>
         <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="bg-slate-900 border border-slate-800 p-10 rounded-[2rem] shadow-2xl relative z-10 w-full max-w-md text-center">
           <img src="/images/logos/logo bianco panna png.png" alt="Lemons Logo" className="w-16 h-16 mx-auto mb-6 object-contain" />
-          <h1 className="text-3xl font-black font-serif text-white mb-2">Area Riservata</h1>
-          <p className="text-slate-400 mb-8">Accesso esclusivo al team Lemons in the room.</p>
+          <h1 className="text-3xl font-black font-serif text-white mb-2">Admin Area</h1>
+          <p className="text-slate-400 mb-8">Exclusive access for the Lemons in the room team.</p>
           <form onSubmit={handleLogin} className="space-y-4">
-            <input type="password" placeholder="Password Direzionale" value={password} onChange={(e) => setPassword(e.target.value)} className="w-full bg-slate-800 border border-slate-700 text-white px-6 py-4 rounded-xl text-center tracking-widest font-mono focus:border-red-500 focus:outline-none transition-colors" />
-            <button type="submit" className="w-full bg-red-500 hover:bg-red-600 text-white font-bold py-4 rounded-xl shadow-lg shadow-red-500/20 transition-colors">Sblocca God Mode</button>
+            <input type="password" placeholder="Admin Password" value={password} onChange={(e) => setPassword(e.target.value)} className="w-full bg-slate-800 border border-slate-700 text-white px-6 py-4 rounded-xl text-center tracking-widest font-mono focus:border-red-500 focus:outline-none transition-colors" />
+            <button type="submit" className="w-full bg-red-500 hover:bg-red-600 text-white font-bold py-4 rounded-xl shadow-lg shadow-red-500/20 transition-colors">Enter Dashboard</button>
           </form>
-          <button onClick={() => navigate('/')} className="mt-6 text-slate-500 hover:text-slate-300 text-sm font-bold">Torna alla piattaforma</button>
+          <button onClick={() => navigate('/')} className="mt-6 text-slate-500 hover:text-slate-300 text-sm font-bold">Back to platform</button>
         </motion.div>
       </div>
     );
@@ -492,20 +491,20 @@ const Admin = () => {
             <div>
               <h1 className="text-4xl font-black font-serif text-white tracking-tight flex items-center gap-3">
                 <ShieldAlert className="w-8 h-8 text-[#FF8731]" />
-                Lemons in the room God Mode
+                Lemons in the room
               </h1>
-              <p className="text-slate-400 mt-1 font-medium text-sm">Monitoraggio in tempo reale dei dati operativi globali.</p>
+              <p className="text-slate-400 mt-1 font-medium text-sm">Real-time monitoring of global operational data.</p>
             </div>
           </div>
           <div className="flex items-center gap-4 w-full md:w-auto">
             <button onClick={loadStats} className="px-4 py-3 bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white rounded-xl font-bold transition-all flex items-center justify-center gap-2 border border-slate-700">
-              <RefreshCw className="w-4 h-4" /> Aggiorna
+              <RefreshCw className="w-4 h-4" /> Refresh
             </button>
             <button onClick={exportCSV} className="flex-1 md:flex-none px-6 py-3 bg-indigo-500 hover:bg-indigo-600 text-white rounded-xl font-bold transition-all flex items-center justify-center gap-2 shadow-lg shadow-indigo-500/20">
-              <Download className="w-4 h-4" /> Esporta CSV
+              <Download className="w-4 h-4" /> Export CSV
             </button>
             <button onClick={() => navigate('/')} className="px-6 py-3 bg-slate-800 hover:bg-slate-700 rounded-xl font-bold transition-colors border border-slate-700">
-              Esci
+              Exit
             </button>
           </div>
         </header>
@@ -515,7 +514,7 @@ const Admin = () => {
           <div className="bg-slate-900 border border-slate-800 p-6 rounded-3xl flex flex-col justify-between">
             <Users className="w-6 h-6 text-blue-400 mb-4" />
             <div>
-              <p className="text-slate-500 font-bold text-[10px] uppercase tracking-widest">Operatori Totali</p>
+              <p className="text-slate-500 font-bold text-[10px] uppercase tracking-widest">Total Operators</p>
               <p className="text-3xl font-black font-serif text-white">{stats?.totalUsers || 0}</p>
             </div>
           </div>
@@ -523,7 +522,7 @@ const Admin = () => {
             <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/10 rounded-full blur-2xl"></div>
             <CheckCircle className="w-6 h-6 text-emerald-400 mb-4 relative z-10" />
             <div className="relative z-10">
-              <p className="text-slate-500 font-bold text-[10px] uppercase tracking-widest">Certificati Rilasciati</p>
+              <p className="text-slate-500 font-bold text-[10px] uppercase tracking-widest">Certificates Issued</p>
               <div className="flex items-end gap-2">
                 <p className="text-3xl font-black font-serif text-white">{stats?.completed || 0}</p>
                 <p className="text-emerald-400 text-sm font-bold mb-1">({stats?.completionRate || 0}%)</p>
@@ -533,33 +532,33 @@ const Admin = () => {
           <div className="bg-slate-900 border border-slate-800 p-6 rounded-3xl flex flex-col justify-between">
             <Activity className="w-6 h-6 text-yellow-400 mb-4" />
             <div>
-              <p className="text-slate-500 font-bold text-[10px] uppercase tracking-widest">Attivi Oggi</p>
+              <p className="text-slate-500 font-bold text-[10px] uppercase tracking-widest">Active Today</p>
               <p className="text-3xl font-black font-serif text-white">{stats?.activeToday || 0}</p>
             </div>
           </div>
           <div className="bg-slate-900 border border-slate-800 p-6 rounded-3xl flex flex-col justify-between">
             <TrendingUp className="w-6 h-6 text-indigo-400 mb-4" />
             <div>
-              <p className="text-slate-500 font-bold text-[10px] uppercase tracking-widest">Sessioni Totali</p>
+              <p className="text-slate-500 font-bold text-[10px] uppercase tracking-widest">Total Sessions</p>
               <p className="text-3xl font-black font-serif text-white">{stats?.totalLogins || 0}</p>
             </div>
           </div>
           <div className="bg-slate-900 border border-slate-800 p-6 rounded-3xl flex flex-col justify-between col-span-2 md:col-span-4 lg:col-span-1">
             <Building2 className="w-6 h-6 text-rose-400 mb-4" />
             <div>
-              <p className="text-slate-500 font-bold text-[10px] uppercase tracking-widest">Strutture Attive</p>
+              <p className="text-slate-500 font-bold text-[10px] uppercase tracking-widest">Active Facilities</p>
               <p className="text-3xl font-black font-serif text-white">{(stats?.hospitals || []).length}</p>
             </div>
           </div>
         </div>
 
-        {/* KPI Row 2 — nuovi */}
+        {/* KPI Row 2 */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
           <div className="bg-slate-900 border border-slate-800 p-6 rounded-3xl flex flex-col justify-between relative overflow-hidden">
             <div className="absolute top-0 right-0 w-24 h-24 bg-blue-500/10 rounded-full blur-xl"></div>
             <UserRound className="w-6 h-6 text-blue-400 mb-4 relative z-10" />
             <div className="relative z-10">
-              <p className="text-slate-500 font-bold text-[10px] uppercase tracking-widest">Profilo Adulti</p>
+              <p className="text-slate-500 font-bold text-[10px] uppercase tracking-widest">Adult Profile</p>
               <div className="flex items-end gap-2">
                 <p className="text-3xl font-black font-serif text-white">{stats?.adultiCount || 0}</p>
                 <p className="text-blue-400 text-sm font-bold mb-1">
@@ -572,7 +571,7 @@ const Admin = () => {
             <div className="absolute top-0 right-0 w-24 h-24 bg-violet-500/10 rounded-full blur-xl"></div>
             <Baby className="w-6 h-6 text-violet-400 mb-4 relative z-10" />
             <div className="relative z-10">
-              <p className="text-slate-500 font-bold text-[10px] uppercase tracking-widest">Profilo Pediatria</p>
+              <p className="text-slate-500 font-bold text-[10px] uppercase tracking-widest">Paediatric Profile</p>
               <div className="flex items-end gap-2">
                 <p className="text-3xl font-black font-serif text-white">{stats?.pediatriaCount || 0}</p>
                 <p className="text-violet-400 text-sm font-bold mb-1">
@@ -585,7 +584,7 @@ const Admin = () => {
             <div className="absolute top-0 right-0 w-24 h-24 bg-[#FF8731]/10 rounded-full blur-xl"></div>
             <Star className="w-6 h-6 text-[#FF8731] mb-4 relative z-10" />
             <div className="relative z-10">
-              <p className="text-slate-500 font-bold text-[10px] uppercase tracking-widest">Progresso Medio</p>
+              <p className="text-slate-500 font-bold text-[10px] uppercase tracking-widest">Average Progress</p>
               <div className="flex items-end gap-2">
                 <p className="text-3xl font-black font-serif text-white">{stats?.avgProgress || 0}%</p>
               </div>
@@ -597,7 +596,7 @@ const Admin = () => {
           <div className="bg-slate-900 border border-slate-800 p-6 rounded-3xl flex flex-col justify-between">
             <History className="w-6 h-6 text-slate-400 mb-4" />
             <div>
-              <p className="text-slate-500 font-bold text-[10px] uppercase tracking-widest">Media Accessi / Utente</p>
+              <p className="text-slate-500 font-bold text-[10px] uppercase tracking-widest">Avg Sessions / User</p>
               <p className="text-3xl font-black font-serif text-white">{stats?.avgLogins || 0}</p>
             </div>
           </div>
@@ -607,10 +606,10 @@ const Admin = () => {
         <div className="bg-slate-900 border border-slate-800 p-8 md:p-10 rounded-[2.5rem] shadow-2xl mb-10 flex flex-col lg:flex-row items-center gap-10 overflow-hidden relative group">
           <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-[#8756FA] rounded-full blur-[120px] opacity-10 pointer-events-none group-hover:opacity-20 transition-opacity duration-700"></div>
           <div className="flex-1 relative z-10 text-center lg:text-left">
-            <h3 className="text-3xl font-black font-serif text-white mb-4">Codice di Accesso Universale</h3>
+            <h3 className="text-3xl font-black font-serif text-white mb-4">Universal Access Code</h3>
             <p className="text-slate-400 font-medium text-lg mb-8 leading-relaxed max-w-2xl mx-auto lg:mx-0">
-              Stampa o mostra questo QR Code. Permette agli operatori di accedere immediatamente alla piattaforma dal proprio smartphone.
-              <span className="block mt-2 text-emerald-400 font-bold">Il sistema riconoscerà in automatico i dispositivi già registrati, saltando il form di login.</span>
+              Print or show this QR Code. It allows operators to access the platform immediately from their smartphone.
+              <span className="block mt-2 text-emerald-400 font-bold">The system will automatically recognise already registered devices, skipping the login form.</span>
             </p>
             <button
               onClick={() => {
@@ -622,7 +621,7 @@ const Admin = () => {
               }}
               className="px-8 py-4 bg-gradient-to-r from-[#8756FA] to-[#6A35E8] hover:from-[#9C73FA] hover:to-[#8756FA] text-white font-black rounded-2xl transition-all shadow-[0_15px_30px_-10px_rgba(135,86,250,0.5)] hover:scale-105 active:scale-95"
             >
-              Stampa QR Code
+              Print QR Code
             </button>
           </div>
           <div id="qr-canvas" className="bg-white p-6 rounded-[2.5rem] shadow-[0_0_40px_rgba(0,0,0,0.3)] shrink-0 relative z-10 border border-slate-200 group-hover:rotate-3 transition-transform duration-500">
@@ -637,13 +636,13 @@ const Admin = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-10">
           <div className="bg-slate-900 border border-slate-800 p-8 rounded-[2rem] shadow-xl lg:col-span-2">
             <h3 className="text-lg font-bold text-white mb-6 flex items-center gap-2">
-              <Activity className="w-5 h-5 text-indigo-400" /> Trend Accessi (Ultimi 7 gg)
+              <Activity className="w-5 h-5 text-indigo-400" /> Access Trend (Last 7 days)
             </h3>
             <div className="h-[250px]">
               <ResponsiveContainer width="100%" height="100%">
                 <AreaChart data={stats?.activityData || []}>
                   <defs>
-                    <linearGradient id="colorAccessi" x1="0" y1="0" x2="0" y2="1">
+                    <linearGradient id="colorLogins" x1="0" y1="0" x2="0" y2="1">
                       <stop offset="5%" stopColor="#6366f1" stopOpacity={0.3} />
                       <stop offset="95%" stopColor="#6366f1" stopOpacity={0} />
                     </linearGradient>
@@ -652,7 +651,7 @@ const Admin = () => {
                   <XAxis dataKey="name" stroke="#64748b" tick={{ fill: '#94a3b8', fontSize: 12, fontWeight: 'bold' }} axisLine={false} tickLine={false} />
                   <YAxis stroke="#64748b" tick={{ fill: '#94a3b8', fontSize: 12, fontWeight: 'bold' }} axisLine={false} tickLine={false} allowDecimals={false} />
                   <RechartsTooltip contentStyle={{ backgroundColor: '#03091B', borderColor: '#131A33', borderRadius: '1rem', color: '#fff' }} />
-                  <Area type="monotone" dataKey="accessi" stroke="#6366f1" strokeWidth={3} fillOpacity={1} fill="url(#colorAccessi)" />
+                  <Area type="monotone" dataKey="logins" stroke="#6366f1" strokeWidth={3} fillOpacity={1} fill="url(#colorLogins)" />
                 </AreaChart>
               </ResponsiveContainer>
             </div>
@@ -660,7 +659,7 @@ const Admin = () => {
 
           <div className="bg-slate-900 border border-slate-800 p-8 rounded-[2rem] shadow-xl">
             <h3 className="text-lg font-bold text-white mb-6 flex items-center gap-2">
-              <Building2 className="w-5 h-5 text-[#FF8731]" /> Quote per Struttura
+              <Building2 className="w-5 h-5 text-[#FF8731]" /> Share by Facility
             </h3>
             <div className="h-[200px]">
               <ResponsiveContainer width="100%" height="100%">
@@ -686,7 +685,7 @@ const Admin = () => {
         {/* Drop-off funnel */}
         <div className="bg-slate-900 border border-slate-800 p-8 rounded-[2rem] shadow-xl mb-10">
           <h3 className="text-lg font-bold text-white mb-8 flex items-center gap-2">
-            <Target className="w-5 h-5 text-emerald-400" /> Imbuto di Completamento (Drop-off)
+            <Target className="w-5 h-5 text-emerald-400" /> Completion Funnel (Drop-off)
           </h3>
           <div className="h-[250px]">
             <ResponsiveContainer width="100%" height="100%">
@@ -695,7 +694,7 @@ const Admin = () => {
                 <XAxis dataKey="name" stroke="#64748b" tick={{ fill: '#94a3b8', fontWeight: 'bold', fontSize: 12 }} axisLine={false} tickLine={false} />
                 <YAxis stroke="#64748b" tick={{ fill: '#94a3b8', fontWeight: 'bold' }} axisLine={false} tickLine={false} allowDecimals={false} />
                 <RechartsTooltip cursor={{ fill: '#131A33' }} contentStyle={{ backgroundColor: '#03091B', borderColor: '#131A33', borderRadius: '1rem', color: '#fff', fontWeight: 'bold' }} />
-                <Bar dataKey="utenti" radius={[8, 8, 0, 0]}>
+                <Bar dataKey="users" radius={[8, 8, 0, 0]}>
                   {(stats?.completionRates || []).map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={index === 4 ? '#FF8731' : '#10B981'} />
                   ))}
@@ -705,20 +704,20 @@ const Admin = () => {
           </div>
         </div>
 
-        {/* Tabella Operatori */}
+        {/* Operator Table */}
         <div className="bg-slate-900 border border-slate-800 rounded-[2.5rem] shadow-2xl overflow-hidden mb-20">
           <div className="p-8 border-b border-slate-800 bg-slate-900/50 backdrop-blur-xl">
             <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
               <div>
-                <h3 className="text-2xl font-black text-white">Anagrafica Operatori</h3>
+                <h3 className="text-2xl font-black text-white">Operator Registry</h3>
                 <p className="text-sm text-slate-500 font-medium mt-1 flex items-center gap-3">
                   {filteredUsers.length === allUsersList.length
-                    ? `${allUsersList.length} operatori totali`
-                    : `${filteredUsers.length} di ${allUsersList.length} operatori`}
-                  {totalPages > 1 && <span className="text-slate-600">· Pagina {currentPage}/{totalPages}</span>}
+                    ? `${allUsersList.length} total operators`
+                    : `${filteredUsers.length} of ${allUsersList.length} operators`}
+                  {totalPages > 1 && <span className="text-slate-600">· Page {currentPage}/{totalPages}</span>}
                   {hasActiveFilters && (
                     <button onClick={resetFilters} className="inline-flex items-center gap-1 text-[#FF8731] hover:text-[#FF9E54] font-bold text-xs transition-colors">
-                      <X className="w-3 h-3" /> Azzera filtri
+                      <X className="w-3 h-3" /> Clear filters
                     </button>
                   )}
                 </p>
@@ -729,7 +728,7 @@ const Admin = () => {
                   onChange={(e) => setHospitalFilter(e.target.value)}
                   className="bg-slate-950 border border-slate-800 text-slate-300 px-5 py-3.5 rounded-2xl focus:border-[#FF8731] focus:ring-1 focus:ring-[#FF8731] outline-none transition-all font-bold text-sm appearance-none cursor-pointer"
                 >
-                  <option value="all">Tutte le strutture</option>
+                  <option value="all">All facilities</option>
                   {uniqueHospitals.map(h => <option key={h} value={h}>{h}</option>)}
                 </select>
                 <select
@@ -737,16 +736,16 @@ const Admin = () => {
                   onChange={(e) => setStatusFilter(e.target.value)}
                   className="bg-slate-950 border border-slate-800 text-slate-300 px-5 py-3.5 rounded-2xl focus:border-[#FF8731] focus:ring-1 focus:ring-[#FF8731] outline-none transition-all font-bold text-sm appearance-none cursor-pointer"
                 >
-                  <option value="all">Tutti gli stati</option>
-                  <option value="completed">Solo Certificati (100%)</option>
-                  <option value="in_progress">In Corso (1–99%)</option>
-                  <option value="not_started">Non Iniziato (0%)</option>
+                  <option value="all">All statuses</option>
+                  <option value="completed">Certified only (100%)</option>
+                  <option value="in_progress">In Progress (1–99%)</option>
+                  <option value="not_started">Not Started (0%)</option>
                 </select>
                 <div className="relative w-full sm:w-72">
                   <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500" />
                   <input
                     type="text"
-                    placeholder="Cerca nome, reparto..."
+                    placeholder="Search name, department..."
                     value={searchTerm}
                     onChange={(e) => setSearchParams(e.target.value)}
                     className="w-full bg-slate-950 border border-slate-800 text-white pl-12 pr-4 py-3.5 rounded-2xl focus:border-[#FF8731] focus:ring-1 focus:ring-[#FF8731] outline-none transition-all font-medium text-sm"
@@ -760,7 +759,7 @@ const Admin = () => {
             <table className="w-full text-left border-collapse">
               <thead>
                 <tr className="bg-slate-950 text-slate-400 text-[10px] uppercase tracking-widest font-black border-b border-slate-800">
-                  {[['name', 'Operatore'], ['hospital', 'Struttura'], ['', 'Profilo'], ['percentage', 'Formazione'], ['loginCount', 'Attività']].map(([col, label]) => (
+                  {[['name', 'Operator'], ['hospital', 'Facility'], ['', 'Profile'], ['percentage', 'Training'], ['loginCount', 'Activity']].map(([col, label]) => (
                     <th key={label} className="px-8 py-5">
                       {col ? (
                         <button onClick={() => handleSort(col)} className="flex items-center gap-1.5 font-black uppercase tracking-widest text-[10px] text-slate-400 hover:text-white transition-colors">
@@ -769,7 +768,7 @@ const Admin = () => {
                       ) : <span className="text-[10px] uppercase tracking-widest">{label}</span>}
                     </th>
                   ))}
-                  <th className="px-8 py-5 text-right text-[10px] uppercase tracking-widest">Dettagli</th>
+                  <th className="px-8 py-5 text-right text-[10px] uppercase tracking-widest">Details</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-800/50">
@@ -791,11 +790,11 @@ const Admin = () => {
                               <div className="font-bold text-white text-base flex items-center gap-2">
                                 {u.name}
                                 {u.firstLogin && u.firstLogin.startsWith(todayStr) && (
-                                  <span className="text-[9px] font-black px-1.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 uppercase tracking-wider">Nuovo</span>
+                                  <span className="text-[9px] font-black px-1.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 uppercase tracking-wider">New</span>
                                 )}
                               </div>
                               <div className="text-xs font-bold px-2 py-0.5 mt-1 rounded-md inline-block bg-slate-800 text-slate-400">
-                                {u.mode === 'full' ? 'Modalità Libera' : 'Percorso Guidato'}
+                                {u.mode === 'full' ? 'Free Mode' : 'Guided Path'}
                               </div>
                             </div>
                           </div>
@@ -806,14 +805,14 @@ const Admin = () => {
                         </td>
                         <td className="px-8 py-6">
                           {u.patientType === 'pediatria'
-                            ? <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-violet-500/10 border border-violet-500/20 text-violet-400 text-xs font-bold"><Baby className="w-3 h-3" />Pediatria</span>
-                            : <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-bold"><UserRound className="w-3 h-3" />Adulti</span>
+                            ? <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-violet-500/10 border border-violet-500/20 text-violet-400 text-xs font-bold"><Baby className="w-3 h-3" />Paediatrics</span>
+                            : <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-bold"><UserRound className="w-3 h-3" />Adults</span>
                           }
                         </td>
                         <td className="px-8 py-6">
                           <div className="flex flex-col gap-2">
                             <div className="flex items-center justify-between text-xs font-bold">
-                              <span className={u.percentage === 100 ? 'text-emerald-400' : 'text-slate-300'}>{u.progressCount || 0} / {totalLessons} Moduli</span>
+                              <span className={u.percentage === 100 ? 'text-emerald-400' : 'text-slate-300'}>{u.progressCount || 0} / {totalLessons} Modules</span>
                               <span className={u.percentage === 100 ? 'text-emerald-400' : 'text-[#FF8731]'}>{u.percentage || 0}%</span>
                             </div>
                             <div className="h-2 bg-slate-800 rounded-full overflow-hidden w-full max-w-[150px]">
@@ -825,7 +824,7 @@ const Admin = () => {
                           <div className="flex flex-col items-center gap-1.5">
                             <div className="inline-flex items-center gap-1.5 bg-slate-800 px-3 py-1 rounded-lg text-xs font-bold text-white border border-slate-700">
                               <History className="w-3.5 h-3.5 text-slate-400" />
-                              {u.loginCount || 1} Accessi
+                              {u.loginCount || 1} Sessions
                             </div>
                             <span className="text-[10px] text-slate-500 font-medium">{timeAgo(u.lastLogin)}</span>
                           </div>
@@ -846,53 +845,50 @@ const Admin = () => {
                                 className="px-8 py-6 border-l-4 border-[#FF8731] ml-4 my-2 rounded-r-2xl bg-slate-800/30 overflow-hidden"
                               >
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                                  {/* Colonna sinistra: accessi + azioni */}
                                   <div>
-                                    <p className="text-[10px] uppercase tracking-widest text-slate-500 font-bold mb-3">Contatto</p>
+                                    <p className="text-[10px] uppercase tracking-widest text-slate-500 font-bold mb-3">Contact</p>
                                     <div className="space-y-2 text-sm font-medium text-slate-300 mb-5">
                                       <div className="flex justify-between"><span className="text-slate-500">Email:</span> <span className="text-white font-bold">{u.email || '—'}</span></div>
-                                      <div className="flex justify-between"><span className="text-slate-500">Telefono:</span> <span className="text-white font-bold">{u.phone || '—'}</span></div>
+                                      <div className="flex justify-between"><span className="text-slate-500">Phone:</span> <span className="text-white font-bold">{u.phone || '—'}</span></div>
                                       <div className="flex justify-between"><span className="text-slate-500">Newsletter:</span>
                                         <span className={`font-bold ${u.newsletterOptIn === true ? 'text-emerald-400' : u.newsletterOptIn === false ? 'text-red-400' : 'text-slate-500'}`}>
-                                          {u.newsletterOptIn === true ? 'Iscritto ✓' : u.newsletterOptIn === false ? 'Rifiutato' : 'Non risposto'}
+                                          {u.newsletterOptIn === true ? 'Subscribed ✓' : u.newsletterOptIn === false ? 'Declined' : 'Pending'}
                                         </span>
                                       </div>
                                     </div>
-                                    <p className="text-[10px] uppercase tracking-widest text-slate-500 font-bold mb-3">Cronologia Accessi</p>
+                                    <p className="text-[10px] uppercase tracking-widest text-slate-500 font-bold mb-3">Access History</p>
                                     <div className="space-y-2 text-sm font-medium text-slate-300 mb-5">
-                                      <div className="flex justify-between"><span className="text-slate-500">Primo Login:</span> <span>{new Date(u.firstLogin || u.lastLogin || Date.now()).toLocaleDateString('it-IT')}</span></div>
-                                      <div className="flex justify-between"><span className="text-slate-500">Ultimo Login:</span> <span className="text-white font-bold">{new Date(u.lastLogin || Date.now()).toLocaleString('it-IT')}</span></div>
-                                      <div className="flex justify-between"><span className="text-slate-500">Accessi totali:</span> <span className="text-white font-bold">{u.loginCount || 1}</span></div>
+                                      <div className="flex justify-between"><span className="text-slate-500">First Login:</span> <span>{new Date(u.firstLogin || u.lastLogin || Date.now()).toLocaleDateString('en-GB')}</span></div>
+                                      <div className="flex justify-between"><span className="text-slate-500">Last Login:</span> <span className="text-white font-bold">{new Date(u.lastLogin || Date.now()).toLocaleString('en-GB')}</span></div>
+                                      <div className="flex justify-between"><span className="text-slate-500">Total sessions:</span> <span className="text-white font-bold">{u.loginCount || 1}</span></div>
                                     </div>
 
-                                    <p className="text-[10px] uppercase tracking-widest text-slate-500 font-bold mb-3">Azioni Rapide</p>
+                                    <p className="text-[10px] uppercase tracking-widest text-slate-500 font-bold mb-3">Quick Actions</p>
                                     <div className="flex flex-wrap gap-2">
                                       <button
                                         onClick={(e) => { e.stopPropagation(); resetProgress(u.name); }}
                                         className="flex items-center gap-2 px-4 py-2.5 bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/20 hover:border-amber-500/40 text-amber-400 hover:text-amber-300 rounded-xl text-xs font-bold transition-all duration-200"
                                       >
-                                        <RotateCcw className="w-3.5 h-3.5" /> Azzera Progresso
+                                        <RotateCcw className="w-3.5 h-3.5" /> Reset Progress
                                       </button>
                                       <button
                                         onClick={(e) => { e.stopPropagation(); unlockAll(u.name); }}
                                         className="flex items-center gap-2 px-4 py-2.5 bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/20 hover:border-emerald-500/40 text-emerald-400 hover:text-emerald-300 rounded-xl text-xs font-bold transition-all duration-200"
                                       >
-                                        <Unlock className="w-3.5 h-3.5" /> Sblocca Tutto
+                                        <Unlock className="w-3.5 h-3.5" /> Unlock All
                                       </button>
                                       <button
                                         onClick={(e) => { e.stopPropagation(); deleteUser(u.name); }}
                                         className="flex items-center gap-2 px-4 py-2.5 bg-red-500/10 hover:bg-red-500/20 border border-red-500/20 hover:border-red-500/40 text-red-400 hover:text-red-300 rounded-xl text-xs font-bold transition-all duration-200"
                                       >
-                                        <Trash2 className="w-3.5 h-3.5" /> Elimina Sessione
+                                        <Trash2 className="w-3.5 h-3.5" /> Delete Session
                                       </button>
                                     </div>
                                   </div>
 
-                                  {/* Colonna destra: moduli + dove è fermo */}
                                   <div>
-                                    <p className="text-[10px] uppercase tracking-widest text-slate-500 font-bold mb-3">Percorso Formativo</p>
+                                    <p className="text-[10px] uppercase tracking-widest text-slate-500 font-bold mb-3">Training Path</p>
 
-                                    {/* Dove è fermo */}
                                     <div className={`mb-4 px-4 py-3 rounded-2xl border flex items-center gap-3 ${nextMod
                                       ? 'bg-[#FF8731]/5 border-[#FF8731]/20'
                                       : 'bg-emerald-500/5 border-emerald-500/20'
@@ -900,10 +896,10 @@ const Admin = () => {
                                       <MapPin className={`w-4 h-4 shrink-0 ${nextMod ? 'text-[#FF8731]' : 'text-emerald-400'}`} />
                                       <div>
                                         <span className={`text-[10px] font-black uppercase tracking-widest ${nextMod ? 'text-[#FF8731]/70' : 'text-emerald-400/70'}`}>
-                                          {nextMod ? 'Prossimo da completare' : 'Stato'}
+                                          {nextMod ? 'Next to complete' : 'Status'}
                                         </span>
                                         <p className={`text-sm font-bold ${nextMod ? 'text-white' : 'text-emerald-400'}`}>
-                                          {nextMod ? `Modulo ${nextMod} — ${MODULE_NAMES[nextMod]}` : 'Percorso completato ✓'}
+                                          {nextMod ? `Module ${nextMod} — ${MODULE_NAMES[nextMod]}` : 'Path completed ✓'}
                                         </p>
                                       </div>
                                     </div>
@@ -939,8 +935,8 @@ const Admin = () => {
                     <td colSpan="6" className="px-8 py-16 text-center">
                       <div className="inline-flex flex-col items-center">
                         <Search className="w-12 h-12 text-slate-700 mb-4" />
-                        <p className="text-slate-400 font-bold text-lg">Nessun operatore trovato.</p>
-                        <p className="text-slate-600 text-sm mt-1">Prova a cambiare i filtri di ricerca.</p>
+                        <p className="text-slate-400 font-bold text-lg">No operators found.</p>
+                        <p className="text-slate-600 text-sm mt-1">Try adjusting the search filters.</p>
                       </div>
                     </td>
                   </tr>
@@ -949,11 +945,11 @@ const Admin = () => {
             </table>
           </div>
 
-          {/* Paginazione */}
+          {/* Pagination */}
           {totalPages > 1 && (
             <div className="p-6 border-t border-slate-800 flex items-center justify-between gap-4">
               <span className="text-sm text-slate-500 font-medium">
-                {(currentPage - 1) * ITEMS_PER_PAGE + 1}–{Math.min(currentPage * ITEMS_PER_PAGE, filteredUsers.length)} di {filteredUsers.length} operatori
+                {(currentPage - 1) * ITEMS_PER_PAGE + 1}–{Math.min(currentPage * ITEMS_PER_PAGE, filteredUsers.length)} of {filteredUsers.length} operators
               </span>
               <div className="flex items-center gap-2">
                 <button
@@ -987,7 +983,7 @@ const Admin = () => {
           )}
         </div>
 
-        {/* Sezione Email & Newsletter */}
+        {/* Email & Newsletter Section */}
         <EmailSection allUsers={allUsersList} />
 
       </div>
