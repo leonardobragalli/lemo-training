@@ -57,7 +57,7 @@ html {
   background-color: #03091B;
 }
 
-body::before {
+body:not(.no-bg-before)::before {
   content: '';
   position: fixed;
   inset: 0;
@@ -69,7 +69,7 @@ body::before {
 }
 
 @media (min-width: 768px) {
-  body::before {
+  body:not(.no-bg-before)::before {
     background-image: url('/images/bg-pc.png');
     background-position: center center;
   }

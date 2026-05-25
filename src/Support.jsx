@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import {
   HelpCircle, ChevronDown, Send, CheckCircle, Sparkles, Phone, ShieldCheck,
   Wrench, MessageSquareHeart, AlertTriangle, ArrowRight,
@@ -228,6 +228,7 @@ const SegmentedControl = ({ value, onChange, options }) => (
 );
 
 const Support = () => {
+  useEffect(() => { window.scrollTo(0, 0); }, []);
   const [openFaq, setOpenFaq] = useState(null);
   const [ticketSubject, setTicketSubject] = useState('');
   const [ticketType, setTicketType] = useState('Tecnico');

@@ -228,6 +228,11 @@ const Welcome = () => {
   const mode = searchParams.get('mode') || 'guided';
 
   useEffect(() => {
+    document.body.classList.add('no-bg-before');
+    return () => document.body.classList.remove('no-bg-before');
+  }, []);
+
+  useEffect(() => {
     const savedUser = JSON.parse(localStorage.getItem('lemo_user'));
     if (savedUser && mode !== 'full') {
       navigate(`/home?mode=${mode}`);

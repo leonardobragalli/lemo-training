@@ -211,6 +211,7 @@ const onHeroMove = (e) => {
   const onProgressLeave = () => { progressMx.set(0); progressMy.set(0); };
 
   useEffect(() => {
+    window.scrollTo(0, 0);
     const savedUser = JSON.parse(localStorage.getItem('lemo_user'));
     if (!savedUser && mode !== 'full') {
       navigate('/');

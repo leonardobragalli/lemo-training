@@ -230,6 +230,7 @@ const Modules = () => {
   ];
 
   useEffect(() => {
+    window.scrollTo(0, 0);
     const savedUser = JSON.parse(localStorage.getItem('lemo_user'));
     if (savedUser) {
       setUser(savedUser);
