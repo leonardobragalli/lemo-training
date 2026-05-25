@@ -337,7 +337,7 @@ const Welcome = () => {
         </motion.div>
       </header>
 
-      <main className="relative z-10 flex items-center justify-center px-4 sm:px-6 lg:px-12 py-8 sm:py-10 lg:py-14 min-h-[calc(100dvh-80px)]">
+      <main className="relative z-10 flex items-center justify-center px-4 sm:px-6 lg:px-12 py-6 sm:py-8 lg:py-10 min-h-[calc(100dvh-80px)]">
         <motion.div
           variants={container}
           initial="hidden"
@@ -348,12 +348,12 @@ const Welcome = () => {
 
           <motion.section
             variants={item}
-            className="relative overflow-hidden rounded-[2rem] lg:rounded-[2.5rem] bg-[#03091B]/55 backdrop-blur-[40px] border border-white/[0.12] shadow-[0_30px_80px_-20px_rgba(3,9,27,0.6)] p-6 sm:p-8 lg:p-10"
+            className="relative overflow-hidden rounded-[2rem] lg:rounded-[2.5rem] bg-[#03091B]/55 backdrop-blur-[40px] border border-white/[0.12] shadow-[0_30px_80px_-20px_rgba(3,9,27,0.6)] p-5 sm:p-7 lg:p-8"
           >
             <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/25 to-transparent pointer-events-none" />
             <div className="absolute -top-24 left-1/2 -translate-x-1/2 w-[300px] h-[300px] rounded-full bg-[#FF8731] opacity-[0.10] blur-[80px] pointer-events-none" />
 
-            <motion.div variants={item} className="relative z-10 mb-6 lg:mb-8 flex flex-col items-center">
+            <motion.div variants={item} className="relative z-10 mb-4 lg:mb-5 flex flex-col items-center">
               <span className="inline-flex items-center gap-2 pl-1 pr-3 py-1 rounded-full bg-white/[0.22] border border-white/[0.40] mb-4">
                 <img
                   src="/images/logos/logo png.png"
@@ -374,7 +374,7 @@ const Welcome = () => {
               </p>
             </motion.div>
 
-            <form onSubmit={handleSubmit} className="relative z-10 space-y-4">
+            <form onSubmit={handleSubmit} className="relative z-10 space-y-3">
               <motion.div variants={item} className="grid grid-cols-2 gap-3">
                 <Field icon={Type} label={w.firstName} placeholder={w.placeholderFirst} value={firstName} onChange={setFirstName} accent="#8756FA" />
                 <Field icon={SquareUser} label={w.lastName} placeholder={w.placeholderLast} value={lastName} onChange={setLastName} accent="#8756FA" />
@@ -475,7 +475,7 @@ const Welcome = () => {
                 </div>
               </motion.div>
 
-              <motion.div variants={item} className="pt-3">
+              <motion.div variants={item} className="pt-1">
                 <motion.button
                   type="submit"
                   whileHover={canSubmit ? { scale: 1.015, y: -1 } : {}}

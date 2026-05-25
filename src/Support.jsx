@@ -228,7 +228,6 @@ const SegmentedControl = ({ value, onChange, options }) => (
 );
 
 const Support = () => {
-  useEffect(() => { window.scrollTo(0, 0); }, []);
   const [openFaq, setOpenFaq] = useState(null);
   const [ticketSubject, setTicketSubject] = useState('');
   const [ticketType, setTicketType] = useState('Tecnico');
@@ -238,6 +237,8 @@ const Support = () => {
   const [errorMessage, setErrorMessage] = useState('');
   const { t } = useLang();
   const s = t.support;
+
+  useEffect(() => { window.scrollTo(0, 0); }, []);
 
   const handleTicketSubmit = async (e) => {
     e.preventDefault();
