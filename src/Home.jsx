@@ -531,27 +531,27 @@ const onHeroMove = (e) => {
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
               <img src="/images/logos/logo esteso nero png.png" alt="Lemons in the room" style={{ height: '70px', width: 'auto', objectFit: 'contain' }} />
               <div style={{ textAlign: 'right', marginTop: '10px' }}>
-                <p style={{ margin: 0, fontSize: '11px', color: '#94a3b8', letterSpacing: '2px', textTransform: 'uppercase', fontWeight: 'bold' }}>Codice Attestato</p>
+                <p style={{ margin: 0, fontSize: '11px', color: '#94a3b8', letterSpacing: '2px', textTransform: 'uppercase', fontWeight: 'bold' }}>{h.certCode}</p>
                 <p style={{ margin: 0, fontSize: '14px', color: '#03091B', letterSpacing: '4px', fontWeight: 'bold', fontFamily: 'monospace' }}>{certificateCode}</p>
               </div>
             </div>
             <div style={{ textAlign: 'center', marginTop: '-20px' }}>
               <div style={{ marginBottom: '30px' }}>
-                <h1 style={{ margin: 0, fontSize: '56px', fontWeight: '900', color: '#03091B', letterSpacing: '4px', textTransform: 'uppercase', fontFamily: "'Recoleta Alt', serif" }}>Attestato di Qualifica</h1>
+                <h1 style={{ margin: 0, fontSize: '56px', fontWeight: '900', color: '#03091B', letterSpacing: '4px', textTransform: 'uppercase', fontFamily: "'Recoleta Alt', serif" }}>{h.certTitle}</h1>
                 <div style={{ width: '100%', height: '4px', backgroundColor: '#FF8731', margin: '15px auto 0 auto' }} />
               </div>
               <div style={{ marginBottom: '30px' }}>
-                <p style={{ margin: '0 0 8px 0', fontSize: '18px', color: '#64748b', letterSpacing: '2px', textTransform: 'uppercase' }}>Conferito con merito a:</p>
+                <p style={{ margin: '0 0 8px 0', fontSize: '18px', color: '#64748b', letterSpacing: '2px', textTransform: 'uppercase' }}>{h.certConferredTo}</p>
                 <h2 style={{ margin: 0, fontSize: '48px', fontWeight: 'bold', color: '#03091B', textTransform: 'capitalize' }}>{user?.name || 'Mario Rossi'}</h2>
               </div>
               <p style={{ margin: '0 auto', fontSize: '18px', color: '#475569', lineHeight: '1.5', maxWidth: '800px' }}>
-                Per aver completato con successo l'intero percorso formativo e aver dimostrato piena competenza tecnica, operativa e procedurale nell'utilizzo dell'ecosistema <strong>Lemons in the room</strong> presso la struttura <strong>{user?.hospital || 'Struttura Ospedaliera'}</strong> ({user?.department || 'Reparto'}).
+                {h.certBody('Lemons in the room', user?.hospital || h.certFallbackHospital, user?.department || h.certFallbackDept)}
               </p>
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', padding: '0 20px', marginBottom: '20px' }}>
               <div style={{ textAlign: 'center', flex: 1 }}>
                 <p style={{ margin: '0 auto 8px auto', fontSize: '20px', fontWeight: 'bold', color: '#03091B', borderBottom: '2px solid #cbd5e1', paddingBottom: '8px', maxWidth: '180px' }}>{certificateDate}</p>
-                <p style={{ margin: 0, fontSize: '12px', color: '#64748b', textTransform: 'uppercase', letterSpacing: '2px', fontWeight: 'bold' }}>Data di Rilascio</p>
+                <p style={{ margin: 0, fontSize: '12px', color: '#64748b', textTransform: 'uppercase', letterSpacing: '2px', fontWeight: 'bold' }}>{h.certDate}</p>
               </div>
               <div style={{ textAlign: 'center', flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-end', marginBottom: '10px' }}>
                 <span style={{ fontSize: '12px', fontWeight: '900', color: '#03091B', textAlign: 'center', lineHeight: '1.2', marginBottom: '8px', letterSpacing: '1px' }}>LEMONS<br/>CERTIFIED</span>
@@ -561,7 +561,7 @@ const onHeroMove = (e) => {
                 <div style={{ margin: '0 auto 8px auto', borderBottom: '2px solid #cbd5e1', paddingBottom: '8px', maxWidth: '220px', display: 'flex', justifyContent: 'center' }}>
                   <img src="/images/firma-ceo.png" alt="Firma CEO Lemons" style={{ height: '50px', objectFit: 'contain' }} />
                 </div>
-                <p style={{ margin: 0, fontSize: '12px', color: '#64748b', textTransform: 'uppercase', letterSpacing: '2px', fontWeight: 'bold' }}>Firma Autorizzata</p>
+                <p style={{ margin: 0, fontSize: '12px', color: '#64748b', textTransform: 'uppercase', letterSpacing: '2px', fontWeight: 'bold' }}>{h.certSig}</p>
               </div>
             </div>
           </div>

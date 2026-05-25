@@ -474,8 +474,8 @@ const Welcome = () => {
                     <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-0.5" strokeWidth={2.5} />
                   </span>
                 </motion.button>
-                <p className="text-center text-slate-400 text-[10px] mt-2 font-medium">
-                  GUIDA OPERATIVA LEMONS IN THE ROOM
+                <p className="text-center text-slate-400 text-[10px] mt-2 font-medium uppercase tracking-widest">
+                  {w.badge}
                 </p>
               </motion.div>
             </form>

@@ -251,13 +251,13 @@ const Support = () => {
     const savedUser = JSON.parse(localStorage.getItem('lemo_user')) || {};
 
     const payload = {
-      subject: `[${ticketType}] Ticket Supporto: ${ticketSubject}`,
+      subject: `[${ticketType}] ${ticketSubject}`,
       ticketType,
       message: ticketMessage,
-      user_name: savedUser.name || 'Sconosciuto',
-      hospital: savedUser.hospital || 'Non specificato',
-      department: savedUser.department || 'Non specificato',
-      patientType: savedUser.patientType || 'Non specificato',
+      user_name: savedUser.name || '—',
+      hospital: savedUser.hospital || '—',
+      department: savedUser.department || '—',
+      patientType: savedUser.patientType || '—',
     };
 
     try {
