@@ -139,9 +139,6 @@ const Lesson = ({ lesson, mode, onComplete, autoplay = false }) => {
               <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-black/60 backdrop-blur-md border border-white/10 text-[10px] font-black tracking-[0.14em] uppercase text-white/80">
                 <span className="w-1.5 h-1.5 rounded-full bg-[#FF8731]" /> {lesson.type}
               </span>
-              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-black/60 backdrop-blur-md border border-white/10 text-[10px] font-black tracking-[0.14em] uppercase text-white/80">
-                <Clock className="w-3 h-3" /> {lesson.duration} min
-              </span>
             </div>
 
             {/* Mandatory view badge */}
