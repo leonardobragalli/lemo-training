@@ -77,10 +77,10 @@ const loadHospitals = async () => {
 };
 
 const Field = ({ icon: Icon, label, placeholder, value, onChange, accent = '#8756FA', type = 'text' }) => (
-  <div className="space-y-2">
-    <label className="block text-[10.5px] font-bold text-slate-400 uppercase ml-1 tracking-[0.18em]">{label}</label>
+  <div className="space-y-1.5">
+    <label className="block text-[10px] font-bold text-slate-400 uppercase ml-1 tracking-[0.18em]">{label}</label>
     <div className="relative group">
-      <Icon className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-500 group-focus-within:text-white transition-colors duration-300 z-10" />
+      <Icon className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-500 group-focus-within:text-white transition-colors duration-300 z-10" />
       <input
         type={type}
         required
@@ -89,13 +89,13 @@ const Field = ({ icon: Icon, label, placeholder, value, onChange, accent = '#875
         onChange={(e) => onChange(capitalize(e.target.value))}
         placeholder={placeholder}
         style={{ '--accent': accent }}
-        className="block w-full pl-11 pr-4 h-12 bg-white/[0.03] hover:bg-white/[0.05] focus:bg-white/[0.06] border border-white/[0.08] focus:border-[var(--accent)]/60 rounded-2xl text-white text-[15px] font-semibold placeholder-slate-600 outline-none transition-all duration-300 shadow-[inset_0_1px_2px_rgba(0,0,0,0.4)] focus:shadow-[0_0_0_3px_var(--accent)/0.15,inset_0_1px_2px_rgba(0,0,0,0.4)]"
+        className="block w-full pl-9 pr-3 h-10 bg-white/[0.03] hover:bg-white/[0.05] focus:bg-white/[0.06] border border-white/[0.08] focus:border-[var(--accent)]/60 rounded-xl text-white text-[13px] font-semibold placeholder-slate-600 outline-none transition-all duration-300 shadow-[inset_0_1px_2px_rgba(0,0,0,0.4)] focus:shadow-[0_0_0_3px_var(--accent)/0.15,inset_0_1px_2px_rgba(0,0,0,0.4)]"
       />
     </div>
   </div>
 );
 
-const HospitalSearch = ({ value, onChange, placeholder }) => {
+const HospitalSearch = ({ value, onChange, placeholder, label }) => {
   const [query, setQuery] = useState(value || '');
   const [results, setResults] = useState([]);
   const [open, setOpen] = useState(false);
@@ -134,53 +134,56 @@ const HospitalSearch = ({ value, onChange, placeholder }) => {
   };
 
   return (
-    <div ref={containerRef} className="relative group">
-      <Building2 className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-500 group-focus-within:text-white transition-colors duration-300 z-10 pointer-events-none" />
-      <input
-        type="text"
-        required
-        autoComplete="off"
-        className="block w-full pl-11 pr-4 h-12 bg-white/[0.03] hover:bg-white/[0.05] focus:bg-white/[0.06] border border-white/[0.08] focus:border-[#FF8731]/60 rounded-2xl text-white text-[15px] font-semibold placeholder-slate-600 outline-none transition-all duration-300 shadow-[inset_0_1px_2px_rgba(0,0,0,0.4)] focus:shadow-[0_0_0_3px_rgba(255,135,49,0.15),inset_0_1px_2px_rgba(0,0,0,0.4)]"
-        placeholder={placeholder}
-        value={query}
-        onChange={handleChange}
-        onFocus={() => results.length > 0 && setOpen(true)}
-      />
-      <AnimatePresence>
-        {open && results.length > 0 && (
-          <motion.ul
-            initial={{ opacity: 0, y: 4, scale: 0.98 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 4, scale: 0.98 }}
-            transition={{ duration: 0.15 }}
-            className="absolute top-full left-0 right-0 mt-2 bg-[#03091B]/95 backdrop-blur-2xl border border-white/10 rounded-2xl overflow-hidden shadow-[0_20px_60px_-10px_rgba(0,0,0,0.8)] z-50 max-h-[240px] overflow-y-auto"
-          >
-            {results.map((item, i) => (
-              <li key={i}>
-                <button
-                  type="button"
-                  onMouseDown={() => handleSelect(item)}
-                  className="flex flex-col px-4 py-3 w-full text-left hover:bg-white/[0.04] transition-colors border-b border-white/5 last:border-0"
-                >
-                  <span className="text-white font-semibold text-[13px] truncate">{item.name}</span>
-                  {item.city && <span className="text-slate-500 text-[11px] truncate mt-0.5 font-medium">{item.city}</span>}
-                </button>
-              </li>
-            ))}
-          </motion.ul>
-        )}
-      </AnimatePresence>
+    <div className="space-y-1.5">
+      {label && <label className="block text-[10px] font-bold text-slate-400 uppercase ml-1 tracking-[0.18em]">{label}</label>}
+      <div ref={containerRef} className="relative group">
+        <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-500 group-focus-within:text-white transition-colors duration-300 z-10 pointer-events-none" />
+        <input
+          type="text"
+          required
+          autoComplete="off"
+          className="block w-full pl-9 pr-3 h-10 bg-white/[0.03] hover:bg-white/[0.05] focus:bg-white/[0.06] border border-white/[0.08] focus:border-[#FF8731]/60 rounded-xl text-white text-[13px] font-semibold placeholder-slate-600 outline-none transition-all duration-300 shadow-[inset_0_1px_2px_rgba(0,0,0,0.4)] focus:shadow-[0_0_0_3px_rgba(255,135,49,0.15),inset_0_1px_2px_rgba(0,0,0,0.4)]"
+          placeholder={placeholder}
+          value={query}
+          onChange={handleChange}
+          onFocus={() => results.length > 0 && setOpen(true)}
+        />
+        <AnimatePresence>
+          {open && results.length > 0 && (
+            <motion.ul
+              initial={{ opacity: 0, y: 4, scale: 0.98 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 4, scale: 0.98 }}
+              transition={{ duration: 0.15 }}
+              className="absolute top-full left-0 right-0 mt-2 bg-[#03091B]/95 backdrop-blur-2xl border border-white/10 rounded-2xl overflow-hidden shadow-[0_20px_60px_-10px_rgba(0,0,0,0.8)] z-50 max-h-[240px] overflow-y-auto"
+            >
+              {results.map((item, i) => (
+                <li key={i}>
+                  <button
+                    type="button"
+                    onMouseDown={() => handleSelect(item)}
+                    className="flex flex-col px-4 py-3 w-full text-left hover:bg-white/[0.04] transition-colors border-b border-white/5 last:border-0"
+                  >
+                    <span className="text-white font-semibold text-[13px] truncate">{item.name}</span>
+                    {item.city && <span className="text-slate-500 text-[11px] truncate mt-0.5 font-medium">{item.city}</span>}
+                  </button>
+                </li>
+              ))}
+            </motion.ul>
+          )}
+        </AnimatePresence>
+      </div>
     </div>
   );
 };
 
 const BrandPanel = () => (
-  <div className="relative flex flex-col justify-center items-center lg:items-start text-center lg:text-left lg:pr-8 xl:pr-12 py-2">
+  <div className="relative flex flex-col justify-center lg:justify-start items-center lg:items-start text-center lg:text-left lg:pr-8 xl:pr-12 lg:pt-8 py-2">
     <motion.div
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-      className="inline-flex items-center gap-2 mb-4 lg:mb-6 px-3 py-1.5 rounded-full bg-white/40 backdrop-blur-xl border border-white/60 shadow-[0_8px_24px_-12px_rgba(3,9,27,0.15)]"
+      className="inline-flex items-center gap-2 mb-3 lg:mb-5 px-3 py-1.5 rounded-full bg-white/40 backdrop-blur-xl border border-white/60 shadow-[0_8px_24px_-12px_rgba(3,9,27,0.15)]"
     >
       <Sparkles className="w-3.5 h-3.5 text-[#FF8731]" />
       <span
@@ -193,7 +196,7 @@ const BrandPanel = () => (
       initial={{ y: 30, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ delay: 0.15, duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
-      className="font-serif font-black text-[#03091B] leading-[1.02] tracking-[-0.035em] text-[44px] sm:text-[56px] lg:text-[64px] xl:text-[76px]"
+      className="font-serif font-black text-[#03091B] leading-[1.02] tracking-[-0.035em] text-[40px] sm:text-[52px] lg:text-[54px] xl:text-[64px]"
       style={{ WebkitFontSmoothing: 'antialiased', textWrap: 'balance' }}
     >
       Il training<br/>
@@ -204,7 +207,7 @@ const BrandPanel = () => (
       initial={{ y: 20, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ delay: 0.3, duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
-      className="mt-4 lg:mt-6 text-[#03091B]/70 text-[15px] lg:text-[17px] leading-relaxed max-w-[440px] font-bold"
+      className="mt-3 lg:mt-4 text-[#03091B]/70 text-[14px] lg:text-[15px] leading-relaxed max-w-[440px] font-bold"
       style={{ textShadow: '0 1px 8px rgba(255,255,255,0.7), 0 4px 20px rgba(255,255,255,0.4)' }}
     >
       Preparati a vivere la realtà virtuale in reparto.<br/>Un percorso formativo semplice, intuitivo e sicuro.
@@ -313,7 +316,7 @@ const Welcome = () => {
         <div className="absolute inset-0 opacity-[0.035] mix-blend-overlay" style={{ backgroundImage: "url('https://grainy-gradients.vercel.app/noise.svg')" }} />
       </div>
 
-      <header className="relative z-20 grid grid-cols-3 items-center px-5 sm:px-8 lg:px-12 pt-12 sm:pt-14 lg:pt-16">
+      <header className="relative z-20 grid grid-cols-3 items-center px-5 sm:px-8 lg:px-10 pt-8 sm:pt-10 lg:pt-10">
         <div />
         <motion.div
           initial={{ opacity: 0, y: -8 }}
@@ -324,7 +327,7 @@ const Welcome = () => {
           <img
             src="/images/logos/logo esteso bianco png.png"
             alt="Lemons in the room"
-            className="h-16 sm:h-20 lg:h-20 w-auto object-contain drop-shadow-[0_2px_12px_rgba(3,9,27,0.35)] drop-shadow-[0_8px_32px_rgba(3,9,27,0.20)]"
+            className="h-12 sm:h-16 lg:h-14 w-auto object-contain drop-shadow-[0_2px_12px_rgba(3,9,27,0.35)] drop-shadow-[0_8px_32px_rgba(3,9,27,0.20)]"
           />
         </motion.div>
         <motion.div
@@ -337,97 +340,86 @@ const Welcome = () => {
         </motion.div>
       </header>
 
-      <main className="relative z-10 flex items-center justify-center px-4 sm:px-6 lg:px-12 py-6 sm:py-8 lg:py-10 min-h-[calc(100dvh-80px)]">
+      <main className="relative z-10 flex items-center justify-center px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-4 min-h-[calc(100dvh-60px)]">
         <motion.div
           variants={container}
           initial="hidden"
           animate="visible"
-          className="w-full max-w-[1180px] grid grid-cols-1 lg:grid-cols-[1.05fr_1fr] gap-6 lg:gap-8 items-stretch"
+          className="w-full max-w-[1100px] grid grid-cols-1 lg:grid-cols-[1fr_1fr] gap-6 lg:gap-8 items-center"
         >
           <BrandPanel />
 
           <motion.section
             variants={item}
-            className="relative overflow-hidden rounded-[2rem] lg:rounded-[2.5rem] bg-[#03091B]/55 backdrop-blur-[40px] border border-white/[0.12] shadow-[0_30px_80px_-20px_rgba(3,9,27,0.6)] p-5 sm:p-7 lg:p-8"
+            className="relative overflow-hidden rounded-[1.5rem] lg:rounded-[2rem] bg-[#03091B]/55 backdrop-blur-[40px] border border-white/[0.12] shadow-[0_30px_80px_-20px_rgba(3,9,27,0.6)] p-5 sm:p-6 lg:p-6"
           >
             <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/25 to-transparent pointer-events-none" />
             <div className="absolute -top-24 left-1/2 -translate-x-1/2 w-[300px] h-[300px] rounded-full bg-[#FF8731] opacity-[0.10] blur-[80px] pointer-events-none" />
 
-            <motion.div variants={item} className="relative z-10 mb-4 lg:mb-5 flex flex-col items-center">
-              <span className="inline-flex items-center gap-2 pl-1 pr-3 py-1 rounded-full bg-white/[0.22] border border-white/[0.40] mb-4">
-                <img
-                  src="/images/logos/logo png.png"
-                  alt=""
-                  aria-hidden="true"
-                  className="w-4 h-4 object-contain drop-shadow-[0_0_6px_rgba(255,135,49,0.5)]"
-                />
+            <motion.div variants={item} className="relative z-10 mb-3 lg:mb-4 flex flex-col items-center">
+              <span className="inline-flex items-center gap-2 pl-1 pr-3 py-1 rounded-full bg-white/[0.22] border border-white/[0.40] mb-3">
+                <img src="/images/logos/logo png.png" alt="" aria-hidden="true" className="w-4 h-4 object-contain drop-shadow-[0_0_6px_rgba(255,135,49,0.5)]" />
                 <span
                   className="text-[10px] font-black tracking-[0.18em] uppercase bg-clip-text text-transparent"
                   style={{ backgroundImage: 'linear-gradient(90deg, #FF8731 0%, #FF9E54 40%, #B385FF 75%, #8756FA 100%)', backgroundSize: '200% 100%', animation: 'lemo-badge-shift 4s ease-in-out infinite alternate' }}
                 >{w.badge}</span>
               </span>
-              <h2 className="font-serif font-black text-white text-[36px] sm:text-[44px] leading-[1] tracking-[-0.035em] text-center">
+              <h2 className="font-serif font-black text-white text-[32px] sm:text-[40px] lg:text-[36px] leading-[1] tracking-[-0.035em] text-center">
                 {w.title}
               </h2>
-              <p className="mt-2 text-slate-300 text-[13px] sm:text-[14px] font-medium leading-relaxed max-w-[360px] text-center">
+              <p className="mt-1.5 text-slate-300 text-[12px] sm:text-[13px] font-medium leading-relaxed max-w-[360px] text-center">
                 {w.description}
               </p>
             </motion.div>
 
-            <form onSubmit={handleSubmit} className="relative z-10 space-y-3">
-              <motion.div variants={item} className="grid grid-cols-2 gap-3">
+            <form onSubmit={handleSubmit} className="relative z-10 space-y-2.5">
+              <motion.div variants={item} className="grid grid-cols-2 gap-2.5">
                 <Field icon={Type} label={w.firstName} placeholder={w.placeholderFirst} value={firstName} onChange={setFirstName} accent="#8756FA" />
                 <Field icon={SquareUser} label={w.lastName} placeholder={w.placeholderLast} value={lastName} onChange={setLastName} accent="#8756FA" />
               </motion.div>
 
-              <motion.div variants={item} className="grid grid-cols-2 gap-3">
-                <div className="space-y-2">
-                  <label className="block text-[10.5px] font-bold text-slate-400 uppercase ml-1 tracking-[0.18em]">{w.email}</label>
+              <motion.div variants={item} className="grid grid-cols-2 gap-2.5">
+                <div className="space-y-1.5">
+                  <label className="block text-[10px] font-bold text-slate-400 uppercase ml-1 tracking-[0.18em]">{w.email}</label>
                   <div className="relative group">
-                    <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-500 group-focus-within:text-white transition-colors duration-300 z-10" />
+                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-500 group-focus-within:text-white transition-colors duration-300 z-10" />
                     <input
-                      type="email"
-                      required
-                      autoComplete="email"
-                      value={email}
+                      type="email" required autoComplete="email" value={email}
                       onChange={(e) => setEmail(e.target.value.toLowerCase())}
                       placeholder={w.placeholderEmail}
                       style={{ '--accent': '#8756FA' }}
-                      className="block w-full pl-11 pr-4 h-12 bg-white/[0.03] hover:bg-white/[0.05] focus:bg-white/[0.06] border border-white/[0.08] focus:border-[var(--accent)]/60 rounded-2xl text-white text-[15px] font-semibold placeholder-slate-600 outline-none transition-all duration-300 shadow-[inset_0_1px_2px_rgba(0,0,0,0.4)] focus:shadow-[0_0_0_3px_var(--accent)/0.15,inset_0_1px_2px_rgba(0,0,0,0.4)]"
+                      className="block w-full pl-9 pr-3 h-10 bg-white/[0.03] hover:bg-white/[0.05] focus:bg-white/[0.06] border border-white/[0.08] focus:border-[var(--accent)]/60 rounded-xl text-white text-[13px] font-semibold placeholder-slate-600 outline-none transition-all duration-300 shadow-[inset_0_1px_2px_rgba(0,0,0,0.4)]"
                     />
                   </div>
                 </div>
-                <div className="space-y-2">
-                  <label className="block text-[10.5px] font-bold text-slate-400 uppercase ml-1 tracking-[0.18em]">
+                <div className="space-y-1.5">
+                  <label className="block text-[10px] font-bold text-slate-400 uppercase ml-1 tracking-[0.18em]">
                     {w.phone} <span className="text-slate-600 normal-case tracking-normal font-medium">{w.phoneOptional}</span>
                   </label>
                   <div className="relative group">
-                    <Phone className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-500 group-focus-within:text-white transition-colors duration-300 z-10" />
+                    <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-500 group-focus-within:text-white transition-colors duration-300 z-10" />
                     <input
-                      type="tel"
-                      autoComplete="tel"
-                      value={phone}
+                      type="tel" autoComplete="tel" value={phone}
                       onChange={(e) => setPhone(e.target.value)}
                       placeholder={w.placeholderPhone}
                       style={{ '--accent': '#8756FA' }}
-                      className="block w-full pl-11 pr-4 h-12 bg-white/[0.03] hover:bg-white/[0.05] focus:bg-white/[0.06] border border-white/[0.08] focus:border-[var(--accent)]/60 rounded-2xl text-white text-[15px] font-semibold placeholder-slate-600 outline-none transition-all duration-300 shadow-[inset_0_1px_2px_rgba(0,0,0,0.4)] focus:shadow-[0_0_0_3px_var(--accent)/0.15,inset_0_1px_2px_rgba(0,0,0,0.4)]"
+                      className="block w-full pl-9 pr-3 h-10 bg-white/[0.03] hover:bg-white/[0.05] focus:bg-white/[0.06] border border-white/[0.08] focus:border-[var(--accent)]/60 rounded-xl text-white text-[13px] font-semibold placeholder-slate-600 outline-none transition-all duration-300 shadow-[inset_0_1px_2px_rgba(0,0,0,0.4)]"
                     />
                   </div>
                 </div>
               </motion.div>
 
-              <motion.div variants={item} className="space-y-2">
-                <label className="block text-[10.5px] font-bold text-slate-400 uppercase ml-1 tracking-[0.18em]">{w.hospital}</label>
-                <HospitalSearch value={hospital} onChange={setHospital} placeholder={w.placeholderHospital} />
+              <motion.div variants={item}>
+                <HospitalSearch value={hospital} onChange={setHospital} placeholder={w.placeholderHospital} label={w.hospital} />
               </motion.div>
 
               <motion.div variants={item}>
                 <Field icon={Stethoscope} label={w.department} placeholder={w.placeholderDept} value={department} onChange={setDepartment} accent="#FF8731" />
               </motion.div>
 
-              <motion.div variants={item} className="pt-1">
-                <label className="block text-[10.5px] font-bold text-slate-400 uppercase ml-1 tracking-[0.18em] mb-3">{w.patientProfile}</label>
-                <div className="grid grid-cols-2 gap-3 sm:gap-4">
+              <motion.div variants={item}>
+                <label className="block text-[10px] font-bold text-slate-400 uppercase ml-1 tracking-[0.18em] mb-2">{w.patientProfile}</label>
+                <div className="grid grid-cols-2 gap-2.5">
                   {[
                     { id: 'pediatria', label: w.pediatria, accent: '#8756FA', img: '/images/profilo-pediatria.png' },
                     { id: 'adulti',    label: w.adulti,    accent: '#FF8731', img: '/images/profilo-adulti.png'    },
@@ -438,36 +430,22 @@ const Welcome = () => {
                         key={p.id}
                         whileHover={{ scale: sel ? 1.03 : 1.02 }}
                         whileTap={{ scale: 0.97 }}
-                        className={`relative aspect-square rounded-full overflow-hidden cursor-pointer transition-shadow duration-300 ${sel ? '' : ''}`}
+                        className="relative overflow-hidden cursor-pointer transition-shadow duration-300"
                         style={{
+                          aspectRatio: '2/1',
+                          borderRadius: '1rem',
                           border: sel ? `2px solid ${p.accent}` : '1px solid rgba(255,255,255,0.10)',
                           boxShadow: sel ? `0 0 0 4px ${p.accent}25, 0 12px 40px -10px ${p.accent}99` : '0 8px 24px -10px rgba(0,0,0,0.6)',
                         }}
                       >
-                        <input
-                          type="radio"
-                          name="patientType"
-                          value={p.id}
-                          className="hidden"
-                          onChange={(e) => { audio.playClick(); setPatientType(e.target.value); }}
-                        />
-                        <img
-                          src={p.img}
-                          alt={p.label}
-                          className={`absolute inset-0 w-full h-full object-cover transition-all duration-500 ${sel ? 'opacity-100 scale-105' : 'opacity-40 grayscale'}`}
-                        />
-                        <div
-                          className="absolute inset-0 transition-opacity duration-500"
-                          style={{
-                            background: sel
-                              ? `linear-gradient(to top, #03091B 5%, ${p.accent}aa 55%, transparent 100%)`
-                              : 'linear-gradient(to top, #03091B 5%, rgba(3,9,27,0.55) 55%, transparent 100%)',
-                          }}
-                        />
-                        <span
-                          className={`absolute left-0 right-0 bottom-4 sm:bottom-5 text-center font-serif font-black tracking-tight transition-colors duration-300 ${sel ? 'text-white' : 'text-slate-200'}`}
-                          style={{ fontSize: 'clamp(15px, 4vw, 19px)', textShadow: '0 2px 12px rgba(0,0,0,0.9)' }}
-                        >
+                        <input type="radio" name="patientType" value={p.id} className="hidden"
+                          onChange={(e) => { audio.playClick(); setPatientType(e.target.value); }} />
+                        <img src={p.img} alt={p.label}
+                          className={`absolute inset-0 w-full h-full object-cover transition-all duration-500 ${sel ? 'opacity-100 scale-105' : 'opacity-40 grayscale'}`} />
+                        <div className="absolute inset-0 transition-opacity duration-500"
+                          style={{ background: sel ? `linear-gradient(to top, #03091B 5%, ${p.accent}aa 55%, transparent 100%)` : 'linear-gradient(to top, #03091B 5%, rgba(3,9,27,0.55) 55%, transparent 100%)' }} />
+                        <span className={`absolute left-0 right-0 bottom-2 text-center font-serif font-black tracking-tight transition-colors duration-300 text-[13px] ${sel ? 'text-white' : 'text-slate-200'}`}
+                          style={{ textShadow: '0 2px 12px rgba(0,0,0,0.9)' }}>
                           {p.label}
                         </span>
                       </motion.label>
@@ -483,25 +461,21 @@ const Welcome = () => {
                   whileTap={canSubmit ? { scale: 0.98 } : {}}
                   transition={{ type: 'spring', stiffness: 400, damping: 22 }}
                   disabled={!canSubmit}
-                  className="group relative w-full h-14 rounded-2xl overflow-hidden font-bold text-[16px] tracking-tight text-white transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="group relative w-full h-11 rounded-xl overflow-hidden font-bold text-[14px] tracking-tight text-white transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
                   style={{
-                    background: canSubmit
-                      ? 'linear-gradient(90deg, #8756FA 0%, #B385FF 50%, #FF8731 100%)'
-                      : 'rgba(255,255,255,0.06)',
-                    boxShadow: canSubmit
-                      ? '0 15px 40px -10px rgba(255,135,49,0.5), 0 8px 24px -8px rgba(135,86,250,0.5), inset 0 1px 0 rgba(255,255,255,0.3)'
-                      : 'none',
+                    background: canSubmit ? 'linear-gradient(90deg, #8756FA 0%, #B385FF 50%, #FF8731 100%)' : 'rgba(255,255,255,0.06)',
+                    boxShadow: canSubmit ? '0 15px 40px -10px rgba(255,135,49,0.5), 0 8px 24px -8px rgba(135,86,250,0.5), inset 0 1px 0 rgba(255,255,255,0.3)' : 'none',
                   }}
                 >
                   {canSubmit && (
                     <span className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-[900ms] ease-out bg-gradient-to-r from-transparent via-white/30 to-transparent skew-x-12" />
                   )}
-                  <span className="relative z-10 flex items-center justify-center gap-2.5">
+                  <span className="relative z-10 flex items-center justify-center gap-2">
                     {w.submit}
                     <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-0.5" strokeWidth={2.5} />
                   </span>
                 </motion.button>
-                <p className="text-center text-slate-400 text-[11px] mt-3 font-medium">
+                <p className="text-center text-slate-400 text-[10px] mt-2 font-medium">
                   GUIDA OPERATIVA LEMONS IN THE ROOM
                 </p>
               </motion.div>
