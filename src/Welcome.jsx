@@ -419,7 +419,7 @@ const Welcome = () => {
 
               <motion.div variants={item}>
                 <label className="block text-[10px] font-bold text-slate-400 uppercase ml-1 tracking-[0.18em] mb-2">{w.patientProfile}</label>
-                <div className="grid grid-cols-2 gap-2.5 max-h-[100px] lg:max-h-[90px]">
+                <div className="grid grid-cols-2 gap-2.5">
                   {[
                     { id: 'pediatria', label: w.pediatria, accent: '#8756FA', img: '/images/profilo-pediatria.png' },
                     { id: 'adulti',    label: w.adulti,    accent: '#FF8731', img: '/images/profilo-adulti.png'    },
@@ -430,7 +430,7 @@ const Welcome = () => {
                         key={p.id}
                         whileHover={{ scale: sel ? 1.03 : 1.02 }}
                         whileTap={{ scale: 0.97 }}
-                        className="relative aspect-square rounded-full overflow-hidden cursor-pointer transition-shadow duration-300 h-full w-auto mx-auto"
+                        className="relative aspect-square rounded-full overflow-hidden cursor-pointer transition-shadow duration-300"
                         style={{
                           border: sel ? `2px solid ${p.accent}` : '1px solid rgba(255,255,255,0.10)',
                           boxShadow: sel ? `0 0 0 4px ${p.accent}25, 0 12px 40px -10px ${p.accent}99` : '0 8px 24px -10px rgba(0,0,0,0.6)',
