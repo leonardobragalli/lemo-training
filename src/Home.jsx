@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, Fragment } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { Award, ArrowRight, Check, Clock, Mail, ArrowRight as Send } from 'lucide-react';
+import { Award, ArrowRight, Check, Clock } from 'lucide-react';
 import {
   motion, AnimatePresence,
   useMotionValue, useTransform, useSpring,
@@ -176,7 +176,6 @@ const Home = () => {
   const [certificateCode] = useState(() => `LMR-${new Date().getFullYear()}-${Math.floor(Math.random() * 9000) + 1000}`);
   const [certificateDate] = useState(() => new Date().toLocaleDateString('it-IT'));
   const [showNewsletter, setShowNewsletter] = useState(false);
-  const [newsletterEmail, setNewsletterEmail] = useState('');
   const [newsletterStatus, setNewsletterStatus] = useState('idle');
 
   const today = new Date();
@@ -225,18 +224,19 @@ const onHeroMove = (e) => {
   }, [navigate, mode]);
 
   useEffect(() => {
-    if (localStorage.getItem('lemo_newsletter_subscribed')) return;
+    if (localStorage.getItem('lemo_newsletter_subscribed') !== null) return;
     if (_newsletterShownThisSession) return;
     _newsletterShownThisSession = true;
     const timer = setTimeout(() => setShowNewsletter(true), 4000);
     return () => clearTimeout(timer);
   }, []);
 
-  const handleNewsletterSubmit = async (e) => {
-    e.preventDefault();
-    if (!newsletterEmail.trim()) return;
+  const handleNewsletterAccept = async () => {
+    const userEmail = user?.email;
+    if (!userEmail) return;
     setNewsletterStatus('loading');
-    await supabase.from('newsletter').upsert({ email: newsletterEmail.trim().toLowerCase() }, { onConflict: 'email' });
+    await supabase.from('newsletter').upsert({ email: userEmail }, { onConflict: 'email' });
+    await supabase.from('users').update({ newsletter_opt_in: true }).eq('name', user.name);
     setNewsletterStatus('success');
     localStorage.setItem('lemo_newsletter_subscribed', '1');
     setTimeout(() => setShowNewsletter(false), 2500);
@@ -244,7 +244,7 @@ const onHeroMove = (e) => {
 
   const closeNewsletter = () => {
     setShowNewsletter(false);
-    sessionStorage.setItem('lemo_newsletter_shown', '1');
+    localStorage.setItem('lemo_newsletter_subscribed', '0');
   };
 
   const progressPercentage = Math.round((completedCount / totalLessons) * 100);
@@ -269,7 +269,7 @@ const onHeroMove = (e) => {
 
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-      className="px-4 pt-8 pb-6 md:px-8 md:pt-12 lg:px-12 lg:pt-16 min-h-screen relative bg-[#03091B]"
+      className="px-4 pt-8 pb-6 md:px-8 md:pt-12 lg:px-12 lg:pt-16 min-h-[100dvh] relative"
     >
       <style>{`
         @keyframes lemoAurora {
@@ -328,7 +328,7 @@ const onHeroMove = (e) => {
                   <span className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${hasFinishedAll ? 'bg-emerald-400' : 'bg-[#FF8731]'}`} />
                   <span className={`relative inline-flex rounded-full h-2 w-2 ${hasFinishedAll ? 'bg-emerald-400' : 'bg-[#FF8731]'}`} />
                 </span>
-                {hasFinishedAll ? 'Operativo' : 'In Corso'}
+                {hasFinishedAll ? h.badgeOperativo : h.badgeInCorso}
               </motion.span>
             </div>
             <span className="text-[11px] font-black tracking-[0.16em] uppercase text-white/70 flex items-center gap-2">
@@ -336,7 +336,7 @@ const onHeroMove = (e) => {
             </span>
           </div>
 
-          <ChapterLine num={1} label="Benvenuto" />
+          <ChapterLine num={1} label={h.chapterWelcome} />
 
           <div className="relative z-10 flex items-start justify-between gap-4">
             <div className="flex-1 min-w-0">
@@ -390,7 +390,7 @@ const onHeroMove = (e) => {
               <ProgressRing percent={progressPercentage} size={220} />
 
               <div className="flex-1 text-center md:text-left relative z-10 w-full">
-                <ChapterLine num={2} label="Avanzamento" />
+                <ChapterLine num={2} label={h.chapterProgress} />
 
                 <h2 className="text-3xl lg:text-4xl 2xl:text-5xl font-black font-serif text-white mb-4 2xl:mb-6 leading-tight drop-shadow-sm">
                   {hasFinishedAll ? h.statusDone : h.statusProgress}
@@ -473,42 +473,43 @@ const onHeroMove = (e) => {
                   <div className="w-16 h-16 rounded-full bg-gradient-to-br from-[#8756FA] to-[#FF8731] flex items-center justify-center mb-4 shadow-[0_8px_32px_-8px_rgba(135,86,250,0.6)]">
                     <img src="/images/logos/logo bianco png.png" alt="Lemons" className="w-8 h-8 object-contain" />
                   </div>
-                  <h3 className="font-serif font-black text-white text-2xl mb-2">Grazie!</h3>
-                  <p className="text-slate-400 text-sm font-medium">Sei iscritto al mondo Lemons.</p>
+                  <h3 className="font-serif font-black text-white text-2xl mb-2">{h.newsletterSuccessTitle}</h3>
+                  <p className="text-slate-400 text-sm font-medium">{h.newsletterSuccessDesc}</p>
                 </motion.div>
               ) : (
-                <>
-                  <div className="flex flex-col items-center text-center mb-6 relative z-10">
-                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#8756FA]/15 border border-[#8756FA]/30 mb-4">
-                      <img src="/images/logos/logo bianco png.png" alt="" className="w-3.5 h-3.5 object-contain" />
-                      <span className="text-[10px] font-black tracking-[0.18em] uppercase text-[#A379F9]">Lemons Universe</span>
-                    </div>
-                    <h3 className="font-serif font-black text-white text-[28px] leading-tight mb-2">
-                      Entra nel mondo<br/>
-                      <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#8756FA] to-[#FF8731]">Lemons</span>
-                    </h3>
-                    <p className="text-slate-400 text-sm font-medium leading-relaxed max-w-[300px]">
-                      Novità, aggiornamenti e contenuti esclusivi sull'uso della realtà virtuale in sanità.
-                    </p>
+                <div className="flex flex-col items-center text-center relative z-10">
+                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#8756FA]/15 border border-[#8756FA]/30 mb-4">
+                    <img src="/images/logos/logo bianco png.png" alt="" className="w-3.5 h-3.5 object-contain" />
+                    <span className="text-[10px] font-black tracking-[0.18em] uppercase text-[#A379F9]">Lemons Universe</span>
                   </div>
-                  <form onSubmit={handleNewsletterSubmit} className="relative z-10 space-y-3">
-                    <div className="relative">
-                      <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 pointer-events-none" />
-                      <input type="email" required value={newsletterEmail} onChange={(e) => setNewsletterEmail(e.target.value)} placeholder="La tua email"
-                        className="block w-full pl-11 pr-4 h-12 bg-white/[0.04] hover:bg-white/[0.06] focus:bg-white/[0.07] border border-white/[0.08] focus:border-[#8756FA]/60 rounded-2xl text-white text-[15px] font-semibold placeholder-slate-600 outline-none transition-all duration-300" />
-                    </div>
-                    <motion.button type="submit" disabled={newsletterStatus === 'loading'} whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
+                  <h3 className="font-serif font-black text-white text-[28px] leading-tight mb-2">
+                    {h.newsletterTitle}<br/>
+                    <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#8756FA] to-[#FF8731]">{h.newsletterTitleAccent}</span>
+                  </h3>
+                  <p className="text-slate-400 text-sm font-medium leading-relaxed max-w-[300px] mb-6">
+                    {h.newsletterDesc}
+                  </p>
+                  {user?.email && (
+                    <p className="text-white/60 text-xs font-semibold mb-5 px-4 py-2 rounded-xl bg-white/[0.05] border border-white/[0.08]">
+                      {user.email}
+                    </p>
+                  )}
+                  <div className="w-full space-y-2">
+                    <motion.button
+                      onClick={handleNewsletterAccept}
+                      disabled={newsletterStatus === 'loading'}
+                      whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
                       className="group w-full h-12 rounded-2xl font-bold text-white text-[15px] flex items-center justify-center gap-2 relative overflow-hidden disabled:opacity-60"
-                      style={{ background: 'linear-gradient(90deg, #8756FA 0%, #B385FF 50%, #FF8731 100%)', boxShadow: '0 8px 32px -8px rgba(135,86,250,0.5)' }}>
+                      style={{ background: 'linear-gradient(90deg, #8756FA 0%, #B385FF 50%, #FF8731 100%)', boxShadow: '0 8px 32px -8px rgba(135,86,250,0.5)' }}
+                    >
                       <span className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-[900ms] ease-out bg-gradient-to-r from-transparent via-white/20 to-transparent skew-x-12" />
-                      <span className="relative z-10">{newsletterStatus === 'loading' ? 'Iscrizione...' : 'Iscriviti'}</span>
-                      <Send className="w-4 h-4 relative z-10 group-hover:translate-x-0.5 transition-transform" />
+                      <span className="relative z-10">{newsletterStatus === 'loading' ? h.newsletterSubmitting : h.newsletterSubmit}</span>
                     </motion.button>
                     <button type="button" onClick={closeNewsletter} className="w-full text-center text-slate-500 hover:text-slate-300 text-xs font-medium transition-colors pt-1">
-                      No grazie
+                      {h.newsletterNo}
                     </button>
-                  </form>
-                </>
+                  </div>
+                </div>
               )}
             </motion.div>
           </motion.div>

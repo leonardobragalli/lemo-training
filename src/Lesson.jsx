@@ -217,9 +217,9 @@ const Lesson = ({ lesson, mode, onComplete, autoplay = false }) => {
                 <FileText className="w-4 h-4 text-[#FF9E54]" strokeWidth={2.2} />
               </div>
               <div className="flex-1 min-w-0">
-                <div className="text-[9px] font-black tracking-[0.20em] uppercase text-slate-500 mb-0.5">Slide</div>
+                <div className="text-[9px] font-black tracking-[0.20em] uppercase text-slate-500 mb-0.5">{l.slideLabel}</div>
                 <div className="font-serif font-black text-white text-[16px] lg:text-[17px] leading-tight">{l.teachingMaterial}</div>
-                <div className="text-[11px] text-slate-500 font-medium mt-0.5">{lesson.slides.length} slide di approfondimento</div>
+                <div className="text-[11px] text-slate-500 font-medium mt-0.5">{l.slidesCount(lesson.slides.length)}</div>
               </div>
               <motion.div
                 className="shrink-0 w-8 h-8 rounded-full flex items-center justify-center"
@@ -248,9 +248,9 @@ const Lesson = ({ lesson, mode, onComplete, autoplay = false }) => {
                     <CheckCircle className="w-4 h-4 text-emerald-400" strokeWidth={2.2} />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <div className="text-[9px] font-black tracking-[0.20em] uppercase text-slate-500 mb-0.5">Verifica</div>
-                    <div className="font-serif font-black text-emerald-300 text-[16px] lg:text-[17px] leading-tight">Completata con successo</div>
-                    <div className="text-[11px] text-slate-500 font-medium mt-0.5">Hai risposto correttamente alla domanda</div>
+                    <div className="text-[9px] font-black tracking-[0.20em] uppercase text-slate-500 mb-0.5">{l.verifyLabel}</div>
+                    <div className="font-serif font-black text-emerald-300 text-[16px] lg:text-[17px] leading-tight">{l.quizPassed}</div>
+                    <div className="text-[11px] text-slate-500 font-medium mt-0.5">{l.quizPassedHint}</div>
                   </div>
                 </motion.div>
               ) : showQuiz ? (
@@ -292,9 +292,9 @@ const Lesson = ({ lesson, mode, onComplete, autoplay = false }) => {
                     <Zap className="w-4 h-4 text-slate-500" strokeWidth={2.2} />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <div className="text-[9px] font-black tracking-[0.20em] uppercase text-slate-500 mb-0.5">Verifica</div>
+                    <div className="text-[9px] font-black tracking-[0.20em] uppercase text-slate-500 mb-0.5">{l.verifyLabel}</div>
                     <div className="font-serif font-black text-slate-400 text-[16px] lg:text-[17px] leading-tight">{l.waitingCompletion}</div>
-                    <div className="text-[11px] text-slate-600 font-medium mt-0.5">Completa il video per sbloccare</div>
+                    <div className="text-[11px] text-slate-600 font-medium mt-0.5">{l.unlockHint}</div>
                   </div>
                 </motion.div>
               )}
@@ -343,7 +343,7 @@ const Lesson = ({ lesson, mode, onComplete, autoplay = false }) => {
                     </div>
                     <div className="min-w-0">
                       <h3 className="font-serif font-black text-white text-lg md:text-xl leading-tight truncate">{l.teachingMaterial}</h3>
-                      <p className="text-[10px] font-bold text-[#FF8731] tracking-widest uppercase mt-0.5">Slide {currentSlideIndex + 1} {l.slideOf} {lesson.slides.length}</p>
+                      <p className="text-[10px] font-bold text-[#FF8731] tracking-widest uppercase mt-0.5">{l.slide} {currentSlideIndex + 1} {l.slideOf} {lesson.slides.length}</p>
                     </div>
                   </div>
                   <button

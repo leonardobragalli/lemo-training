@@ -140,7 +140,7 @@ const ModuleCard = ({ index, lesson, state, isOpen, onToggle, isNext, m, cardRef
             )}
             {isNext && !completed && (
               <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] 2xl:text-xs font-black tracking-[0.16em] uppercase bg-gradient-to-r from-[#FF8731]/15 to-[#FF8731]/5 text-[#FF9E54] border border-[#FF8731]/30">
-                <Sparkles className="w-2.5 h-2.5" /> Prossimo
+                <Sparkles className="w-2.5 h-2.5" /> {m.nextBadge}
               </span>
             )}
           </div>
@@ -280,7 +280,7 @@ const Modules = () => {
   const onHeroLeave = () => { heroMx.set(0); heroMy.set(0); };
 
   return (
-    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="px-6 pt-12 pb-6 md:px-10 md:pt-12 lg:px-12 lg:pt-12 2xl:p-16 2xl:pt-20 max-w-[1200px] 2xl:max-w-7xl mx-auto mb-20 md:mb-0 relative z-10 min-h-screen">
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="px-6 pt-12 pb-6 md:px-10 md:pt-12 lg:px-12 lg:pt-12 2xl:p-16 2xl:pt-20 max-w-[1200px] 2xl:max-w-7xl mx-auto mb-20 md:mb-0 relative z-10 min-h-[100dvh]">
 
       {/* Backgrounds */}
       <div className="fixed inset-0 bg-cover bg-center z-[-30] bg-[url('/images/bg-mobile-modules.png')] md:hidden opacity-30 dark:opacity-20 mix-blend-luminosity"></div>
@@ -316,7 +316,7 @@ const Modules = () => {
               <span className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${completedCount === total ? 'bg-emerald-400' : 'bg-[#FF8731]'}`} />
               <span className={`relative inline-flex rounded-full h-2 w-2 ${completedCount === total ? 'bg-emerald-400' : 'bg-[#FF8731]'}`} />
             </span>
-            {completedCount === total ? 'Operativo' : 'In Corso'}
+            {completedCount === total ? m.badgeOperativo : m.badgeInCorso}
           </motion.span>
           {mode === 'full' && (
             <motion.span
@@ -325,12 +325,12 @@ const Modules = () => {
               className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-full bg-white/[0.05] border border-white/[0.10] text-white/85 text-[10px] font-bold tracking-[0.12em] uppercase"
             >
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_8px_#10B981]" />
-              Modalità libera
+              {m.freeMode}
             </motion.span>
           )}
         </div>
 
-        <ChapterLine num={1} label="Formazione" />
+        <ChapterLine num={1} label={m.chapterTraining} />
 
         <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4 lg:gap-8">
           <div className="flex-1 min-w-0">
@@ -351,14 +351,14 @@ const Modules = () => {
             className="w-full lg:w-[300px] 2xl:w-[360px] shrink-0"
           >
             <div className="flex items-baseline justify-between mb-2">
-              <span className="text-[10px] font-black tracking-[0.18em] uppercase text-slate-400">Avanzamento percorso</span>
+              <span className="text-[10px] font-black tracking-[0.18em] uppercase text-slate-400">{m.progressLabel}</span>
               <span className="font-serif font-black text-white text-[26px] 2xl:text-[32px] leading-none">
                 {completedCount}<span className="text-slate-500 text-[16px] font-sans font-bold"> / {total}</span>
               </span>
             </div>
             <ProgressBar percent={percent} />
             <p className="mt-2 text-slate-400 text-[12px] 2xl:text-sm font-medium">
-              {percent === 100 ? 'Percorso completato 🎉' : `${total - completedCount} moduli rimanenti per la certificazione`}
+              {percent === 100 ? m.progressDone : m.progressRemaining(total - completedCount)}
             </p>
           </motion.div>
         </div>

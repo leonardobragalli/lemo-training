@@ -121,7 +121,7 @@ const Layout = () => {
   const handleNavClick = () => audio.playClick();
 
   return (
-    <div className="flex h-[100dvh] overflow-hidden font-sans">
+    <div className="font-sans md:flex md:h-[100dvh] md:overflow-hidden">
 
       {/* Sidebar Desktop */}
       <motion.aside
@@ -186,7 +186,7 @@ const Layout = () => {
       </div>
 
       {/* Main Content */}
-      <main className="flex-1 overflow-y-auto relative scroll-smooth bg-transparent pb-28 md:pb-0">
+      <main className="md:flex-1 md:overflow-y-auto relative scroll-smooth bg-transparent pb-28 md:pb-0">
         <div className="fixed top-[-20%] right-[-10%] w-[800px] h-[800px] bg-[#FF8731] rounded-full blur-[150px] opacity-20 pointer-events-none -z-10"></div>
         <div className="fixed bottom-[-20%] left-[-10%] w-[600px] h-[600px] bg-[#8756FA] rounded-full blur-[120px] opacity-20 pointer-events-none -z-10"></div>
         <Outlet />

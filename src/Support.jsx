@@ -26,8 +26,9 @@ const ChapterLine = ({ num, label }) => (
   </div>
 );
 
-const FaqItem = ({ faq, index, isOpen, onToggle }) => {
+const FaqItem = ({ faq, index, isOpen, onToggle, tagLabels }) => {
   const tc = TAG_COLORS[faq.tag] || DEFAULT_TAG;
+  const tagLabel = (tagLabels && tagLabels[faq.tag]) || faq.tag;
   return (
     <div
       className={`relative overflow-hidden rounded-[1.5rem] lg:rounded-[1.75rem] backdrop-blur-[40px] border transition-colors duration-300 ${
@@ -46,7 +47,7 @@ const FaqItem = ({ faq, index, isOpen, onToggle }) => {
               className="inline-flex items-center px-2 py-0.5 rounded-full text-[9.5px] font-black tracking-[0.16em] uppercase mb-2"
               style={{ background: tc.bg, border: `1px solid ${tc.border}`, color: tc.text }}
             >
-              {faq.tag}
+              {tagLabel}
             </span>
           )}
           <h4 className={`font-serif font-black text-[16px] lg:text-[17px] 2xl:text-[20px] leading-[1.25] tracking-[-0.01em] ${isOpen ? 'text-white' : 'text-slate-100'}`}>
@@ -296,7 +297,7 @@ const Support = () => {
   const onHeroLeave = () => { heroMx.set(0); heroMy.set(0); };
 
   return (
-    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="px-6 pt-12 pb-6 md:px-10 md:pt-12 lg:px-12 lg:pt-12 2xl:p-16 2xl:pt-20 max-w-[1200px] 2xl:max-w-7xl mx-auto mb-20 md:mb-0 relative z-10 min-h-screen">
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="px-6 pt-12 pb-6 md:px-10 md:pt-12 lg:px-12 lg:pt-12 2xl:p-16 2xl:pt-20 max-w-[1200px] 2xl:max-w-7xl mx-auto mb-20 md:mb-0 relative z-10 min-h-[100dvh]">
 
       {/* Backgrounds */}
       <div className="fixed inset-0 bg-cover bg-center z-[-30] bg-[url('/images/bg-mobile-support.png')] md:hidden opacity-30 dark:opacity-20 mix-blend-luminosity"></div>
@@ -325,7 +326,7 @@ const Support = () => {
           </motion.div>
         </div>
 
-        <ChapterLine num={1} label="Supporto" />
+        <ChapterLine num={1} label={s.chapterSupport} />
 
         <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1, duration: 0.8 }} className="text-5xl md:text-[3rem] lg:text-[3.5rem] 2xl:text-[4.5rem] font-black font-serif text-white tracking-tighter mb-1 leading-[1.1] pr-10 overflow-visible flex flex-wrap items-baseline gap-x-4">
           <span>{s.titleMain}</span>
@@ -374,6 +375,7 @@ const Support = () => {
                 index={i}
                 isOpen={openFaq === i}
                 onToggle={() => { audio.playClick(); setOpenFaq(openFaq === i ? null : i); }}
+                tagLabels={s.tagLabels}
               />
             </motion.div>
           ))}

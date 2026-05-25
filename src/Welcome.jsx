@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { Stethoscope, ArrowRight, ShieldCheck, Sparkles, Type, SquareUser, Building2, ChevronDown, Check } from 'lucide-react';
+import { Stethoscope, ArrowRight, ShieldCheck, Sparkles, Type, SquareUser, Building2, ChevronDown, Check, Mail } from 'lucide-react';
 import { motion, AnimatePresence, useMotionValue, useTransform, useSpring } from 'framer-motion';
 import { useLang } from './LanguageContext';
 import { audio } from './utils/audio';
@@ -217,6 +217,7 @@ const Welcome = () => {
   const [searchParams] = useSearchParams();
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
+  const [email, setEmail] = useState('');
   const [hospital, setHospital] = useState('');
   const [department, setDepartment] = useState('');
   const [patientType, setPatientType] = useState('');
@@ -236,7 +237,7 @@ const Welcome = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!firstName.trim() || !lastName.trim() || !hospital.trim() || !department.trim() || !patientType) return;
+    if (!firstName.trim() || !lastName.trim() || !email.trim() || !hospital.trim() || !department.trim() || !patientType) return;
 
     audio.playClick();
     const fullName = `${firstName} ${lastName}`;
@@ -246,7 +247,7 @@ const Welcome = () => {
       localStorage.setItem(`lemo_progress_${fullName}`, JSON.stringify([1, 2, 3, 4]));
     }
 
-    const userData = { name: fullName, firstName, lastName, hospital, department, patientType, mode };
+    const userData = { name: fullName, firstName, lastName, email, hospital, department, patientType, mode };
     localStorage.setItem('lemo_user', JSON.stringify(userData));
 
     const now = new Date().toISOString();
@@ -258,7 +259,7 @@ const Welcome = () => {
 
     if (existing) {
       await supabase.from('users').update({
-        first_name: firstName, last_name: lastName, hospital, department,
+        first_name: firstName, last_name: lastName, email, hospital, department,
         patient_type: patientType, mode,
         login_count: (existing.login_count || 1) + 1,
         last_login: now,
@@ -266,7 +267,7 @@ const Welcome = () => {
       }).eq('name', fullName);
     } else {
       await supabase.from('users').insert({
-        name: fullName, first_name: firstName, last_name: lastName,
+        name: fullName, first_name: firstName, last_name: lastName, email,
         hospital, department, patient_type: patientType, mode,
         login_count: 1, first_login: now, last_login: now,
         completed_modules: isDemoAccount ? [1, 2, 3, 4] : [],
@@ -292,7 +293,7 @@ const Welcome = () => {
   const container = { hidden: { opacity: 0 }, visible: { opacity: 1, transition: { staggerChildren: 0.06, delayChildren: 0.25 } } };
   const item = { hidden: { y: 16, opacity: 0 }, visible: { y: 0, opacity: 1, transition: { type: 'spring', stiffness: 110, damping: 20 } } };
 
-  const canSubmit = firstName.trim() && lastName.trim() && hospital.trim() && department.trim() && patientType;
+  const canSubmit = firstName.trim() && lastName.trim() && email.trim() && hospital.trim() && department.trim() && patientType;
 
   return (
     <motion.div
@@ -371,6 +372,23 @@ const Welcome = () => {
               <motion.div variants={item} className="grid grid-cols-2 gap-3">
                 <Field icon={Type} label={w.firstName} placeholder={w.placeholderFirst} value={firstName} onChange={setFirstName} accent="#8756FA" />
                 <Field icon={SquareUser} label={w.lastName} placeholder={w.placeholderLast} value={lastName} onChange={setLastName} accent="#8756FA" />
+              </motion.div>
+
+              <motion.div variants={item} className="space-y-2">
+                <label className="block text-[10.5px] font-bold text-slate-400 uppercase ml-1 tracking-[0.18em]">{w.email}</label>
+                <div className="relative group">
+                  <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-500 group-focus-within:text-white transition-colors duration-300 z-10" />
+                  <input
+                    type="email"
+                    required
+                    autoComplete="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value.toLowerCase())}
+                    placeholder={w.placeholderEmail}
+                    style={{ '--accent': '#8756FA' }}
+                    className="block w-full pl-11 pr-4 h-12 bg-white/[0.03] hover:bg-white/[0.05] focus:bg-white/[0.06] border border-white/[0.08] focus:border-[var(--accent)]/60 rounded-2xl text-white text-[15px] font-semibold placeholder-slate-600 outline-none transition-all duration-300 shadow-[inset_0_1px_2px_rgba(0,0,0,0.4)] focus:shadow-[0_0_0_3px_var(--accent)/0.15,inset_0_1px_2px_rgba(0,0,0,0.4)]"
+                  />
+                </div>
               </motion.div>
 
               <motion.div variants={item} className="space-y-2">

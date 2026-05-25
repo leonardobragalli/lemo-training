@@ -34,6 +34,113 @@ const ConfirmModal = ({ open, title, message, onConfirm, onCancel, danger = true
   </AnimatePresence>
 );
 
+const EMAIL_FILTERS = [
+  { key: 'all',      label: 'Tutte',       color: 'text-slate-300' },
+  { key: 'accepted', label: 'Iscritte',    color: 'text-emerald-400' },
+  { key: 'refused',  label: 'Rifiutato',   color: 'text-red-400' },
+  { key: 'pending',  label: 'Non risposto', color: 'text-slate-500' },
+];
+
+const EmailSection = ({ allUsers }) => {
+  const [filter, setFilter] = useState('all');
+  const [search, setSearch] = useState('');
+
+  const rows = allUsers
+    .filter(u => u.email)
+    .map(u => ({
+      name: u.name,
+      email: u.email,
+      hospital: u.hospital,
+      status: u.newsletterOptIn === true ? 'accepted' : u.newsletterOptIn === false ? 'refused' : 'pending',
+      lastLogin: u.lastLogin,
+    }))
+    .filter(r => filter === 'all' || r.status === filter)
+    .filter(r => !search || r.email.includes(search.toLowerCase()) || r.name.toLowerCase().includes(search.toLowerCase()));
+
+  const counts = {
+    all: allUsers.filter(u => u.email).length,
+    accepted: allUsers.filter(u => u.newsletterOptIn === true).length,
+    refused: allUsers.filter(u => u.newsletterOptIn === false).length,
+    pending: allUsers.filter(u => u.email && u.newsletterOptIn == null).length,
+  };
+
+  const exportCSV = () => {
+    const csv = 'Nome,Email,Ospedale,Newsletter,Ultimo Login\n' + rows.map(r =>
+      `"${r.name}","${r.email}","${r.hospital || ''}","${r.status === 'accepted' ? 'Iscritto' : r.status === 'refused' ? 'Rifiutato' : 'Non risposto'}","${r.lastLogin ? new Date(r.lastLogin).toLocaleDateString('it-IT') : '—'}"`
+    ).join('\n');
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' }));
+    a.download = `email-${filter}-${new Date().toISOString().split('T')[0]}.csv`;
+    a.click();
+  };
+
+  return (
+    <div className="bg-slate-900 border border-slate-800 rounded-[2.5rem] shadow-2xl overflow-hidden mb-20">
+      <div className="p-8 border-b border-slate-800">
+        <div className="flex items-start justify-between gap-4 flex-wrap">
+          <div>
+            <h3 className="text-2xl font-black text-white">Email & Newsletter</h3>
+            <p className="text-sm text-slate-500 font-medium mt-1">{counts.all} email raccolte · {counts.accepted} iscritte · {counts.refused} rifiutato · {counts.pending} non risposto</p>
+          </div>
+          <button onClick={exportCSV} className="px-4 py-2 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 hover:text-white rounded-xl font-bold text-sm transition-all flex items-center gap-2">
+            <Download className="w-4 h-4" /> Esporta CSV
+          </button>
+        </div>
+
+        <div className="flex items-center gap-3 mt-5 flex-wrap">
+          {EMAIL_FILTERS.map(f => (
+            <button
+              key={f.key}
+              onClick={() => setFilter(f.key)}
+              className={`px-4 py-1.5 rounded-xl font-bold text-sm transition-all border ${filter === f.key ? 'bg-[#FF8731] text-white border-transparent shadow-lg shadow-[#FF8731]/20' : 'bg-slate-800 border-slate-700 text-slate-400 hover:text-white hover:bg-slate-700'}`}
+            >
+              {f.label} <span className="opacity-60 ml-1 text-xs">({counts[f.key]})</span>
+            </button>
+          ))}
+          <input
+            type="text"
+            placeholder="Cerca email o nome..."
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+            className="ml-auto px-4 py-1.5 rounded-xl bg-slate-800 border border-slate-700 text-slate-300 text-sm font-medium placeholder-slate-600 outline-none focus:border-[#FF8731]/50 transition-all"
+          />
+        </div>
+      </div>
+
+      {rows.length === 0 ? (
+        <div className="p-12 text-center text-slate-600 font-medium">Nessun risultato.</div>
+      ) : (
+        <table className="w-full text-left">
+          <thead>
+            <tr className="border-b border-slate-800">
+              <th className="px-8 py-4 text-xs font-black text-slate-500 uppercase tracking-widest">Nome</th>
+              <th className="px-8 py-4 text-xs font-black text-slate-500 uppercase tracking-widest">Email</th>
+              <th className="px-8 py-4 text-xs font-black text-slate-500 uppercase tracking-widest">Ospedale</th>
+              <th className="px-8 py-4 text-xs font-black text-slate-500 uppercase tracking-widest">Newsletter</th>
+              <th className="px-8 py-4 text-xs font-black text-slate-500 uppercase tracking-widest">Ultimo login</th>
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map((row, i) => (
+              <tr key={row.email + i} className="border-b border-slate-800/50 hover:bg-slate-800/30 transition-colors">
+                <td className="px-8 py-4 text-white font-bold text-sm">{row.name}</td>
+                <td className="px-8 py-4 text-slate-300 font-semibold text-sm">{row.email}</td>
+                <td className="px-8 py-4 text-slate-500 text-sm">{row.hospital || '—'}</td>
+                <td className="px-8 py-4">
+                  {row.status === 'accepted' && <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-bold">Iscritto ✓</span>}
+                  {row.status === 'refused'  && <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-red-500/10 border border-red-500/20 text-red-400 text-xs font-bold">Rifiutato</span>}
+                  {row.status === 'pending'  && <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-slate-700 border border-slate-600 text-slate-500 text-xs font-bold">Non risposto</span>}
+                </td>
+                <td className="px-8 py-4 text-slate-500 text-sm">{row.lastLogin ? new Date(row.lastLogin).toLocaleDateString('it-IT') : '—'}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
+    </div>
+  );
+};
+
 const Admin = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [password, setPassword] = useState('');
@@ -95,6 +202,7 @@ const Admin = () => {
           name: u.name,
           firstName: u.first_name,
           lastName: u.last_name,
+          email: u.email,
           hospital: u.hospital,
           department: u.department,
           patientType: u.patient_type,
@@ -103,6 +211,7 @@ const Admin = () => {
           firstLogin: u.first_login,
           lastLogin: u.last_login,
           completedModulesList: u.completed_modules || [],
+          newsletterOptIn: u.newsletter_opt_in,
         }))
       : Object.values(JSON.parse(localStorage.getItem('lemo_all_users')) || {}).map(u => ({
           ...u,
@@ -266,12 +375,14 @@ const Admin = () => {
     const BOM = '﻿';
     const escapeCell = (val) => `"${String(val ?? '').replace(/"/g, '""')}"`;
 
-    const headers = ['Operatore', 'Ospedale', 'Reparto', 'Profilo Paziente', 'Modalità', 'Progresso %', 'Moduli Completati', 'Prossimo Modulo', 'Login Totali', 'Media Login', 'Primo Accesso', 'Ultimo Accesso'];
+    const headers = ['Operatore', 'Email', 'Newsletter', 'Ospedale', 'Reparto', 'Profilo Paziente', 'Modalità', 'Progresso %', 'Moduli Completati', 'Prossimo Modulo', 'Login Totali', 'Media Login', 'Primo Accesso', 'Ultimo Accesso'];
 
     const rows = filteredUsers.map(u => {
       const nextMod = getNextModule(u.completedModulesList || []);
       return [
         u.name || '',
+        u.email || '',
+        u.newsletterOptIn === true ? 'Sì' : u.newsletterOptIn === false ? 'No' : '—',
         u.hospital || '',
         u.department || '',
         u.patientType === 'pediatria' ? 'Pediatria' : 'Adulti',
@@ -734,6 +845,15 @@ const Admin = () => {
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                                   {/* Colonna sinistra: accessi + azioni */}
                                   <div>
+                                    <p className="text-[10px] uppercase tracking-widest text-slate-500 font-bold mb-3">Contatto</p>
+                                    <div className="space-y-2 text-sm font-medium text-slate-300 mb-5">
+                                      <div className="flex justify-between"><span className="text-slate-500">Email:</span> <span className="text-white font-bold">{u.email || '—'}</span></div>
+                                      <div className="flex justify-between"><span className="text-slate-500">Newsletter:</span>
+                                        <span className={`font-bold ${u.newsletterOptIn === true ? 'text-emerald-400' : u.newsletterOptIn === false ? 'text-red-400' : 'text-slate-500'}`}>
+                                          {u.newsletterOptIn === true ? 'Iscritto ✓' : u.newsletterOptIn === false ? 'Rifiutato' : 'Non risposto'}
+                                        </span>
+                                      </div>
+                                    </div>
                                     <p className="text-[10px] uppercase tracking-widest text-slate-500 font-bold mb-3">Cronologia Accessi</p>
                                     <div className="space-y-2 text-sm font-medium text-slate-300 mb-5">
                                       <div className="flex justify-between"><span className="text-slate-500">Primo Login:</span> <span>{new Date(u.firstLogin || u.lastLogin || Date.now()).toLocaleDateString('it-IT')}</span></div>
@@ -863,46 +983,8 @@ const Admin = () => {
           )}
         </div>
 
-        {/* Sezione Newsletter */}
-        <div className="bg-slate-900 border border-slate-800 rounded-[2.5rem] shadow-2xl overflow-hidden mb-20">
-          <div className="p-8 border-b border-slate-800 bg-slate-900/50 backdrop-blur-xl flex items-center justify-between">
-            <div>
-              <h3 className="text-2xl font-black text-white">Newsletter</h3>
-              <p className="text-sm text-slate-500 font-medium mt-1">{newsletterList.length} iscritti</p>
-            </div>
-            <button
-              onClick={() => {
-                const csv = 'Email,Data iscrizione\n' + newsletterList.map(r => `${r.email},${new Date(r.created_at).toLocaleDateString('it-IT')}`).join('\n');
-                const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' })); a.download = 'newsletter.csv'; a.click();
-              }}
-              className="px-4 py-2 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 hover:text-white rounded-xl font-bold text-sm transition-all"
-            >
-              Esporta CSV
-            </button>
-          </div>
-          {newsletterList.length === 0 ? (
-            <div className="p-12 text-center text-slate-600 font-medium">Nessun iscritto ancora.</div>
-          ) : (
-            <table className="w-full text-left">
-              <thead>
-                <tr className="border-b border-slate-800">
-                  <th className="px-8 py-4 text-xs font-black text-slate-500 uppercase tracking-widest">#</th>
-                  <th className="px-8 py-4 text-xs font-black text-slate-500 uppercase tracking-widest">Email</th>
-                  <th className="px-8 py-4 text-xs font-black text-slate-500 uppercase tracking-widest">Data iscrizione</th>
-                </tr>
-              </thead>
-              <tbody>
-                {newsletterList.map((row, i) => (
-                  <tr key={row.email} className="border-b border-slate-800/50 hover:bg-slate-800/30 transition-colors">
-                    <td className="px-8 py-4 text-slate-600 text-sm font-bold">{i + 1}</td>
-                    <td className="px-8 py-4 text-white font-semibold">{row.email}</td>
-                    <td className="px-8 py-4 text-slate-400 text-sm">{new Date(row.created_at).toLocaleDateString('it-IT', { day: '2-digit', month: 'short', year: 'numeric' })}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          )}
-        </div>
+        {/* Sezione Email & Newsletter */}
+        <EmailSection allUsers={allUsersList} />
 
       </div>
     </div>

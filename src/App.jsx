@@ -46,7 +46,7 @@ function App() {
   return (
     <LanguageProvider>
       <ThemeContext.Provider value={{ isDarkMode, toggleTheme }}>
-        <BrowserRouter>
+<BrowserRouter>
           <AnimatedRoutes />
         </BrowserRouter>
       </ThemeContext.Provider>
