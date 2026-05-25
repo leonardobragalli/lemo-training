@@ -178,7 +178,7 @@ const HospitalSearch = ({ value, onChange, placeholder, label }) => {
 };
 
 const BrandPanel = () => (
-  <div className="relative flex flex-col justify-center lg:justify-start items-center lg:items-start text-center lg:text-left lg:pr-8 xl:pr-12 lg:pt-8 py-2">
+  <div className="relative flex flex-col justify-center lg:justify-start items-center lg:items-start text-center lg:text-left lg:pr-8 xl:pr-12 lg:pt-4 py-2">
     <motion.div
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
@@ -419,7 +419,7 @@ const Welcome = () => {
 
               <motion.div variants={item}>
                 <label className="block text-[10px] font-bold text-slate-400 uppercase ml-1 tracking-[0.18em] mb-2">{w.patientProfile}</label>
-                <div className="grid grid-cols-2 gap-2.5">
+                <div className="grid grid-cols-2 gap-2.5 max-h-[100px] lg:max-h-[90px]">
                   {[
                     { id: 'pediatria', label: w.pediatria, accent: '#8756FA', img: '/images/profilo-pediatria.png' },
                     { id: 'adulti',    label: w.adulti,    accent: '#FF8731', img: '/images/profilo-adulti.png'    },
@@ -430,10 +430,8 @@ const Welcome = () => {
                         key={p.id}
                         whileHover={{ scale: sel ? 1.03 : 1.02 }}
                         whileTap={{ scale: 0.97 }}
-                        className="relative overflow-hidden cursor-pointer transition-shadow duration-300"
+                        className="relative aspect-square rounded-full overflow-hidden cursor-pointer transition-shadow duration-300 h-full w-auto mx-auto"
                         style={{
-                          aspectRatio: '2/1',
-                          borderRadius: '1rem',
                           border: sel ? `2px solid ${p.accent}` : '1px solid rgba(255,255,255,0.10)',
                           boxShadow: sel ? `0 0 0 4px ${p.accent}25, 0 12px 40px -10px ${p.accent}99` : '0 8px 24px -10px rgba(0,0,0,0.6)',
                         }}
@@ -444,7 +442,7 @@ const Welcome = () => {
                           className={`absolute inset-0 w-full h-full object-cover transition-all duration-500 ${sel ? 'opacity-100 scale-105' : 'opacity-40 grayscale'}`} />
                         <div className="absolute inset-0 transition-opacity duration-500"
                           style={{ background: sel ? `linear-gradient(to top, #03091B 5%, ${p.accent}aa 55%, transparent 100%)` : 'linear-gradient(to top, #03091B 5%, rgba(3,9,27,0.55) 55%, transparent 100%)' }} />
-                        <span className={`absolute left-0 right-0 bottom-2 text-center font-serif font-black tracking-tight transition-colors duration-300 text-[13px] ${sel ? 'text-white' : 'text-slate-200'}`}
+                        <span className={`absolute left-0 right-0 bottom-3 text-center font-serif font-black tracking-tight transition-colors duration-300 text-[13px] ${sel ? 'text-white' : 'text-slate-200'}`}
                           style={{ textShadow: '0 2px 12px rgba(0,0,0,0.9)' }}>
                           {p.label}
                         </span>
