@@ -88,7 +88,7 @@ const FaqItem = ({ faq, index, isOpen, onToggle, tagLabels }) => {
   );
 };
 
-const ContactCard = ({ name, role, desc, phone, accent }) => {
+const ContactCard = ({ name, role, desc, phone, accent, callNow }) => {
   const ref = useRef(null);
   const mx = useMotionValue(0);
   const my = useMotionValue(0);
@@ -173,7 +173,7 @@ const ContactCard = ({ name, role, desc, phone, accent }) => {
             <Phone className="w-4 h-4" style={{ color: accentColor }} strokeWidth={2.4} />
           </div>
           <div className="min-w-0">
-            <div className="text-[9.5px] font-black tracking-[0.18em] uppercase text-slate-500">{s.callNow}</div>
+            <div className="text-[9.5px] font-black tracking-[0.18em] uppercase text-slate-500">{callNow}</div>
             <div className="text-white font-bold text-[15.5px] 2xl:text-base tracking-tight truncate">{phone}</div>
           </div>
         </div>
@@ -415,6 +415,7 @@ const Support = () => {
               desc={s.techDesc}
               phone="+39 348 758 9509"
               accent="orange"
+              callNow={s.callNow}
             />
             <ContactCard
               name="Alessandro Romagnosi"
@@ -422,6 +423,7 @@ const Support = () => {
               desc={s.opDesc}
               phone="+39 339 565 8074"
               accent="purple"
+              callNow={s.callNow}
             />
           </div>
 
