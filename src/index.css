@@ -57,23 +57,6 @@ html {
   background-color: #03091B;
 }
 
-body:not(.no-bg-before)::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-  background-image: url('/images/bg-mobile-nature.png');
-  background-size: cover;
-  background-position: center top;
-  background-repeat: no-repeat;
-}
-
-@media (min-width: 768px) {
-  body:not(.no-bg-before)::before {
-    background-image: url('/images/bg-pc.png');
-    background-position: center center;
-  }
-}
 
 body {
   margin: 0;
