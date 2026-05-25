@@ -299,7 +299,7 @@ const Support = () => {
   const onHeroLeave = () => { heroMx.set(0); heroMy.set(0); };
 
   return (
-    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="px-6 pt-12 pb-6 md:px-10 md:pt-12 lg:px-12 lg:pt-12 2xl:p-16 2xl:pt-20 max-w-[1200px] 2xl:max-w-7xl mx-auto mb-20 md:mb-0 relative z-10 min-h-[100dvh]">
+    <motion.div initial={{ opacity: 1 }} animate={{ opacity: 1 }} exit={{ opacity: 1 }} className="px-6 pt-12 pb-6 md:px-10 md:pt-12 lg:px-12 lg:pt-12 2xl:p-16 2xl:pt-20 max-w-[1200px] 2xl:max-w-7xl mx-auto mb-20 md:mb-0 relative z-10 min-h-[100dvh]">
 
       {/* Backgrounds */}
       <div className="fixed inset-0 bg-cover bg-center z-[-30] bg-[url('/images/bg-mobile-support.png')] md:hidden opacity-30 dark:opacity-20 mix-blend-luminosity"></div>

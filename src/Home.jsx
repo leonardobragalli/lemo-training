@@ -271,7 +271,7 @@ const onHeroMove = (e) => {
   const item = { hidden: { opacity: 0, y: 40, scale: 0.95 }, show: { opacity: 1, y: 0, scale: 1, transition: { type: "spring", stiffness: 100, damping: 20 } } };
 
   return (
-    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+    <motion.div
       className="px-4 pt-8 pb-6 md:px-8 md:pt-12 lg:px-12 lg:pt-16 min-h-[100dvh] relative"
     >
       <style>{`
