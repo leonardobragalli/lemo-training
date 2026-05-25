@@ -1,5 +1,4 @@
-import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
-import { AnimatePresence } from 'framer-motion';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import React from 'react';
 import Welcome from './Welcome';
@@ -10,26 +9,6 @@ import Layout from './Layout';
 import Admin from './Admin';
 import { ThemeContext } from './ThemeContext';
 import { LanguageProvider } from './LanguageContext';
-
-function AnimatedRoutes() {
-  const location = useLocation();
-  const isWelcome = location.pathname === '/' || location.pathname === '/admin';
-  return (
-    <AnimatePresence mode="wait">
-      <Routes location={location} key={isWelcome ? location.pathname : 'app'}>
-        <Route path="/" element={<Welcome />} />
-        <Route path="/admin" element={<Admin />} />
-
-        {/* Pagine con la Sidebar */}
-        <Route element={<Layout />}>
-          <Route path="/home" element={<Home />} />
-          <Route path="/modules" element={<Modules />} />
-          <Route path="/support" element={<Support />} />
-        </Route>
-      </Routes>
-    </AnimatePresence>
-  );
-}
 
 function App() {
   const [isDarkMode, setIsDarkMode] = useState(false);
@@ -47,8 +26,16 @@ function App() {
   return (
     <LanguageProvider>
       <ThemeContext.Provider value={{ isDarkMode, toggleTheme }}>
-<BrowserRouter>
-          <AnimatedRoutes />
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Welcome />} />
+            <Route path="/admin" element={<Admin />} />
+            <Route element={<Layout />}>
+              <Route path="/home" element={<Home />} />
+              <Route path="/modules" element={<Modules />} />
+              <Route path="/support" element={<Support />} />
+            </Route>
+          </Routes>
         </BrowserRouter>
       </ThemeContext.Provider>
     </LanguageProvider>
