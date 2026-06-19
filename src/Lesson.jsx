@@ -21,10 +21,10 @@ const Lesson = ({ lesson, mode, onComplete, autoplay = false }) => {
   const videoContainerRef = useRef(null);
 
   const nextSlide = () => {
-    if (lesson && currentSlideIndex < lesson.slides.length - 1) { audio.playClick(); setCurrentSlideIndex(prev => prev + 1); } else audio.playError();
+    if (lesson && currentSlideIndex < lesson.slides.length - 1) { setCurrentSlideIndex(prev => prev + 1); } else audio.playError();
   };
   const prevSlide = () => {
-    if (currentSlideIndex > 0) { audio.playClick(); setCurrentSlideIndex(prev => prev - 1); } else audio.playError();
+    if (currentSlideIndex > 0) { setCurrentSlideIndex(prev => prev - 1); } else audio.playError();
   };
 
   useEffect(() => {
@@ -387,7 +387,7 @@ const Lesson = ({ lesson, mode, onComplete, autoplay = false }) => {
                     {lesson.slides.map((_, i) => (
                       <div
                         key={i}
-                        onClick={() => { audio.playClick(); setCurrentSlideIndex(i); }}
+                        onClick={() => { setCurrentSlideIndex(i); }}
                         className={`h-2 rounded-full transition-all duration-400 cursor-pointer ${i === currentSlideIndex ? 'w-6 md:w-8' : 'w-2 bg-white/20 hover:bg-white/40'}`}
                         style={i === currentSlideIndex ? {
                           background: 'linear-gradient(90deg, #FF8731, #FF9E54)',
