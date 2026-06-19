@@ -93,10 +93,11 @@ const ProgressRing = ({ percent = 0, size = 220 }) => {
 
 /* ── MODULE STEPPER ────────────────────────────────────────── */
 const ModuleStepper = ({ completed, total, moduleNames }) => (
-  <div className="flex items-center gap-0 w-full max-w-[440px] mx-auto md:mx-0 mb-6">
+  <div className="flex items-center gap-0 w-full max-w-full mx-auto md:mx-0 mb-6 overflow-hidden">
     {Array.from({ length: total }).map((_, i) => {
       const done = i < completed;
       const current = i === completed && i < total;
+      const nodeW = total <= 4 ? 56 : total <= 6 ? 44 : 38;
       return (
         <Fragment key={i}>
           <motion.div
@@ -104,10 +105,10 @@ const ModuleStepper = ({ completed, total, moduleNames }) => (
             animate={{ scale: 1, opacity: 1 }}
             transition={{ delay: 0.4 + i * 0.08, type: 'spring', stiffness: 300, damping: 22 }}
             className="relative flex flex-col items-center"
-            style={{ width: 56 }}
+            style={{ width: nodeW }}
           >
             <div
-              className="w-8 h-8 rounded-full flex items-center justify-center font-bold text-[12px] transition-all duration-300"
+              className={`rounded-full flex items-center justify-center font-bold transition-all duration-300 ${total <= 4 ? 'w-8 h-8 text-[12px]' : total <= 6 ? 'w-7 h-7 text-[11px]' : 'w-6 h-6 text-[10px]'}`}
               style={
                 done
                   ? { background: 'linear-gradient(135deg, #FF9E54, #FF8731)', color: 'white', boxShadow: '0 6px 16px -4px rgba(255,135,49,0.6), inset 0 1px 0 rgba(255,255,255,0.35)' }
@@ -126,7 +127,7 @@ const ModuleStepper = ({ completed, total, moduleNames }) => (
                 style={{ width: 32, height: 32, top: 0, left: '50%', marginLeft: -16 }}
               />
             )}
-            <span className={`mt-2 text-[9.5px] font-black tracking-[0.10em] uppercase whitespace-nowrap ${done ? 'text-white/90' : current ? 'text-[#FF9E54]' : 'text-slate-500'}`}>
+            <span className={`mt-1.5 font-black tracking-[0.08em] uppercase whitespace-nowrap text-center leading-tight ${total <= 5 ? 'text-[9px]' : 'text-[8px]'} ${done ? 'text-white/90' : current ? 'text-[#FF9E54]' : 'text-slate-500'}`}>
               {moduleNames[i]}
             </span>
           </motion.div>
@@ -168,9 +169,14 @@ const Home = () => {
   const [user, setUser] = useState(null);
   const [completedCount, setCompletedCount] = useState(0);
   const mode = searchParams.get('mode') || 'guided';
-  const totalLessons = 4;
   const { t } = useLang();
   const h = t.home;
+
+  const patientType = user?.patientType || 'adulti';
+  const totalLessons = patientType === 'pediatria' ? 7 : 6;
+  const moduleSteps = patientType === 'pediatria'
+    ? ['Intro', 'Accens.', 'Posiz.', 'Sanif.', 'Paziente', 'Rabbits', 'Telly']
+    : ['Intro', 'Accens.', 'Posiz.', 'Sanif.', 'Menu', 'Simul.'];
 
   const [certificateCode] = useState(() => `LMR-${new Date().getFullYear()}-${Math.floor(Math.random() * 9000) + 1000}`);
   const [certificateDate] = useState(() => new Date().toLocaleDateString('it-IT'));
@@ -440,7 +446,7 @@ const onHeroMove = (e) => {
                 )}
 
                 <div className="mt-6">
-                  <ModuleStepper completed={completedCount} total={totalLessons} moduleNames={h.moduleSteps} />
+                  <ModuleStepper completed={completedCount} total={totalLessons} moduleNames={moduleSteps} />
                 </div>
 
                 <p className="md:hidden text-slate-300 text-base leading-relaxed font-medium mt-4">

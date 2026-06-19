@@ -12,10 +12,14 @@ const Lesson = ({ lesson, mode, onComplete, autoplay = false }) => {
   const [hasWatched, setHasWatched] = useState(false);
   const [showQuiz, setShowQuiz] = useState(false);
   const [quizPassed, setQuizPassed] = useState(false);
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [maxTime, setMaxTime] = useState(0);
   const [progress, setProgress] = useState(0);
   const [isSlideModalOpen, setIsSlideModalOpen] = useState(false);
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
+
+  const questions = lesson.questions || (lesson.question ? [{ question: lesson.question, answers: lesson.answers, correct: lesson.correct }] : []);
+  const currentQuestion = questions[currentQuestionIndex];
 
   const playerRef = useRef(null);
   const videoContainerRef = useRef(null);
@@ -80,25 +84,30 @@ const Lesson = ({ lesson, mode, onComplete, autoplay = false }) => {
   };
 
   const handleAnswer = async (index) => {
-    if (index === lesson.correct) {
+    if (!currentQuestion) return;
+    if (index === currentQuestion.correct) {
       audio.playSuccess();
-      setQuizPassed(true);
-      setHasWatched(true);
-      setShowQuiz(false);
-      const currentUser = JSON.parse(localStorage.getItem('lemo_user'));
-      if (currentUser) {
-        const progressKey = `lemo_progress_${currentUser.name}`;
-        const savedProgress = JSON.parse(localStorage.getItem(progressKey)) || [];
-        if (!savedProgress.includes(lesson.id)) {
-          const newProgress = [...savedProgress, lesson.id];
-          localStorage.setItem(progressKey, JSON.stringify(newProgress));
-          const { data: existing } = await supabase
-            .from('users').select('completed_modules').eq('name', currentUser.name).maybeSingle();
-          if (existing) {
-            const updated = [...new Set([...(existing.completed_modules || []), lesson.id])];
-            await supabase.from('users').update({ completed_modules: updated }).eq('name', currentUser.name);
+      if (currentQuestionIndex < questions.length - 1) {
+        setCurrentQuestionIndex(prev => prev + 1);
+      } else {
+        setQuizPassed(true);
+        setHasWatched(true);
+        setShowQuiz(false);
+        const currentUser = JSON.parse(localStorage.getItem('lemo_user'));
+        if (currentUser) {
+          const progressKey = `lemo_progress_${currentUser.name}`;
+          const savedProgress = JSON.parse(localStorage.getItem(progressKey)) || [];
+          if (!savedProgress.includes(lesson.id)) {
+            const newProgress = [...savedProgress, lesson.id];
+            localStorage.setItem(progressKey, JSON.stringify(newProgress));
+            const { data: existing } = await supabase
+              .from('users').select('completed_modules').eq('name', currentUser.name).maybeSingle();
+            if (existing) {
+              const updated = [...new Set([...(existing.completed_modules || []), lesson.id])];
+              await supabase.from('users').update({ completed_modules: updated }).eq('name', currentUser.name);
+            }
+            if (onComplete) onComplete(lesson.id);
           }
-          if (onComplete) onComplete(lesson.id);
         }
       }
     } else {
@@ -252,17 +261,22 @@ const Lesson = ({ lesson, mode, onComplete, autoplay = false }) => {
                 </motion.div>
               ) : showQuiz ? (
                 <motion.div
-                  key="quiz"
+                  key={`quiz-${currentQuestionIndex}`}
                   initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
                   className="px-6 py-5 2xl:px-8 2xl:py-6 flex flex-col gap-4"
                 >
-                  <div className="flex items-center gap-2">
-                    <Zap className="w-3.5 h-3.5 text-[#8756FA]" />
-                    <span className="text-[9px] font-black tracking-[0.20em] uppercase text-slate-500">{l.interactiveCheck}</span>
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="flex items-center gap-2">
+                      <Zap className="w-3.5 h-3.5 text-[#8756FA]" />
+                      <span className="text-[9px] font-black tracking-[0.20em] uppercase text-slate-500">{l.interactiveCheck}</span>
+                    </div>
+                    {questions.length > 1 && (
+                      <span className="text-[9px] font-bold text-slate-500">{l.questionOf(currentQuestionIndex + 1, questions.length)}</span>
+                    )}
                   </div>
-                  <p className="font-serif font-black text-white text-[15px] lg:text-[16px] leading-snug">{lesson.question}</p>
+                  <p className="font-serif font-black text-white text-[15px] lg:text-[16px] leading-snug">{currentQuestion?.question}</p>
                   <div className="flex flex-col gap-2">
-                    {lesson.answers.map((ans, i) => (
+                    {currentQuestion?.answers.map((ans, i) => (
                       <button
                         key={i}
                         onClick={() => handleAnswer(i)}

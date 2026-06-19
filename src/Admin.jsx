@@ -6,7 +6,11 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip,
 import { QRCodeCanvas } from 'qrcode.react';
 import { supabase } from './utils/supabase';
 
-const MODULE_NAMES = { 1: 'General Instructions', 2: 'Cleaning', 3: 'Charging', 4: 'Simulation' };
+const MODULE_NAMES = {
+  1: 'Kit & Postazione', 2: 'Accensione & Stand-by', 3: 'Posizionamento & Ricarica',
+  4: 'Sanificazione', 5: 'Menu & Click', 6: 'Posizionamento sul Paziente',
+  7: 'Rabbits', 8: 'Telly', 9: 'Simulazione',
+};
 const ITEMS_PER_PAGE = 20;
 
 const ConfirmModal = ({ open, title, message, onConfirm, onCancel, danger = true }) => (
@@ -160,7 +164,8 @@ const Admin = () => {
   const [newsletterList, setNewsletterList] = useState([]);
   const navigate = useNavigate();
 
-  const totalLessons = 4;
+  const getTotalLessons = (pt) => pt === 'pediatria' ? 7 : 6;
+  const totalLessons = 9;
 
   const timeAgo = (iso) => {
     if (!iso) return '—';
@@ -172,8 +177,11 @@ const Admin = () => {
     return `${Math.floor(diff / 86400)} days ago`;
   };
 
-  const getNextModule = (completedList) => {
-    for (let i = 1; i <= totalLessons; i++) {
+  const getModulesForProfile = (pt) => pt === 'pediatria' ? [1,2,3,4,6,7,8] : [1,2,3,4,5,9];
+
+  const getNextModule = (completedList, patientType) => {
+    const mods = getModulesForProfile(patientType);
+    for (const i of mods) {
       if (!completedList.includes(i)) return i;
     }
     return null;
@@ -222,35 +230,42 @@ const Admin = () => {
 
     let usersArray = [];
     let hospitalsMap = {};
-    let dropOffMap = { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0 };
+    let dropOffMap = { 'Not Started': 0, '1–3 Modules': 0, '4–6 Modules': 0, 'Completed': 0 };
     let completedCount = 0;
     let activeTodayCount = 0;
     let totalLogins = 0;
     let adultiCount = 0;
     let pediatriaCount = 0;
     let totalProgressSum = 0;
+    let totalProgressDenom = 0;
 
     const todayStr = new Date().toISOString().split('T')[0];
 
     source.forEach(user => {
       const completedModules = (user.completedModulesList || []).length;
+      const userTotal = getTotalLessons(user.patientType);
 
-      if (completedModules === totalLessons) completedCount++;
+      if (completedModules >= userTotal) completedCount++;
       if (user.lastLogin && user.lastLogin.startsWith(todayStr)) activeTodayCount++;
       totalLogins += (user.loginCount || 1);
       totalProgressSum += completedModules;
+      totalProgressDenom += userTotal;
 
       if (user.patientType === 'adulti') adultiCount++;
       else if (user.patientType === 'pediatria') pediatriaCount++;
 
       const hosp = user.hospital || 'Unknown';
       hospitalsMap[hosp] = (hospitalsMap[hosp] || 0) + 1;
-      dropOffMap[Math.min(completedModules, 4)]++;
+
+      if (completedModules === 0) dropOffMap['Not Started']++;
+      else if (completedModules <= 3) dropOffMap['1–3 Modules']++;
+      else if (completedModules < userTotal) dropOffMap['4–6 Modules']++;
+      else dropOffMap['Completed']++;
 
       usersArray.push({
         ...user,
         progressCount: completedModules,
-        percentage: Math.round((completedModules / totalLessons) * 100),
+        percentage: Math.round((completedModules / userTotal) * 100),
       });
     });
 
@@ -258,11 +273,10 @@ const Admin = () => {
 
     const hospitalsData = Object.keys(hospitalsMap).map(k => ({ name: k, value: hospitalsMap[k] }));
     const completionRatesData = [
-      { name: '0 Mod.', users: dropOffMap[0] },
-      { name: '1 Mod.', users: dropOffMap[1] },
-      { name: '2 Mod.', users: dropOffMap[2] },
-      { name: '3 Mod.', users: dropOffMap[3] },
-      { name: 'Completed', users: dropOffMap[4] },
+      { name: 'Not Started', users: dropOffMap['Not Started'] },
+      { name: '1–3 Mod.', users: dropOffMap['1–3 Modules'] },
+      { name: '4–6 Mod.', users: dropOffMap['4–6 Modules'] },
+      { name: 'Completed', users: dropOffMap['Completed'] },
     ];
 
     const loginsByDay = {};
@@ -289,7 +303,7 @@ const Admin = () => {
       activeToday: activeTodayCount,
       totalLogins,
       completionRate: count > 0 ? Math.round((completedCount / count) * 100) : 0,
-      avgProgress: count > 0 ? Math.round((totalProgressSum / (count * totalLessons)) * 100) : 0,
+      avgProgress: totalProgressDenom > 0 ? Math.round((totalProgressSum / totalProgressDenom) * 100) : 0,
       avgLogins: count > 0 ? Math.round((totalLogins / count) * 10) / 10 : 0,
       adultiCount,
       pediatriaCount,
@@ -355,9 +369,9 @@ const Admin = () => {
   const unlockAll = (userName) => {
     openConfirm(
       'Unlock All Modules',
-      `Unlock the entire training path for "${userName}"? All 4 modules will be marked as completed.`,
+      `Unlock the entire training path for "${userName}"? All modules will be marked as completed.`,
       async () => {
-        const allModules = [1, 2, 3, 4];
+        const allModules = [1, 2, 3, 4, 5, 6, 7, 8, 9];
         await supabase.from('users').update({ completed_modules: allModules }).eq('name', userName);
         localStorage.setItem(`lemo_progress_${userName}`, JSON.stringify(allModules));
         const globalUsers = JSON.parse(localStorage.getItem('lemo_all_users')) || {};
@@ -380,7 +394,7 @@ const Admin = () => {
     const headers = ['Operator', 'Email', 'Newsletter', 'Hospital', 'Department', 'Patient Profile', 'Mode', 'Progress %', 'Completed Modules', 'Next Module', 'Total Logins', 'Avg Logins', 'First Access', 'Last Access'];
 
     const rows = filteredUsers.map(u => {
-      const nextMod = getNextModule(u.completedModulesList || []);
+      const nextMod = getNextModule(u.completedModulesList || [], u.patientType);
       return [
         u.name || '',
         u.email || '',
@@ -390,7 +404,7 @@ const Admin = () => {
         u.patientType === 'pediatria' ? 'Paediatrics' : 'Adults',
         u.mode === 'full' ? 'Free' : 'Guided',
         `${u.percentage || 0}%`,
-        `${u.progressCount || 0}/${totalLessons}`,
+        `${u.progressCount || 0}/${getTotalLessons(u.patientType)}`,
         nextMod ? `Module ${nextMod} — ${MODULE_NAMES[nextMod]}` : 'Completed ✓',
         u.loginCount || 1,
         stats?.avgLogins || 0,
@@ -774,7 +788,7 @@ const Admin = () => {
               <tbody className="divide-y divide-slate-800/50">
                 {paginatedUsers.length > 0 ? paginatedUsers.map((u, i) => {
                   const globalIndex = (currentPage - 1) * ITEMS_PER_PAGE + i;
-                  const nextMod = getNextModule(u.completedModulesList || []);
+                  const nextMod = getNextModule(u.completedModulesList || [], u.patientType);
                   return (
                     <React.Fragment key={globalIndex}>
                       <tr
@@ -812,7 +826,7 @@ const Admin = () => {
                         <td className="px-8 py-6">
                           <div className="flex flex-col gap-2">
                             <div className="flex items-center justify-between text-xs font-bold">
-                              <span className={u.percentage === 100 ? 'text-emerald-400' : 'text-slate-300'}>{u.progressCount || 0} / {totalLessons} Modules</span>
+                              <span className={u.percentage === 100 ? 'text-emerald-400' : 'text-slate-300'}>{u.progressCount || 0} / {getTotalLessons(u.patientType)} Modules</span>
                               <span className={u.percentage === 100 ? 'text-emerald-400' : 'text-[#FF8731]'}>{u.percentage || 0}%</span>
                             </div>
                             <div className="h-2 bg-slate-800 rounded-full overflow-hidden w-full max-w-[150px]">

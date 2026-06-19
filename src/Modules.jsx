@@ -207,27 +207,29 @@ const Modules = () => {
   const { t } = useLang();
   const m = t.modules;
   const tl = m.lessons;
-  const l2 = tl[2];
   const isPediatria = patientType === 'pediatria';
 
-  const lessons = [
-    { id: 1, type: "Video", videoUrl: "https://res.cloudinary.com/dzhtuyaq0/video/upload/v1778689579/ISTRUZIONI_GENERALI_compressed_gihswp.mp4", correct: 2,
-      title: tl[0].title, duration: tl[0].duration, description: tl[0].description,
-      question: tl[0].question, answers: tl[0].answers, slides: tl[0].slides },
-    { id: 2, type: "Video", videoUrl: "https://res.cloudinary.com/dzhtuyaq0/video/upload/v1778688357/PULIZIA_gq4bhm.mp4", correct: 0,
-      title: tl[1].title, duration: tl[1].duration, description: tl[1].description,
-      question: tl[1].question, answers: tl[1].answers, slides: tl[1].slides },
-    isPediatria
-      ? { id: 3, type: "Video", videoUrl: "https://res.cloudinary.com/dzhtuyaq0/video/upload/v1778688378/Ricarica_LEMO_JR_fb3opv.mp4", correct: 1,
-          title: l2.titlePediatria, duration: l2.durationPediatria, description: l2.descriptionPediatria,
-          question: l2.questionPediatria, answers: l2.answersPediatria, slides: l2.slidesPediatria }
-      : { id: 3, type: "Video", videoUrl: "https://res.cloudinary.com/dzhtuyaq0/video/upload/v1778688371/Ricarica_LEMO_hhcuix.mp4", correct: 2,
-          title: l2.titleAdulti, duration: l2.duration, description: l2.descriptionAdulti,
-          question: l2.questionAdulti, answers: l2.answersAdulti, slides: l2.slidesAdulti },
-    { id: 4, type: "Tutorial", videoUrl: "https://res.cloudinary.com/dzhtuyaq0/video/upload/v1778689695/Simulazione_compressed_wuviqs.mp4", correct: 1,
-      title: tl[3].title, duration: tl[3].duration, description: tl[3].description,
-      question: tl[3].question, answers: tl[3].answers, slides: tl[3].slides },
+  const R2 = 'https://pub-a5b0afd78ca4495dbcc59862b6e90b23.r2.dev';
+
+  const allLessons = [
+    { id: 1, profile: 'all',      type: 'Video',    videoUrl: `${R2}/Introduzione.mov`,                     tl: tl[0] },
+    { id: 2, profile: 'all',      type: 'Video',    videoUrl: `${R2}/Accensione%20%26%20Stand-by.mov`,      tl: tl[1] },
+    { id: 3, profile: 'all',      type: 'Video',    videoUrl: `${R2}/Posizionamento%20e%20ricarica.mov`,    tl: tl[2] },
+    { id: 4, profile: 'all',      type: 'Video',    videoUrl: `${R2}/Sanificazione.mov`,                    tl: tl[3] },
+    { id: 5, profile: 'adulti',   type: 'Video',    videoUrl: `${R2}/Menu%20%26%20Click.mov`,               tl: tl[4] },
+    { id: 6, profile: 'pediatria',type: 'Video',    videoUrl: `${R2}/Posizionamento%20sul%20paziente.mov`,  tl: tl[5] },
+    { id: 7, profile: 'pediatria',type: 'Video',    videoUrl: `${R2}/Rabbits.mov`,                          tl: tl[6] },
+    { id: 8, profile: 'pediatria',type: 'Video',    videoUrl: `${R2}/Telly.mov`,                            tl: tl[7] },
+    { id: 9, profile: 'adulti',   type: 'Tutorial', videoUrl: `${R2}/Simulazione.mov`,                      tl: tl[8] },
   ];
+
+  const lessons = allLessons
+    .filter(l => l.profile === 'all' || l.profile === patientType)
+    .map(({ id, type, videoUrl, tl: d }) => ({
+      id, type, videoUrl,
+      title: d.title, duration: d.duration, description: d.description,
+      questions: d.questions, slides: d.slides,
+    }));
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -236,7 +238,7 @@ const Modules = () => {
       setUser(savedUser);
       setCompletedLessons(JSON.parse(localStorage.getItem(`lemo_progress_${savedUser.name}`)) || []);
     }
-    if (autoopen >= 1 && autoopen <= 4) {
+    if (autoopen >= 1 && autoopen <= 9) {
       setExpandedId(autoopen);
       setTimeout(() => {
         const el = cardRefs.current[autoopen];
