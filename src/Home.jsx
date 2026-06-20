@@ -168,7 +168,7 @@ const Home = () => {
   const [user, setUser] = useState(null);
   const [completedCount, setCompletedCount] = useState(0);
   const mode = searchParams.get('mode') || 'guided';
-  const { t } = useLang();
+  const { t, lang } = useLang();
   const h = t.home;
 
   const patientType = user?.patientType || 'adulti';
@@ -444,7 +444,7 @@ const onHeroMove = (e) => {
                 )}
 
                 <div className="mt-6 pt-3">
-                  <ModuleStepper completed={completedCount} total={totalLessons} moduleNames={moduleSteps} />
+                  <ModuleStepper key={lang} completed={completedCount} total={totalLessons} moduleNames={moduleSteps} />
                 </div>
 
                 <p className="md:hidden text-slate-300 text-base leading-relaxed font-medium mt-4">
