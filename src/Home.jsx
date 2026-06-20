@@ -173,9 +173,7 @@ const Home = () => {
 
   const patientType = user?.patientType || 'adulti';
   const totalLessons = patientType === 'pediatria' ? 7 : 6;
-  const moduleSteps = patientType === 'pediatria'
-    ? ['Intro', 'Accens.', 'Posiz.', 'Sanif.', 'Paziente', 'Rabbits', 'Telly']
-    : ['Intro', 'Accens.', 'Posiz.', 'Sanif.', 'Menu', 'Simul.'];
+  const moduleSteps = patientType === 'pediatria' ? h.moduleStepsPediatria : h.moduleStepsAdulti;
 
   const [certificateCode] = useState(() => `LMR-${new Date().getFullYear()}-${Math.floor(Math.random() * 9000) + 1000}`);
   const [certificateDate] = useState(() => new Date().toLocaleDateString('it-IT'));

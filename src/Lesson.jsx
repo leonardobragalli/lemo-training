@@ -13,6 +13,7 @@ const Lesson = ({ lesson, mode, onComplete, autoplay = false }) => {
   const [showQuiz, setShowQuiz] = useState(false);
   const [quizPassed, setQuizPassed] = useState(false);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [wrongAnswer, setWrongAnswer] = useState(false);
   const [maxTime, setMaxTime] = useState(0);
   const maxTimeRef = useRef(0);
   const [progress, setProgress] = useState(0);
@@ -117,7 +118,8 @@ const Lesson = ({ lesson, mode, onComplete, autoplay = false }) => {
       }
     } else {
       audio.playError();
-      alert(l.wrongAnswer);
+      setWrongAnswer(true);
+      setTimeout(() => setWrongAnswer(false), 1800);
     }
   };
 
@@ -291,6 +293,18 @@ const Lesson = ({ lesson, mode, onComplete, autoplay = false }) => {
                       </button>
                     ))}
                   </div>
+                  <AnimatePresence>
+                    {wrongAnswer && (
+                      <motion.div
+                        initial={{ opacity: 0, y: -6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }}
+                        transition={{ duration: 0.2 }}
+                        className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-red-500/10 border border-red-500/25 text-red-400 text-[12px] font-bold"
+                      >
+                        <AlertTriangle className="w-3.5 h-3.5 shrink-0" />
+                        {l.wrongAnswer}
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </motion.div>
               ) : (
                 <motion.div
