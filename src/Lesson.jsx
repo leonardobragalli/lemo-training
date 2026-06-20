@@ -14,6 +14,7 @@ const Lesson = ({ lesson, mode, onComplete, autoplay = false }) => {
   const [quizPassed, setQuizPassed] = useState(false);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [maxTime, setMaxTime] = useState(0);
+  const maxTimeRef = useRef(0);
   const [progress, setProgress] = useState(0);
   const [isSlideModalOpen, setIsSlideModalOpen] = useState(false);
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
@@ -69,10 +70,14 @@ const Lesson = ({ lesson, mode, onComplete, autoplay = false }) => {
     const duration = playerRef.current.duration;
     if (duration > 0) setProgress(currentTime / duration);
     if (hasWatched) return;
-    if (currentTime > maxTime) setMaxTime(currentTime);
-    if (currentTime > maxTime + 2) {
-      playerRef.current.currentTime = maxTime;
+    if (currentTime > maxTimeRef.current + 2) {
+      playerRef.current.currentTime = maxTimeRef.current;
       audio.playError();
+      return;
+    }
+    if (currentTime > maxTimeRef.current) {
+      maxTimeRef.current = currentTime;
+      setMaxTime(currentTime);
     }
     if (duration > 0 && currentTime > duration * 0.95 && !showQuiz) {
       setShowQuiz(true);

@@ -1,17 +1,22 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense, lazy } from 'react';
 import React from 'react';
-import Welcome from './Welcome';
-import Home from './Home';
-import Modules from './Modules';
-import Support from './Support';
 import Layout from './Layout';
-import Admin from './Admin';
 import { ThemeContext } from './ThemeContext';
 import { LanguageProvider } from './LanguageContext';
 
+const Welcome = lazy(() => import('./Welcome'));
+const Home    = lazy(() => import('./Home'));
+const Modules = lazy(() => import('./Modules'));
+const Support = lazy(() => import('./Support'));
+const Admin   = lazy(() => import('./Admin'));
+
 function App() {
   const [isDarkMode, setIsDarkMode] = useState(false);
+
+  useEffect(() => {
+    if (window.__hideSplash) window.__hideSplash();
+  }, []);
 
   useEffect(() => {
     if (isDarkMode) {
@@ -27,15 +32,17 @@ function App() {
     <LanguageProvider>
       <ThemeContext.Provider value={{ isDarkMode, toggleTheme }}>
         <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Welcome />} />
-            <Route path="/admin" element={<Admin />} />
-            <Route element={<Layout />}>
-              <Route path="/home" element={<Home />} />
-              <Route path="/modules" element={<Modules />} />
-              <Route path="/support" element={<Support />} />
-            </Route>
-          </Routes>
+          <Suspense fallback={null}>
+            <Routes>
+              <Route path="/" element={<Welcome />} />
+              <Route path="/admin" element={<Admin />} />
+              <Route element={<Layout />}>
+                <Route path="/home" element={<Home />} />
+                <Route path="/modules" element={<Modules />} />
+                <Route path="/support" element={<Support />} />
+              </Route>
+            </Routes>
+          </Suspense>
         </BrowserRouter>
       </ThemeContext.Provider>
     </LanguageProvider>

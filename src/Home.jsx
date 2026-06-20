@@ -6,7 +6,6 @@ import {
   useMotionValue, useTransform, useSpring,
   animate, useMotionValueEvent,
 } from 'framer-motion';
-import html2pdf from 'html2pdf.js';
 
 import { audio } from './utils/audio';
 import { useLang } from './LanguageContext';
@@ -259,10 +258,11 @@ const onHeroMove = (e) => {
   const progressPercentage = Math.round((completedCount / totalLessons) * 100);
   const hasFinishedAll = completedCount === totalLessons;
 
-  const downloadCertificate = () => {
+  const downloadCertificate = async () => {
     audio.playSuccess();
     const element = document.getElementById('certificate-template');
     element.style.display = 'block';
+    const { default: html2pdf } = await import('html2pdf.js');
     html2pdf().set({
       margin: 0, filename: `Certificato_Lemons_${user?.lastName || 'Utente'}.pdf`,
       image: { type: 'jpeg', quality: 1 },
