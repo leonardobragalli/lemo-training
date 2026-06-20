@@ -92,7 +92,7 @@ const ProgressRing = ({ percent = 0, size = 220 }) => {
 
 /* ── MODULE STEPPER ────────────────────────────────────────── */
 const ModuleStepper = ({ completed, total, moduleNames }) => (
-  <div className="flex items-center gap-0 w-full max-w-full mx-auto md:mx-0 mb-6 overflow-hidden">
+  <div className="flex items-center gap-0 w-full max-w-full mx-auto md:mx-0 mb-6">
     {Array.from({ length: total }).map((_, i) => {
       const done = i < completed;
       const current = i === completed && i < total;
@@ -445,7 +445,7 @@ const onHeroMove = (e) => {
                   </motion.button>
                 )}
 
-                <div className="mt-6">
+                <div className="mt-6 pt-3">
                   <ModuleStepper completed={completedCount} total={totalLessons} moduleNames={moduleSteps} />
                 </div>
 
