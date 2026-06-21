@@ -150,29 +150,27 @@ const Lesson = ({ lesson, mode, onComplete, autoplay = false }) => {
         <div className="lg:w-[58%] xl:w-[60%] relative flex flex-col">
           <div ref={videoContainerRef} className="relative w-full bg-black overflow-hidden shrink-0">
 
-            {/* Pill badges */}
-            <div className="absolute top-3 left-3 z-20 flex gap-2 pointer-events-none">
-              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-black/60 backdrop-blur-md border border-white/10 text-[10px] font-black tracking-[0.14em] uppercase text-white/80">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#FF8731]" /> {lesson.type}
-              </span>
-            </div>
-
-            {/* Mandatory view badge */}
-            {!hasWatched && mode === 'guided' && (
-              <motion.div initial={{ y: -20, opacity: 0 }} animate={{ y: 0, opacity: 1 }}
-                className="absolute top-3 right-12 z-20 bg-black/60 backdrop-blur-xl border border-white/10 text-white text-[10px] px-3 py-1 rounded-full font-bold flex items-center gap-2 pointer-events-none shadow-lg">
-                <AlertTriangle className="w-3 h-3 text-[#FF8731]" />
-                <span className="tracking-wide uppercase">{l.mandatoryView}</span>
-              </motion.div>
+            {/* Pill badges + fullscreen — hidden when native controls are visible */}
+            {(!hasWatched && mode === 'guided') && (
+              <>
+                <div className="absolute top-3 left-3 z-20 flex gap-2 pointer-events-none">
+                  <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-black/60 backdrop-blur-md border border-white/10 text-[10px] font-black tracking-[0.14em] uppercase text-white/80">
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#FF8731]" /> {lesson.type}
+                  </span>
+                </div>
+                <motion.div initial={{ y: -20, opacity: 0 }} animate={{ y: 0, opacity: 1 }}
+                  className="absolute top-3 right-12 z-20 bg-black/60 backdrop-blur-xl border border-white/10 text-white text-[10px] px-3 py-1 rounded-full font-bold flex items-center gap-2 pointer-events-none shadow-lg">
+                  <AlertTriangle className="w-3 h-3 text-[#FF8731]" />
+                  <span className="tracking-wide uppercase">{l.mandatoryView}</span>
+                </motion.div>
+                <button
+                  onClick={(e) => { e.stopPropagation(); enterFullscreen(); }}
+                  className="absolute top-3 right-3 z-20 w-8 h-8 bg-black/60 backdrop-blur-md border border-white/10 rounded-full flex items-center justify-center text-white/70 hover:text-white hover:bg-white/20 transition-all"
+                >
+                  <Maximize className="w-3.5 h-3.5" />
+                </button>
+              </>
             )}
-
-            {/* Fullscreen button */}
-            <button
-              onClick={(e) => { e.stopPropagation(); enterFullscreen(); }}
-              className="absolute top-3 right-3 z-20 w-8 h-8 bg-black/60 backdrop-blur-md border border-white/10 rounded-full flex items-center justify-center text-white/70 hover:text-white hover:bg-white/20 transition-all"
-            >
-              <Maximize className="w-3.5 h-3.5" />
-            </button>
 
             <video
               ref={playerRef}
