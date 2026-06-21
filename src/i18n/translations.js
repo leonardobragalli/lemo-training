@@ -8,7 +8,7 @@ export const translations = {
       tagline: 'Il training\n',
       taglineAccent: 'che accoglie',
       subtitle: 'Preparati a vivere la realtà virtuale in reparto.\nUn percorso formativo semplice, intuitivo e sicuro.',
-      badge: 'Guida Operativa Lemons in the Room',
+      badge: 'Lemons in the Room — Guida Operativa',
       badgeSub: 'Lemons in the room Certified',
       title: 'Accedi',
       description: "Inserisci le tue credenziali operative per sbloccare un'esperienza di training immersiva",
