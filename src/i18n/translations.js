@@ -77,6 +77,8 @@ export const translations = {
       progressDone: 'Percorso completato 🎉',
       progressRemaining: (n) => `${n} moduli rimanenti per la certificazione`,
       nextBadge: 'Prossimo',
+      allDone: 'Formazione completata',
+      certReady: 'Il tuo certificato è pronto',
       lessons: [
         {
           title: 'Introduzione', duration: '1',
@@ -497,6 +499,8 @@ export const translations = {
       progressDone: 'Course completed 🎉',
       progressRemaining: (n) => `${n} modules remaining for certification`,
       nextBadge: 'Next',
+      allDone: 'Training completed',
+      certReady: 'Your certificate is ready',
       lessons: [
         {
           title: 'Introduction', duration: '1',
@@ -913,6 +917,8 @@ export const translations = {
       progressLabel: 'Progreso del curso',
       progressDone: 'Curso completado 🎉',
       progressRemaining: (n) => `${n} módulos restantes para la certificación`,
+      allDone: 'Formación completada',
+      certReady: 'Tu certificado está listo',
       nextBadge: 'Siguiente',
       lessons: [
         {

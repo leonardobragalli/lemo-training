@@ -3,6 +3,7 @@ import { useSearchParams } from 'react-router-dom';
 import { Play, Lock, CheckCircle, ChevronDown, Clock, Sparkles } from 'lucide-react';
 import { motion, AnimatePresence, useMotionValue, useSpring, useTransform } from 'framer-motion';
 import Lesson from './Lesson';
+import CertificateDownload from './CertificateDownload';
 import { useLang } from './LanguageContext';
 
 const ChapterLine = ({ num, label }) => (
@@ -405,6 +406,28 @@ const Modules = () => {
             </motion.div>
           );
         })}
+
+        {/* Certificate button — shown when all modules are completed */}
+        <AnimatePresence>
+          {completedCount === total && (
+            <motion.div
+              initial={{ opacity: 0, y: 24, scale: 0.97 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              transition={{ type: 'spring', stiffness: 110, damping: 22, delay: 0.2 }}
+              className="relative overflow-hidden bg-[#040F2A]/65 backdrop-blur-[40px] rounded-[2rem] p-8 border border-emerald-400/20 flex flex-col items-center gap-4 text-center"
+              style={{ boxShadow: '0 0 40px -10px rgba(16,185,129,0.25)' }}
+            >
+              <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-emerald-400/30 to-transparent pointer-events-none" />
+              <CheckCircle className="w-10 h-10 text-emerald-400" strokeWidth={1.8} />
+              <div>
+                <p className="text-[10px] font-black tracking-[0.22em] uppercase text-emerald-400 mb-1">{m.allDone}</p>
+                <h3 className="font-serif font-black text-white text-2xl">{m.certReady}</h3>
+              </div>
+              <CertificateDownload user={user} />
+            </motion.div>
+          )}
+        </AnimatePresence>
+
       </motion.div>
     </motion.div>
   );
