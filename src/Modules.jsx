@@ -213,7 +213,8 @@ const Modules = () => {
   const R2 = 'https://pub-a5b0afd78ca4495dbcc59862b6e90b23.r2.dev';
 
   const allLessons = [
-    { id: 1, profile: 'all',      type: 'Video',    videoUrl: `${R2}/Introduzione.mp4`,                     tl: tl[0] },
+    { id: 1,  profile: 'adulti',   type: 'Video',    videoUrl: `${R2}/Introduzione.mp4`,                     tl: tl[0] },
+    { id: 10, profile: 'pediatria',type: 'Video',   videoUrl: `${R2}/Introduzione%20Lemo%20jr.mp4`,          tl: tl[9] },
     { id: 2, profile: 'all',      type: 'Video',    videoUrl: `${R2}/Accensione%20%26%20Stand-by.mp4`,      tl: tl[1] },
     { id: 3, profile: 'all',      type: 'Video',    videoUrl: `${R2}/Posizionamento%20e%20ricarica.mp4`,    tl: tl[2] },
     { id: 4, profile: 'all',      type: 'Video',    videoUrl: `${R2}/Sanificazione.mp4`,                    tl: tl[3] },

@@ -360,6 +360,32 @@ export const translations = {
             { title: 'Pronto per il Paziente', content: 'Una volta avviata l\'esperienza, l\'operatore rimane vicino al paziente per tutta la durata. Al termine: rimuovi il visore, igienizzalo e riponilo nella basetta di ricarica. La soluzione è nuovamente pronta.' },
           ],
         },
+        {
+          title: 'Introduzione', duration: '1',
+          description: 'Scopri i componenti del kit Lemons e come rendere la postazione operativa in pochi passi.',
+          questions: [
+            {
+              question: 'Quali componenti sono inclusi nel kit Lemons?',
+              answers: ['Solo il visore e il caricabatterie', 'Visore, teca, basetta di ricarica e controller', 'Visore, cavo USB-C e manuale', 'Visore, controller e cuffie audio'],
+              correct: 1,
+            },
+            {
+              question: 'Qual è la funzione della teca?',
+              answers: ['Contenere i controller', 'Ricaricare il visore', 'Proteggere il visore e fungere da elemento espositivo', 'Collegare il caricabatterie alla rete'],
+              correct: 2,
+            },
+            {
+              question: 'Come si mantiene il visore sempre pronto all\'uso?',
+              answers: ['Collegando il caricabatterie direttamente al visore ogni sera', 'Spegnendolo e riponendolo nella teca dopo ogni utilizzo', 'Tenendolo sempre in carica nella basetta di ricarica e rimettendolo al suo posto dopo ogni utilizzo', 'Caricandolo con il cavo USB-C incluso nel kit'],
+              correct: 2,
+            },
+          ],
+          slides: [
+            { title: 'I Materiali del Kit', content: 'Il kit Lemons è composto da: visore, teca di esposizione e protezione, basetta di ricarica con il suo caricabatterie. Sono inclusi anche i controller del dispositivo.' },
+            { title: 'La Teca', content: 'La teca ha una doppia funzione: proteggere il visore quando non è in uso e fungere da elemento espositivo della postazione. Mantienila sempre in una posizione accessibile e stabile.' },
+            { title: 'La Ricarica', content: 'Il visore rimane sempre in carica all\'interno della basetta. Quando serve: tiralo su, dallo al paziente, igienizzallo e rimettilo al suo posto.' },
+          ],
+        },
       ],
     },
 
@@ -783,6 +809,32 @@ export const translations = {
             { title: 'Ready for the Patient', content: 'Once the experience has started, the operator stays close to the patient for its entire duration. At the end: remove the headset, sanitise it and place it back on the charging dock. The station is ready again.' },
           ],
         },
+        {
+          title: 'Introduction', duration: '1',
+          description: 'Discover the components of the Lemons kit and how to get the station up and running in a few steps.',
+          questions: [
+            {
+              question: 'Which components are included in the Lemons kit?',
+              answers: ['Only the headset and charger', 'Headset, case, charging dock and controllers', 'Headset, USB-C cable and manual', 'Headset, controllers and audio headphones'],
+              correct: 1,
+            },
+            {
+              question: 'What is the function of the case?',
+              answers: ['To store the controllers', 'To charge the headset', 'To protect the headset and serve as a display element', 'To connect the charger to the power supply'],
+              correct: 2,
+            },
+            {
+              question: 'How do you keep the headset always ready to use?',
+              answers: ['By connecting the charger directly to the headset every evening', 'By switching it off and placing it in the case after each use', 'By always keeping it charged in the charging dock and putting it back after each use', 'By charging it with the USB-C cable included in the kit'],
+              correct: 2,
+            },
+          ],
+          slides: [
+            { title: 'Kit Components', content: 'The Lemons kit includes: a headset, a display and protection case, a charging dock with its charger. Device controllers are also included.' },
+            { title: 'The Case', content: 'The case serves a dual purpose: protecting the headset when not in use and acting as a display element for the station. Always keep it in an accessible and stable position.' },
+            { title: 'Charging', content: 'The headset stays on charge inside the dock at all times. When needed: lift it out, give it to the patient, sanitise it and put it back.' },
+          ],
+        },
       ],
     },
     lesson: {
@@ -1201,6 +1253,32 @@ export const translations = {
             { title: 'El Flujo Completo', content: 'La simulación resume todo el proceso: abre el estuche, coge el visor, ensancha la correa con la rueda trasera, colócalo primero sobre los ojos y luego detrás de la cabeza, y ajusta la rueda para encontrar la adherencia correcta. No hace falta seleccionar la experiencia: comienza automáticamente.' },
             { title: 'Verificar que Todo Funciona', content: 'Dos señales confirman que la experiencia ha comenzado correctamente: la luz blanca en la frente del visor y el volumen (las dos barras sobre el pómulo derecho). Si escuchas el audio, la experiencia está en marcha.' },
             { title: 'Listo para el Paciente', content: 'Una vez iniciada la experiencia, el operador permanece junto al paciente durante toda su duración. Al finalizar: retira el visor, higienízalo y devuélvelo a la base de carga. La estación está de nuevo lista.' },
+          ],
+        },
+        {
+          title: 'Introducción', duration: '1',
+          description: 'Descubre los componentes del kit Lemons y cómo poner en marcha la estación en pocos pasos.',
+          questions: [
+            {
+              question: '¿Qué componentes incluye el kit Lemons?',
+              answers: ['Solo el visor y el cargador', 'Visor, estuche, base de carga y controladores', 'Visor, cable USB-C y manual', 'Visor, controladores y auriculares de audio'],
+              correct: 1,
+            },
+            {
+              question: '¿Cuál es la función del estuche?',
+              answers: ['Guardar los controladores', 'Cargar el visor', 'Proteger el visor y servir de elemento expositivo', 'Conectar el cargador a la red'],
+              correct: 2,
+            },
+            {
+              question: '¿Cómo se mantiene el visor siempre listo para usar?',
+              answers: ['Conectando el cargador directamente al visor cada noche', 'Apagándolo y guardándolo en el estuche tras cada uso', 'Manteniéndolo siempre cargado en la base de carga y devolviéndolo a su sitio tras cada uso', 'Cargándolo con el cable USB-C incluido en el kit'],
+              correct: 2,
+            },
+          ],
+          slides: [
+            { title: 'Los Materiales del Kit', content: 'El kit Lemons incluye: visor, estuche de exposición y protección, base de carga con su cargador. También se incluyen los controladores del dispositivo.' },
+            { title: 'El Estuche', content: 'El estuche tiene una doble función: proteger el visor cuando no está en uso y servir de elemento expositivo de la estación. Mantenlo siempre en una posición accesible y estable.' },
+            { title: 'La Carga', content: 'El visor permanece siempre cargado dentro de la base. Cuando se necesite: sácalo, dáselo al paciente, higiénizalo y devuélvelo a su sitio.' },
           ],
         },
       ],
