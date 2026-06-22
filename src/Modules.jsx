@@ -222,6 +222,7 @@ const Modules = () => {
     { id: 4, profile: 'all',      type: 'Video',    videoUrl: `${R2}/Sanificazione.mp4`,                    tl: tl[3] },
     { id: 5, profile: 'adulti',   type: 'Video',    videoUrl: `${R2}/Menu%20%26%20Click.mp4`,               tl: tl[4] },
     { id: 6, profile: 'pediatria',type: 'Video',    videoUrl: `${R2}/Posizionamento%20sul%20paziente.mp4`,  tl: tl[5] },
+    { id: 13, profile: 'pediatria',type: 'Video',   videoUrl: `${R2}/Navigare%20tra%20le%20Applicazioni%20Lemons.mp4`, tl: tl[11] },
     { id: 7, profile: 'pediatria',type: 'Video',    videoUrl: `${R2}/Rabbits.mp4`,                          tl: tl[6] },
     { id: 8, profile: 'pediatria',type: 'Video',    videoUrl: `${R2}/Telly.mp4`,                            tl: tl[7] },
     { id: 9, profile: 'adulti',   type: 'Tutorial', videoUrl: `${R2}/Simulazione.mp4`,                      tl: tl[8] },
