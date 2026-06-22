@@ -215,7 +215,8 @@ const Modules = () => {
   const allLessons = [
     { id: 1,  profile: 'adulti',   type: 'Video',    videoUrl: `${R2}/Introduzione.mp4`,                     tl: tl[0] },
     { id: 10, profile: 'pediatria',type: 'Video',   videoUrl: `${R2}/Introduzione%20Lemo%20jr.mp4`,          tl: tl[9] },
-    { id: 2, profile: 'all',      type: 'Video',    videoUrl: `${R2}/Accensione%20%26%20Stand-by.mp4`,      tl: tl[1] },
+    { id: 2,  profile: 'adulti',   type: 'Video',    videoUrl: `${R2}/Accensione%20%26%20Stand-by.mp4`,      tl: tl[1] },
+    { id: 11, profile: 'pediatria',type: 'Video',   videoUrl: `${R2}/Accensione%20%26%20Stand-by.mp4`,      tl: tl[10] },
     { id: 3, profile: 'all',      type: 'Video',    videoUrl: `${R2}/Posizionamento%20e%20ricarica.mp4`,    tl: tl[2] },
     { id: 4, profile: 'all',      type: 'Video',    videoUrl: `${R2}/Sanificazione.mp4`,                    tl: tl[3] },
     { id: 5, profile: 'adulti',   type: 'Video',    videoUrl: `${R2}/Menu%20%26%20Click.mp4`,               tl: tl[4] },

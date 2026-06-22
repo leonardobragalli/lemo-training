@@ -127,13 +127,13 @@ export const translations = {
               correct: 2,
             },
             {
-              question: 'Cosa succede una volta indossato il visore acceso?',
-              answers: ['Bisogna selezionare manualmente ogni volta l\'esperienza dal menu', 'Si deve aspettare che un operatore avvii l\'app da remoto', 'Il visore emette un suono e poi va avviato manualmente', 'L\'esperienza parte in automatico'],
+              question: 'Cosa si deve fare una volta posizionato il visore sulla testa del paziente?',
+              answers: ['Bisogna selezionare manualmente ogni volta l\'esperienza dal menu', 'Si deve aspettare che un operatore avvii l\'app da remoto', 'Il visore emette un suono e poi va avviato manualmente', 'Niente, l\'esperienza parte in automatico'],
               correct: 3,
             },
             {
               question: 'Come si mette il visore in stand-by?',
-              answers: ['Tenendo premuto il pulsante per 5 secondi', 'Spegnendolo completamente dal menu impostazioni', 'Aspettando che si spenga da solo dopo 10 minuti', 'Premendo una volta il pulsante di accensione'],
+              answers: ['Tenendo premuto il pulsante per 5 secondi', 'Spegnendolo completamente dal menu impostazioni', 'Aspettando che si spenga da solo dopo 10 minuti', 'Premendo una volta il pulsante di accensione o rimuovendolo e posizionandolo nuovamente sulla basetta di ricarica'],
               correct: 3,
             },
           ],
@@ -386,6 +386,37 @@ export const translations = {
             { title: 'La Ricarica', content: 'Il visore rimane sempre in carica all\'interno della basetta. Quando serve: tiralo su, dallo al paziente, igienizzallo e rimettilo al suo posto.' },
           ],
         },
+        {
+          title: 'Accensione & Stand-by', duration: '1',
+          description: 'Come accendere il visore, avviare l\'esperienza e metterlo in stand-by in pochi secondi.',
+          questions: [
+            {
+              question: 'Dove viene posizionata la teca all\'interno del reparto?',
+              answers: ['In un armadio chiuso a chiave', 'In un punto strategico, ben visibile e comodo per gli operatori', 'Vicino all\'uscita di emergenza', 'Nella stanza del primario'],
+              correct: 1,
+            },
+            {
+              question: 'Come si accende il visore?',
+              answers: ['Premendo rapidamente il pulsante una volta', 'Premendo contemporaneamente due pulsanti', 'Tenendo premuto il pulsante di accensione per qualche secondo', 'Agitando il visore finché non si avvia'],
+              correct: 2,
+            },
+            {
+              question: 'Cosa si deve fare una volta posizionato il visore sulla testa del paziente?',
+              answers: ['Bisogna selezionare manualmente ogni volta l\'esperienza dal menu', 'Si deve aspettare che un operatore avvii l\'app da remoto', 'Il visore emette un suono e poi va avviato manualmente', 'Selezionare l\'esperienza desiderata'],
+              correct: 3,
+            },
+            {
+              question: 'Come si mette il visore in stand-by?',
+              answers: ['Tenendo premuto il pulsante per 5 secondi', 'Spegnendolo completamente dal menu impostazioni', 'Aspettando che si spenga da solo dopo 10 minuti', 'Premendo una volta il pulsante di accensione o rimuovendolo e posizionandolo nuovamente sulla basetta di ricarica'],
+              correct: 3,
+            },
+          ],
+          slides: [
+            { title: 'La Postazione', content: 'La teca deve essere posizionata in un punto strategico e ben visibile del reparto. Al suo interno si trovano il visore e la basetta di ricarica, già collegata al caricabatterie. La soluzione è sempre pronta all\'uso.' },
+            { title: 'Accensione', content: 'Per accendere il visore, tieni premuto il pulsante di accensione per qualche secondo. Una volta indossato, selezionare l\'esperienza desiderata.' },
+            { title: 'Stand-by e Riposizionamento', content: 'Al termine della sessione, premi una volta il pulsante di accensione per mettere il visore in stand-by. Sanificalo e riposizionalo nella teca: è già pronto per il prossimo utilizzo.' },
+          ],
+        },
       ],
     },
 
@@ -576,13 +607,13 @@ export const translations = {
               correct: 2,
             },
             {
-              question: 'What happens once the powered-on headset is worn?',
-              answers: ['The experience must be selected manually each time from the menu', 'An operator must remotely launch the app', 'The headset plays a sound and must then be started manually', 'The experience starts automatically'],
+              question: 'What should you do once the headset is positioned on the patient\'s head?',
+              answers: ['The experience must be selected manually each time from the menu', 'An operator must remotely launch the app', 'The headset plays a sound and must then be started manually', 'Nothing — the experience starts automatically'],
               correct: 3,
             },
             {
               question: 'How do you put the headset on stand-by?',
-              answers: ['By holding the button for 5 seconds', 'By switching it off completely from the settings menu', 'By waiting for it to turn off automatically after 10 minutes', 'By pressing the power button once'],
+              answers: ['By holding the button for 5 seconds', 'By switching it off completely from the settings menu', 'By waiting for it to turn off automatically after 10 minutes', 'By pressing the power button once or removing it and placing it back on the charging dock'],
               correct: 3,
             },
           ],
@@ -835,6 +866,37 @@ export const translations = {
             { title: 'Charging', content: 'The headset stays on charge inside the dock at all times. When needed: lift it out, give it to the patient, sanitise it and put it back.' },
           ],
         },
+        {
+          title: 'Power On & Stand-by', duration: '1',
+          description: 'How to turn on the headset, launch the experience and put it on stand-by in a few seconds.',
+          questions: [
+            {
+              question: 'Where should the case be placed in the ward?',
+              answers: ['In a locked cupboard', 'In a strategic, clearly visible and convenient location for staff', 'Near the emergency exit', 'In the head physician\'s office'],
+              correct: 1,
+            },
+            {
+              question: 'How do you turn on the headset?',
+              answers: ['By pressing the button quickly once', 'By pressing two buttons simultaneously', 'By holding the power button for a few seconds', 'By shaking the headset until it starts'],
+              correct: 2,
+            },
+            {
+              question: 'What should you do once the headset is positioned on the patient\'s head?',
+              answers: ['The experience must be selected manually each time from the menu', 'An operator must remotely launch the app', 'The headset plays a sound and must then be started manually', 'Select the desired experience'],
+              correct: 3,
+            },
+            {
+              question: 'How do you put the headset on stand-by?',
+              answers: ['By holding the button for 5 seconds', 'By switching it off completely from the settings menu', 'By waiting for it to turn off automatically after 10 minutes', 'By pressing the power button once or removing it and placing it back on the charging dock'],
+              correct: 3,
+            },
+          ],
+          slides: [
+            { title: 'The Station', content: 'The case must be placed in a strategic and clearly visible spot in the ward. Inside it are the headset and the charging dock, already connected to the charger. The solution is always ready to use.' },
+            { title: 'Powering On', content: 'To turn on the headset, hold the power button for a few seconds. Once worn, select the desired experience.' },
+            { title: 'Stand-by & Repositioning', content: 'At the end of the session, press the power button once to put the headset on stand-by. Sanitise it and reposition it in the case: it is already ready for the next use.' },
+          ],
+        },
       ],
     },
     lesson: {
@@ -1022,13 +1084,13 @@ export const translations = {
               correct: 2,
             },
             {
-              question: '¿Qué ocurre una vez puesto el visor encendido?',
-              answers: ['Hay que seleccionar manualmente la experiencia cada vez desde el menú', 'Un operador debe iniciar la app de forma remota', 'El visor emite un sonido y luego hay que iniciarlo manualmente', 'La experiencia comienza automáticamente'],
+              question: '¿Qué se debe hacer una vez colocado el visor en la cabeza del paciente?',
+              answers: ['Hay que seleccionar manualmente la experiencia cada vez desde el menú', 'Un operador debe iniciar la app de forma remota', 'El visor emite un sonido y luego hay que iniciarlo manualmente', 'Nada, la experiencia comienza automáticamente'],
               correct: 3,
             },
             {
               question: '¿Cómo se pone el visor en stand-by?',
-              answers: ['Manteniendo pulsado el botón durante 5 segundos', 'Apagándolo completamente desde el menú de ajustes', 'Esperando a que se apague solo después de 10 minutos', 'Pulsando una vez el botón de encendido'],
+              answers: ['Manteniendo pulsado el botón durante 5 segundos', 'Apagándolo completamente desde el menú de ajustes', 'Esperando a que se apague solo después de 10 minutos', 'Pulsando una vez el botón de encendido o retirándolo y volviéndolo a colocar en la base de carga'],
               correct: 3,
             },
           ],
@@ -1279,6 +1341,37 @@ export const translations = {
             { title: 'Los Materiales del Kit', content: 'El kit Lemons incluye: visor, estuche de exposición y protección, base de carga con su cargador. También se incluyen los controladores del dispositivo.' },
             { title: 'El Estuche', content: 'El estuche tiene una doble función: proteger el visor cuando no está en uso y servir de elemento expositivo de la estación. Mantenlo siempre en una posición accesible y estable.' },
             { title: 'La Carga', content: 'El visor permanece siempre cargado dentro de la base. Cuando se necesite: sácalo, dáselo al paciente, higiénizalo y devuélvelo a su sitio.' },
+          ],
+        },
+        {
+          title: 'Encendido & Stand-by', duration: '1',
+          description: 'Cómo encender el visor, iniciar la experiencia y ponerlo en stand-by en pocos segundos.',
+          questions: [
+            {
+              question: '¿Dónde debe colocarse el estuche en el servicio?',
+              answers: ['En un armario cerrado con llave', 'En un punto estratégico, bien visible y cómodo para el personal', 'Cerca de la salida de emergencia', 'En el despacho del jefe de servicio'],
+              correct: 1,
+            },
+            {
+              question: '¿Cómo se enciende el visor?',
+              answers: ['Pulsando rápidamente el botón una vez', 'Pulsando dos botones a la vez', 'Manteniendo pulsado el botón de encendido unos segundos', 'Agitando el visor hasta que se inicie'],
+              correct: 2,
+            },
+            {
+              question: '¿Qué se debe hacer una vez colocado el visor en la cabeza del paciente?',
+              answers: ['Hay que seleccionar manualmente la experiencia cada vez desde el menú', 'Un operador debe iniciar la app de forma remota', 'El visor emite un sonido y luego hay que iniciarlo manualmente', 'Seleccionar la experiencia deseada'],
+              correct: 3,
+            },
+            {
+              question: '¿Cómo se pone el visor en stand-by?',
+              answers: ['Manteniendo pulsado el botón durante 5 segundos', 'Apagándolo completamente desde el menú de ajustes', 'Esperando a que se apague solo después de 10 minutos', 'Pulsando una vez el botón de encendido o retirándolo y volviéndolo a colocar en la base de carga'],
+              correct: 3,
+            },
+          ],
+          slides: [
+            { title: 'La Estación', content: 'El estuche debe colocarse en un punto estratégico y bien visible del servicio. En su interior están el visor y la base de carga, ya conectada al cargador. La solución está siempre lista para usar.' },
+            { title: 'Encendido', content: 'Para encender el visor, mantén pulsado el botón de encendido unos segundos. Una vez puesto, seleccionar la experiencia deseada.' },
+            { title: 'Stand-by y Recolocación', content: 'Al finalizar la sesión, pulsa una vez el botón de encendido para poner el visor en stand-by. Higienízalo y vuelve a colocarlo en el estuche: ya está listo para el próximo uso.' },
           ],
         },
       ],
