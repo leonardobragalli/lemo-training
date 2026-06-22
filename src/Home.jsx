@@ -238,7 +238,7 @@ const onHeroMove = (e) => {
         }
       }
       setShowNewsletter(true);
-    }, 4000);
+    }, 3000);
     return () => clearTimeout(timer);
   }, [user]);
 
