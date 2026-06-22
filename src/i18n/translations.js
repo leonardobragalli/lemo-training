@@ -419,7 +419,7 @@ export const translations = {
         },
         {
           title: 'Navigare tra le Applicazioni Lemons', duration: '1',
-          description: 'Come usare il tasto Oculus e il grilletto per muoverti tra le applicazioni Lemons.',
+          description: 'Come navigare tra le applicazioni usando i controller.',
           questions: [
             {
               question: 'Quale tasto fa apparire e scomparire il menu?',
