@@ -222,13 +222,14 @@ const Modules = () => {
     { id: 7, profile: 'pediatria',type: 'Video',    videoUrl: `${R2}/Rabbits.mp4`,                          tl: tl[6] },
     { id: 8, profile: 'pediatria',type: 'Video',    videoUrl: `${R2}/Telly.mp4`,                            tl: tl[7] },
     { id: 9, profile: 'adulti',   type: 'Tutorial', videoUrl: `${R2}/Simulazione.mp4`,                      tl: tl[8] },
+    { id: 5, profile: 'pediatria',type: 'Video',    videoUrl: `${R2}/Menu%20%26%20Click.mp4`,               tl: tl[4], descOverride: m.menuClickDescPediatria },
   ];
 
   const lessons = allLessons
     .filter(l => l.profile === 'all' || l.profile === patientType)
-    .map(({ id, type, videoUrl, tl: d }) => ({
+    .map(({ id, type, videoUrl, tl: d, descOverride }) => ({
       id, type, videoUrl,
-      title: d.title, duration: d.duration, description: d.description,
+      title: d.title, duration: d.duration, description: descOverride ?? d.description,
       questions: d.questions, slides: d.slides,
     }));
 
