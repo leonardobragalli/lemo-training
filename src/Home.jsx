@@ -158,9 +158,6 @@ const ChapterLine = ({ num, label }) => (
   </div>
 );
 
-/* flag a livello modulo: persiste per tutta la sessione SPA, si azzera solo al reload */
-let _newsletterShownThisSession = false;
-
 /* ── HOME ──────────────────────────────────────────────────── */
 const Home = () => {
   const navigate = useNavigate();
@@ -228,8 +225,6 @@ const onHeroMove = (e) => {
 
   useEffect(() => {
     if (localStorage.getItem('lemo_newsletter_subscribed') !== null) return;
-    if (_newsletterShownThisSession) return;
-    _newsletterShownThisSession = true;
     const timer = setTimeout(() => setShowNewsletter(true), 4000);
     return () => clearTimeout(timer);
   }, []);
