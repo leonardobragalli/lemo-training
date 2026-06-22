@@ -163,6 +163,7 @@ const Home = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [user, setUser] = useState(null);
+  const userRef = useRef(null);
   const [completedCount, setCompletedCount] = useState(0);
   const mode = searchParams.get('mode') || 'guided';
   const { t, lang } = useLang();
@@ -216,6 +217,7 @@ const onHeroMove = (e) => {
     if (!savedUser && mode !== 'full') {
       navigate('/');
     } else if (savedUser) {
+      userRef.current = savedUser;
       setUser(savedUser);
       const savedProgress = JSON.parse(localStorage.getItem(`lemo_progress_${savedUser?.name}`)) || [];
       setCompletedCount(savedProgress.length);
@@ -224,12 +226,11 @@ const onHeroMove = (e) => {
   }, [navigate, mode]);
 
   useEffect(() => {
-    // Se ha già accettato in localStorage (questo dispositivo) → non mostrare
     if (localStorage.getItem('lemo_newsletter_subscribed') === '1') return;
     const timer = setTimeout(async () => {
-      // Controlla su Supabase: se newsletter_opt_in=true su qualsiasi dispositivo → non mostrare
-      if (user?.name) {
-        const { data } = await supabase.from('users').select('newsletter_opt_in').eq('name', user.name).single();
+      const u = userRef.current;
+      if (u?.name) {
+        const { data } = await supabase.from('users').select('newsletter_opt_in').eq('name', u.name).single();
         if (data?.newsletter_opt_in === true) {
           localStorage.setItem('lemo_newsletter_subscribed', '1');
           return;
@@ -238,7 +239,7 @@ const onHeroMove = (e) => {
       setShowNewsletter(true);
     }, 3000);
     return () => clearTimeout(timer);
-  }, [user]);
+  }, []);
 
   const handleNewsletterAccept = async () => {
     const userEmail = user?.email;
