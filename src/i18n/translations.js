@@ -419,9 +419,29 @@ export const translations = {
         },
         {
           title: 'Navigare tra le Applicazioni Lemons', duration: '1',
-          description: 'Come navigare tra le applicazioni Lemons disponibili sul visore.',
-          questions: [],
-          slides: [],
+          description: 'Come usare il tasto Oculus e il grilletto per muoverti tra le applicazioni Lemons.',
+          questions: [
+            {
+              question: 'Quale tasto fa apparire e scomparire il menu?',
+              answers: ['Il grilletto del controller sinistro', 'Il tasto Oculus sul controller destro', 'Il tasto A sul controller destro', 'Il tasto laterale del controller sinistro'],
+              correct: 1,
+            },
+            {
+              question: 'Come si seleziona un\'opzione nel menu?',
+              answers: ['Puntando e aspettando 2 secondi', 'Premendo il tasto Oculus', 'Puntando sull\'opzione e premendo il "grilletto"', 'Usando la voce'],
+              correct: 2,
+            },
+            {
+              question: 'Cosa succede se premi il tasto Oculus mentre sei dentro un\'applicazione?',
+              answers: ['L\'applicazione si riavvia', 'Il visore si mette in stand-by', 'Si torna automaticamente al menu principale senza possibilità di tornare sull\'app', 'Si apre il menu, da cui puoi chiudere l\'app o riprendere l\'esperienza'],
+              correct: 3,
+            },
+          ],
+          slides: [
+            { title: 'Il Tasto Oculus', content: 'Il tasto Oculus (∞) sul controller destro è il tuo punto di controllo: premendolo una volta il menu appare, premendolo di nuovo scompare. Puoi usarlo in qualsiasi momento, anche mentre sei all\'interno di un\'applicazione.' },
+            { title: 'Selezionare con il Grilletto', content: 'Per selezionare un\'opzione nel menu, punta il cursore sull\'elemento desiderato e premi il "grilletto": il tasto frontale del controller, destro o sinistro non è importante.' },
+            { title: 'Cambiare Applicazione', content: 'Se sei già all\'interno di un\'app e vuoi cambiarla: premi il tasto Oculus per aprire il menu, chiudi l\'applicazione corrente e scegli quella nuova. Il menu è sempre accessibile, in qualsiasi momento della sessione.' },
+          ],
         },
       ],
     },
@@ -905,9 +925,29 @@ export const translations = {
         },
         {
           title: 'Navigating Lemons Applications', duration: '1',
-          description: 'How to navigate between the Lemons applications available on the headset.',
-          questions: [],
-          slides: [],
+          description: 'How to use the Oculus button and trigger to move between Lemons applications.',
+          questions: [
+            {
+              question: 'Which button makes the menu appear and disappear?',
+              answers: ['The left controller trigger', 'The Oculus button on the right controller', 'The A button on the right controller', 'The side button on the left controller'],
+              correct: 1,
+            },
+            {
+              question: 'How do you select an option in the menu?',
+              answers: ['By pointing and waiting 2 seconds', 'By pressing the Oculus button', 'By pointing at the option and pressing the trigger', 'By using your voice'],
+              correct: 2,
+            },
+            {
+              question: 'What happens if you press the Oculus button while inside an application?',
+              answers: ['The application restarts', 'The headset goes on stand-by', 'You are taken back to the main menu with no way to return to the app', 'The menu opens, from which you can close the app or resume the experience'],
+              correct: 3,
+            },
+          ],
+          slides: [
+            { title: 'The Oculus Button', content: 'The Oculus (∞) button on the right controller is your control point: press it once and the menu appears, press it again and it disappears. You can use it at any time, even while inside an application.' },
+            { title: 'Selecting with the Trigger', content: 'To select an option in the menu, point the cursor at the desired element and press the trigger — the front button on the controller, either right or left.' },
+            { title: 'Switching Applications', content: 'If you are already inside an app and want to change it: press the Oculus button to open the menu, close the current application and choose a new one. The menu is always accessible, at any point in the session.' },
+          ],
         },
       ],
     },
@@ -1388,9 +1428,29 @@ export const translations = {
         },
         {
           title: 'Navegar entre las Aplicaciones Lemons', duration: '1',
-          description: 'Cómo navegar entre las aplicaciones Lemons disponibles en el visor.',
-          questions: [],
-          slides: [],
+          description: 'Cómo usar el botón Oculus y el gatillo para moverte entre las aplicaciones Lemons.',
+          questions: [
+            {
+              question: '¿Qué botón hace aparecer y desaparecer el menú?',
+              answers: ['El gatillo del controlador izquierdo', 'El botón Oculus del controlador derecho', 'El botón A del controlador derecho', 'El botón lateral del controlador izquierdo'],
+              correct: 1,
+            },
+            {
+              question: '¿Cómo se selecciona una opción en el menú?',
+              answers: ['Apuntando y esperando 2 segundos', 'Pulsando el botón Oculus', 'Apuntando a la opción y pulsando el gatillo', 'Usando la voz'],
+              correct: 2,
+            },
+            {
+              question: '¿Qué ocurre si pulsas el botón Oculus mientras estás dentro de una aplicación?',
+              answers: ['La aplicación se reinicia', 'El visor entra en stand-by', 'Se vuelve automáticamente al menú principal sin posibilidad de volver a la app', 'Se abre el menú, desde el que puedes cerrar la app o retomar la experiencia'],
+              correct: 3,
+            },
+          ],
+          slides: [
+            { title: 'El Botón Oculus', content: 'El botón Oculus (∞) del controlador derecho es tu punto de control: pulsándolo una vez aparece el menú, pulsándolo de nuevo desaparece. Puedes usarlo en cualquier momento, incluso dentro de una aplicación.' },
+            { title: 'Seleccionar con el Gatillo', content: 'Para seleccionar una opción en el menú, apunta el cursor al elemento deseado y pulsa el "gatillo": el botón frontal del controlador, derecho o izquierdo indistintamente.' },
+            { title: 'Cambiar de Aplicación', content: 'Si ya estás dentro de una app y quieres cambiarla: pulsa el botón Oculus para abrir el menú, cierra la aplicación actual y elige una nueva. El menú siempre es accesible, en cualquier momento de la sesión.' },
+          ],
         },
       ],
     },
