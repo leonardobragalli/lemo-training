@@ -312,7 +312,7 @@ const Welcome = () => {
       className="relative min-h-[100dvh] w-full font-sans text-white overflow-x-hidden"
     >
       <div className="fixed inset-0 z-0 pointer-events-none">
-        <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: "url('/images/bg-clouds.png')" }} />
+        <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: "url('/images/bg-clouds.webp')" }} />
         <div className="absolute inset-0 opacity-[0.035] mix-blend-overlay" style={{ backgroundImage: "url('https://grainy-gradients.vercel.app/noise.svg')" }} />
       </div>
 
@@ -421,8 +421,8 @@ const Welcome = () => {
                 <label className="block text-[10px] font-bold text-slate-400 uppercase ml-1 tracking-[0.18em] mb-2">{w.patientProfile}</label>
                 <div className="flex gap-4 justify-center">
                   {[
-                    { id: 'pediatria', label: w.pediatria, accent: '#8756FA', img: '/images/profilo-pediatria.png' },
-                    { id: 'adulti',    label: w.adulti,    accent: '#FF8731', img: '/images/profilo-adulti.png'    },
+                    { id: 'pediatria', label: w.pediatria, accent: '#8756FA', img: '/images/profilo-pediatria.webp' },
+                    { id: 'adulti',    label: w.adulti,    accent: '#FF8731', img: '/images/profilo-adulti.webp'    },
                   ].map(p => {
                     const sel = patientType === p.id;
                     return (

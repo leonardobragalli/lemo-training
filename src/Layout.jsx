@@ -124,7 +124,7 @@ const Layout = () => {
     <div className="font-sans md:flex md:h-[100dvh] md:overflow-hidden">
       {/* Background fisso solo per le pagine interne */}
       <div className="fixed inset-0 -z-10 md:hidden" style={{ background: '#03091B' }} />
-      <div className="fixed inset-0 -z-10 hidden md:block bg-cover bg-center bg-no-repeat" style={{ backgroundImage: "url('/images/bg-pc.png')" }} />
+      <div className="fixed inset-0 -z-10 hidden md:block bg-cover bg-center bg-no-repeat" style={{ backgroundImage: "url('/images/bg-pc.webp')" }} />
 
       {/* Sidebar Desktop */}
       <motion.aside

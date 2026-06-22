@@ -294,7 +294,7 @@ const onHeroMove = (e) => {
         @keyframes lemoAuroraText { 0%{background-position:0% 50%} 100%{background-position:100% 50%} }
       `}</style>
 
-      <div className="fixed inset-0 bg-cover bg-center z-0 bg-[url('/images/bg-mobile-nature.png')] md:bg-[url('/images/bg-pc.png')] pointer-events-none" />
+      <div className="fixed inset-0 bg-cover bg-center z-0 bg-[url('/images/bg-mobile-nature.webp')] md:bg-[url('/images/bg-pc.webp')] pointer-events-none" />
       <div className="fixed top-[10%] right-[5%] w-[40vw] h-[40vw] bg-gradient-to-tr from-[#FF8731]/30 to-transparent rounded-full blur-[100px] pointer-events-none mix-blend-screen z-0" />
       <div className="fixed bottom-[10%] left-[5%] w-[50vw] h-[50vw] bg-gradient-to-tr from-[#8756FA]/20 to-transparent rounded-full blur-[120px] pointer-events-none mix-blend-screen z-0" />
 
