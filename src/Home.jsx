@@ -226,8 +226,6 @@ const onHeroMove = (e) => {
   useEffect(() => {
     // Se ha già accettato in localStorage (questo dispositivo) → non mostrare
     if (localStorage.getItem('lemo_newsletter_subscribed') === '1') return;
-    // Se ha rifiutato in questa sessione (si resetta a ogni F5) → non mostrare
-    if (sessionStorage.getItem('lemo_newsletter_dismissed') === '1') return;
     const timer = setTimeout(async () => {
       // Controlla su Supabase: se newsletter_opt_in=true su qualsiasi dispositivo → non mostrare
       if (user?.name) {
@@ -255,8 +253,6 @@ const onHeroMove = (e) => {
 
   const closeNewsletter = async () => {
     setShowNewsletter(false);
-    // Rifiuto: ricorda solo per questa sessione (si resetta a ogni F5)
-    sessionStorage.setItem('lemo_newsletter_dismissed', '1');
     if (user?.name) {
       await supabase.from('users').update({ newsletter_opt_in: false }).eq('name', user.name);
     }
