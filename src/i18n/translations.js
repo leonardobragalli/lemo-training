@@ -207,7 +207,7 @@ export const translations = {
         },
         {
           title: 'Menu & Click', duration: '1',
-          description: 'Come navigare nel menu del visore e selezionare le esperienze usando le mani.',
+          description: 'Come navigare nel menu di Lemo e selezionare le esperienze usando le mani.',
           questions: [
             {
               question: 'Cosa appare una volta acceso il visore?',
@@ -231,7 +231,7 @@ export const translations = {
             },
           ],
           slides: [
-            { title: 'Il Menu del Visore', content: 'Una volta acceso, il visore mostra una bacheca con tutte le esperienze disponibili. Da qui l\'operatore sceglie la procedura più adatta al paziente. La navigazione avviene tramite mani o voce (la voce viene spiegata nel tutorial iniziale dell\'esperienza).' },
+            { title: 'Il Menu di Lemo', content: 'Una volta acceso, il visore mostra una bacheca con tutte le esperienze disponibili (ecco il menù di Lemo). Da qui l\'operatore sceglie la procedura più adatta al paziente. La navigazione avviene tramite mani o voce (la voce viene spiegata nel tutorial iniziale dell\'esperienza).' },
             { title: 'Il Cursore', content: 'Per navigare, tieni indice e pollice leggermente aperti — come se stessi usando un mouse. Puntando verso il pannello, apparirà un puntino giallo: è il tuo cursore. Muovi la mano per spostarlo sulle opzioni.' },
             { title: 'Il Click', content: 'Per selezionare, esegui un piccolo pizzicotto rapido unendo indice e pollice. Breve e deciso: quello è il tuo click. Con questo gesto puoi scegliere qualsiasi esperienza dal menu.' },
           ],
@@ -687,7 +687,7 @@ export const translations = {
         },
         {
           title: 'Menu & Click', duration: '1',
-          description: 'How to navigate the headset menu and select experiences using your hands.',
+          description: 'How to navigate the Lemo menu and select experiences using your hands.',
           questions: [
             {
               question: 'What appears once the headset is turned on?',
@@ -711,7 +711,7 @@ export const translations = {
             },
           ],
           slides: [
-            { title: 'The Headset Menu', content: 'Once switched on, the headset displays a board with all available experiences. From here, the operator selects the most suitable procedure for the patient. Navigation is via hands or voice (voice is explained in the initial experience tutorial).' },
+            { title: 'The Lemo Menu', content: 'Once switched on, the headset displays a board with all available experiences (this is the Lemo menu). From here, the operator selects the most suitable procedure for the patient. Navigation is via hands or voice (voice is explained in the initial experience tutorial).' },
             { title: 'The Cursor', content: 'To navigate, keep your index finger and thumb slightly open — as if using a mouse. Pointing toward the panel, a yellow dot will appear: that is your cursor. Move your hand to hover over the options.' },
             { title: 'The Click', content: 'To select, perform a quick pinch bringing your index finger and thumb together. Brief and decisive: that is your click. With this gesture you can choose any experience from the menu.' },
           ],
@@ -1164,7 +1164,7 @@ export const translations = {
         },
         {
           title: 'Menú & Click', duration: '1',
-          description: 'Cómo navegar por el menú del visor y seleccionar experiencias usando las manos.',
+          description: 'Cómo navegar por el menú de Lemo y seleccionar experiencias usando las manos.',
           questions: [
             {
               question: '¿Qué aparece una vez encendido el visor?',
@@ -1188,7 +1188,7 @@ export const translations = {
             },
           ],
           slides: [
-            { title: 'El Menú del Visor', content: 'Una vez encendido, el visor muestra un tablero con todas las experiencias disponibles. Desde aquí el operador elige el procedimiento más adecuado para el paciente. La navegación se realiza con las manos o con la voz (la voz se explica en el tutorial inicial de la experiencia).' },
+            { title: 'El Menú de Lemo', content: 'Una vez encendido, el visor muestra un tablero con todas las experiencias disponibles (este es el menú de Lemo). Desde aquí el operador elige el procedimiento más adecuado para el paciente. La navegación se realiza con las manos o con la voz (la voz se explica en el tutorial inicial de la experiencia).' },
             { title: 'El Cursor', content: 'Para navegar, mantén índice y pulgar ligeramente abiertos — como si usaras un ratón. Apuntando hacia el panel, aparecerá un punto amarillo: ese es tu cursor. Mueve la mano para desplazarlo sobre las opciones.' },
             { title: 'El Click', content: 'Para seleccionar, realiza un pequeño pellizco rápido uniendo índice y pulgar. Breve y decidido: ese es tu clic. Con este gesto puedes elegir cualquier experiencia del menú.' },
           ],
