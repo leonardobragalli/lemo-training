@@ -35,7 +35,7 @@ async function createNotionTicket(payload) {
 
   const aziendaId = await findAziendaId(hospital);
 
-  const title = `[${ticketType}] ${subject}`;
+  const title = subject;
   const feedbackValue = ticketType === 'Tecnico' ? 'Operations' : 'Support';
   const today = new Date().toISOString().split('T')[0];
 
@@ -96,7 +96,7 @@ export default async function handler(req, res) {
   }
 
   const formspreePayload = {
-    subject: `[${ticketType}] ${subject}`,
+    subject,
     ticketType,
     message,
     user_name,
