@@ -261,12 +261,13 @@ const Support = () => {
     };
 
     try {
-      const [r1, r2] = await Promise.all([
-        fetch('https://formspree.io/f/mjglzlqo', { method: 'POST', headers: { Accept: 'application/json', 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }),
-        fetch('https://formspree.io/f/mqenjjnb', { method: 'POST', headers: { Accept: 'application/json', 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }),
-      ]);
+      const r = await fetch('/api/ticket', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
 
-      if (r1.ok && r2.ok) {
+      if (r.ok) {
         setTicketSent(true);
         setTicketSubject('');
         setTicketMessage('');
