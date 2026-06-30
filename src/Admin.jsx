@@ -164,7 +164,7 @@ const Admin = () => {
   const [newsletterList, setNewsletterList] = useState([]);
   const navigate = useNavigate();
 
-  const getTotalLessons = (pt) => pt === 'pediatria' ? 7 : 6;
+  const getTotalLessons = (pt) => pt === 'pediatria' ? 9 : 6;
   const totalLessons = 9;
 
   const timeAgo = (iso) => {
@@ -177,7 +177,7 @@ const Admin = () => {
     return `${Math.floor(diff / 86400)} days ago`;
   };
 
-  const getModulesForProfile = (pt) => pt === 'pediatria' ? [1,2,3,4,6,7,8] : [1,2,3,4,5,9];
+  const getModulesForProfile = (pt) => pt === 'pediatria' ? [10,11,12,4,6,13,7,8,5] : [1,2,3,4,5,9];
 
   const getNextModule = (completedList, patientType) => {
     const mods = getModulesForProfile(patientType);
