@@ -366,12 +366,12 @@ const Admin = () => {
     );
   };
 
-  const unlockAll = (userName) => {
+  const unlockAll = (userName, patientType) => {
     openConfirm(
       'Unlock All Modules',
       `Unlock the entire training path for "${userName}"? All modules will be marked as completed.`,
       async () => {
-        const allModules = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+        const allModules = getModulesForProfile(patientType);
         await supabase.from('users').update({ completed_modules: allModules }).eq('name', userName);
         localStorage.setItem(`lemo_progress_${userName}`, JSON.stringify(allModules));
         const globalUsers = JSON.parse(localStorage.getItem('lemo_all_users')) || {};
@@ -886,7 +886,7 @@ const Admin = () => {
                                         <RotateCcw className="w-3.5 h-3.5" /> Reset Progress
                                       </button>
                                       <button
-                                        onClick={(e) => { e.stopPropagation(); unlockAll(u.name); }}
+                                        onClick={(e) => { e.stopPropagation(); unlockAll(u.name, u.patientType); }}
                                         className="flex items-center gap-2 px-4 py-2.5 bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/20 hover:border-emerald-500/40 text-emerald-400 hover:text-emerald-300 rounded-xl text-xs font-bold transition-all duration-200"
                                       >
                                         <Unlock className="w-3.5 h-3.5" /> Unlock All
