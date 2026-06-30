@@ -903,7 +903,7 @@ const Admin = () => {
                                   <div>
                                     <p className="text-[10px] uppercase tracking-widest text-slate-500 font-bold mb-3">Training Path</p>
 
-                                    <div className={`mb-4 px-4 py-3 rounded-2xl border flex items-center gap-3 ${nextMod
+                                    <div className={`px-4 py-3 rounded-2xl border flex items-center gap-3 ${nextMod
                                       ? 'bg-[#FF8731]/5 border-[#FF8731]/20'
                                       : 'bg-emerald-500/5 border-emerald-500/20'
                                     }`}>
@@ -913,27 +913,9 @@ const Admin = () => {
                                           {nextMod ? 'Next to complete' : 'Status'}
                                         </span>
                                         <p className={`text-sm font-bold ${nextMod ? 'text-white' : 'text-emerald-400'}`}>
-                                          {nextMod ? `Module ${nextMod} — ${MODULE_NAMES[nextMod]}` : 'Path completed ✓'}
+                                          {nextMod ? `${MODULE_NAMES[nextMod]}` : 'Path completed ✓'}
                                         </p>
                                       </div>
-                                    </div>
-
-                                    <div className="flex flex-wrap gap-2">
-                                      {[1, 2, 3, 4].map(mod => {
-                                        const done = (u.completedModulesList || []).includes(mod);
-                                        const isNext = nextMod === mod;
-                                        return (
-                                          <div key={mod} className={`px-3 py-2 rounded-xl text-xs font-bold border flex items-center gap-2 ${done
-                                            ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400'
-                                            : isNext
-                                              ? 'bg-[#FF8731]/10 border-[#FF8731]/30 text-[#FF8731]'
-                                              : 'bg-slate-800 border-slate-700 text-slate-600'
-                                          }`}>
-                                            {done ? <CheckCircle className="w-3 h-3" /> : isNext ? <MapPin className="w-3 h-3" /> : <Lock className="w-3 h-3" />}
-                                            <span>{MODULE_NAMES[mod]}</span>
-                                          </div>
-                                        );
-                                      })}
                                     </div>
                                   </div>
                                 </div>
